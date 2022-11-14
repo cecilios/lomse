@@ -27,7 +27,7 @@ class ImoContent;
 class ImoCursorInfo;
 class ImoFontStyleDto;
 class ImoInlineLevelObj;
-class ImoInstrGroup;
+class ImoGroupLayout;
 class ImoInstrument;
 class ImoSoundInfo;
 class ImoListItem;
@@ -72,7 +72,7 @@ public:
 
 protected:
     ImoObj* add_content(ImoContent* pContent);
-    ImoObj* add_instruments_group(ImoInstrGroup* pGrp);
+    ImoObj* add_instruments_group(ImoGroupLayout* pGrp);
     ImoObj* add_option(ImoOptionInfo* pOpt);
     ImoObj* add_page_info(ImoPageInfo* pPI);
     ImoObj* add_system_info(ImoSystemInfo* pSI);

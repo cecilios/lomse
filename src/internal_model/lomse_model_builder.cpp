@@ -701,20 +701,20 @@ void GroupBarlinesFixer::set_barline_layout_in_instruments(ImoScore* pScore)
     }
 
     //compute barlines layout for groups
-    ImoInstrGroups* pGroups = pScore->get_instrument_groups();
+    ImoGroupLayouts* pGroups = pScore->get_instrument_groups();
     if (pGroups)
     {
         ImoObj::children_iterator itG;
         for (itG= pGroups->begin(); itG != pGroups->end(); ++itG)
         {
-            ImoInstrGroup* pGrp = static_cast<ImoInstrGroup*>(*itG);
+            ImoGroupLayout* pGrp = static_cast<ImoGroupLayout*>(*itG);
             set_barlines_layout_for(pGrp);
         }
     }
 }
 
 //---------------------------------------------------------------------------------------
-void GroupBarlinesFixer::set_barlines_layout_for(ImoInstrGroup* pGrp)
+void GroupBarlinesFixer::set_barlines_layout_for(ImoGroupLayout* pGrp)
 {
     if (pGrp->join_barlines() == EJoinBarlines::k_non_joined_barlines)
         return;

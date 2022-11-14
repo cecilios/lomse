@@ -283,7 +283,7 @@ MnxPartGroups::MnxPartGroups()
 //---------------------------------------------------------------------------------------
 MnxPartGroups::~MnxPartGroups()
 {
-    map<int, ImoInstrGroup*>::iterator it;
+    map<int, ImoGroupLayout*>::iterator it;
     for (it = m_groups.begin(); it != m_groups.end(); ++it)
         delete it->second;
 
@@ -293,16 +293,16 @@ MnxPartGroups::~MnxPartGroups()
 //---------------------------------------------------------------------------------------
 void MnxPartGroups::add_instrument_to_groups(int iInstr)
 {
-    map<int, ImoInstrGroup*>::const_iterator it;
+    map<int, ImoGroupLayout*>::const_iterator it;
     for (it = m_groups.begin(); it != m_groups.end(); ++it)
     {
-        ImoInstrGroup* pGrp = it->second;
+        ImoGroupLayout* pGrp = it->second;
         pGrp->add_instrument(iInstr);
     }
 }
 
 //---------------------------------------------------------------------------------------
-void MnxPartGroups::start_group(int number, ImoInstrGroup* pGrp)
+void MnxPartGroups::start_group(int number, ImoGroupLayout* pGrp)
 {
     m_groups[number] = pGrp;
 }
@@ -310,7 +310,7 @@ void MnxPartGroups::start_group(int number, ImoInstrGroup* pGrp)
 //---------------------------------------------------------------------------------------
 void MnxPartGroups::terminate_group(int number)
 {
-    map<int, ImoInstrGroup*>::iterator it = m_groups.find(number);
+    map<int, ImoGroupLayout*>::iterator it = m_groups.find(number);
 	if (it == m_groups.end())
         return;
 
@@ -320,14 +320,14 @@ void MnxPartGroups::terminate_group(int number)
 //---------------------------------------------------------------------------------------
 bool MnxPartGroups::group_exists(int number)
 {
-    map<int, ImoInstrGroup*>::const_iterator it = m_groups.find(number);
+    map<int, ImoGroupLayout*>::const_iterator it = m_groups.find(number);
 	return (it != m_groups.end());
 }
 
 //---------------------------------------------------------------------------------------
-ImoInstrGroup* MnxPartGroups::get_group(int number)
+ImoGroupLayout* MnxPartGroups::get_group(int number)
 {
-    map<int, ImoInstrGroup*>::iterator it = m_groups.find(number);
+    map<int, ImoGroupLayout*>::iterator it = m_groups.find(number);
 	if (it != m_groups.end())
         return it->second;
     else
@@ -338,7 +338,7 @@ ImoInstrGroup* MnxPartGroups::get_group(int number)
 //---------------------------------------------------------------------------------------
 void MnxPartGroups::check_if_all_groups_are_closed(ostream& reporter)
 {
-    map<int, ImoInstrGroup*>::const_iterator it;
+    map<int, ImoGroupLayout*>::const_iterator it;
     for (it = m_groups.begin(); it != m_groups.end(); ++it)
     {
         reporter << "Error: missing <part-group type='stop'> for <part-group> number='"
@@ -5044,13 +5044,13 @@ void MnxAnalyser::add_marging_space_for_lyrics(ImoNote* pNote, ImoLyric* pLyric)
 }
 
 //---------------------------------------------------------------------------------------
-ImoInstrGroup* MnxAnalyser::start_part_group(int number)
+ImoGroupLayout* MnxAnalyser::start_part_group(int number)
 {
     if (m_partGroups.group_exists(number))
         return nullptr;
 
     Document* pDoc = get_document_being_analysed();
-    ImoInstrGroup* pGrp = static_cast<ImoInstrGroup*>(
+    ImoGroupLayout* pGrp = static_cast<ImoGroupLayout*>(
                                     ImFactory::inject(k_imo_instr_group, pDoc));
 
     m_partGroups.start_group(number, pGrp);
@@ -5060,13 +5060,13 @@ ImoInstrGroup* MnxAnalyser::start_part_group(int number)
 //---------------------------------------------------------------------------------------
 void MnxAnalyser::terminate_part_group(int number)
 {
-    ImoInstrGroup* pGrp = m_partGroups.get_group(number);
+    ImoGroupLayout* pGrp = m_partGroups.get_group(number);
     if (pGrp)
         m_partGroups.terminate_group(number);
 }
 
 //---------------------------------------------------------------------------------------
-ImoInstrGroup* MnxAnalyser::get_part_group(int number)
+ImoGroupLayout* MnxAnalyser::get_part_group(int number)
 {
     return m_partGroups.get_group(number);
 }

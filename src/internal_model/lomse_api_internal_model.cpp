@@ -396,7 +396,7 @@ AInstrGroup AObject::downcast_to_instr_group() const
     ensure_validity();
     if (m_pImpl && m_pImpl->is_instr_group())
     {
-        ImoInstrGroup* pObj = static_cast<ImoInstrGroup*>(m_pImpl);
+        ImoGroupLayout* pObj = static_cast<ImoGroupLayout*>(m_pImpl);
         return AInstrGroup(pObj, m_pDoc, m_imVersion);
     }
     else
@@ -1312,7 +1312,7 @@ ImoInstrument* AInstrument::internal_object() const
         internal model is currently being defined and, thus, for this class, only some
         methods have been defined.
 */
-LOMSE_IMPLEMENT_IM_API_CLASS(AInstrGroup, ImoInstrGroup, AObject)
+LOMSE_IMPLEMENT_IM_API_CLASS(AInstrGroup, ImoGroupLayout, AObject)
 
 //---------------------------------------------------------------------------------------
 /** @memberof AInstrGroup
@@ -1323,9 +1323,9 @@ LOMSE_IMPLEMENT_IM_API_CLASS(AInstrGroup, ImoInstrGroup, AObject)
     could be fixed and your app. would not be affected in future when this method
     is removed.
 */
-ImoInstrGroup* AInstrGroup::internal_object() const
+ImoGroupLayout* AInstrGroup::internal_object() const
 {
-    return const_cast<ImoInstrGroup*>(pimpl());
+    return const_cast<ImoGroupLayout*>(pimpl());
 }
 
 
@@ -1341,7 +1341,7 @@ EJoinBarlines AInstrGroup::barlines_mode() const
 {
     ensure_validity();
     return static_cast<EJoinBarlines>(
-        const_cast<ImoInstrGroup*>(pimpl())->join_barlines() );
+        const_cast<ImoGroupLayout*>(pimpl())->join_barlines() );
 }
 
 //---------------------------------------------------------------------------------------
@@ -1353,7 +1353,7 @@ EGroupSymbol AInstrGroup::symbol() const
 {
     ensure_validity();
     return static_cast<EGroupSymbol>(
-        const_cast<ImoInstrGroup*>(pimpl())->get_symbol() );
+        const_cast<ImoGroupLayout*>(pimpl())->get_symbol() );
 }
 
 //---------------------------------------------------------------------------------------
@@ -1364,7 +1364,7 @@ EGroupSymbol AInstrGroup::symbol() const
 const std::string& AInstrGroup::name_string() const
 {
     ensure_validity();
-    TypeTextInfo& text = const_cast<ImoInstrGroup*>(pimpl())->get_name();
+    TypeTextInfo& text = const_cast<ImoGroupLayout*>(pimpl())->get_name();
     return text.text;
 }
 
@@ -1376,7 +1376,7 @@ const std::string& AInstrGroup::name_string() const
 const std::string& AInstrGroup::abbreviation_string() const
 {
     ensure_validity();
-    TypeTextInfo& text = const_cast<ImoInstrGroup*>(pimpl())->get_abbrev();
+    TypeTextInfo& text = const_cast<ImoGroupLayout*>(pimpl())->get_abbrev();
     return text.text;
 }
 
@@ -1443,7 +1443,7 @@ void AInstrGroup::set_abbreviation_string(const std::string& abbrev)
 int AInstrGroup::num_instruments() const
 {
     ensure_validity();
-    return const_cast<ImoInstrGroup*>(pimpl())->get_num_instruments();
+    return const_cast<ImoGroupLayout*>(pimpl())->get_num_instruments();
 }
 
 //---------------------------------------------------------------------------------------
@@ -1454,7 +1454,7 @@ int AInstrGroup::num_instruments() const
 AInstrument AInstrGroup::instrument_at(int pos) const
 {
     ensure_validity();
-    ImoInstrGroup* pGrp = const_cast<ImoInstrGroup*>(pimpl());
+    ImoGroupLayout* pGrp = const_cast<ImoGroupLayout*>(pimpl());
     if (pos < 0 || pos >= pGrp->get_num_instruments())
         return AInstrument();
 
@@ -1468,7 +1468,7 @@ AInstrument AInstrGroup::instrument_at(int pos) const
 AInstrument AInstrGroup::first_instrument() const
 {
     ensure_validity();
-    return AInstrument(const_cast<ImoInstrGroup*>(pimpl())->get_first_instrument(),
+    return AInstrument(const_cast<ImoGroupLayout*>(pimpl())->get_first_instrument(),
                        m_pDoc, m_imVersion);
 }
 
@@ -1479,7 +1479,7 @@ AInstrument AInstrGroup::first_instrument() const
 AInstrument AInstrGroup::last_instrument() const
 {
     ensure_validity();
-    return AInstrument(const_cast<ImoInstrGroup*>(pimpl())->get_last_instrument(),
+    return AInstrument(const_cast<ImoGroupLayout*>(pimpl())->get_last_instrument(),
                        m_pDoc, m_imVersion);
 }
 
@@ -1492,7 +1492,7 @@ AInstrument AInstrGroup::last_instrument() const
 int AInstrGroup::index_to_first_instrument() const
 {
     ensure_validity();
-    return const_cast<ImoInstrGroup*>(pimpl())->get_index_to_first_instrument();
+    return const_cast<ImoGroupLayout*>(pimpl())->get_index_to_first_instrument();
 }
 
 //---------------------------------------------------------------------------------------
@@ -1504,7 +1504,7 @@ int AInstrGroup::index_to_first_instrument() const
 int AInstrGroup::index_to_last_instrument() const
 {
     ensure_validity();
-    return const_cast<ImoInstrGroup*>(pimpl())->get_index_to_last_instrument();
+    return const_cast<ImoGroupLayout*>(pimpl())->get_index_to_last_instrument();
 }
 
 //---------------------------------------------------------------------------------------
@@ -1990,14 +1990,14 @@ struct AScore::Private
 
         //trim groups if necessary, and delete any group containing only one instrument
         int numInstrs = pScore->get_num_instruments();
-        ImoInstrGroups* pGroups = pScore->get_instrument_groups();
+        ImoGroupLayouts* pGroups = pScore->get_instrument_groups();
         if (pGroups)
         {
-            list<ImoInstrGroup*> toDelete;
+            list<ImoGroupLayout*> toDelete;
             ImoObj::children_iterator itG;
             for (itG= pGroups->begin(); itG != pGroups->end(); ++itG)
             {
-                ImoInstrGroup* pGroup = static_cast<ImoInstrGroup*>(*itG);
+                ImoGroupLayout* pGroup = static_cast<ImoGroupLayout*>(*itG);
                 int iFirst = pGroup->get_index_to_first_instrument();
                 if ((iFirst + pGroup->get_num_instruments()) > numInstrs)
                     pGroup->set_range(iFirst, numInstrs-1);
@@ -2012,7 +2012,7 @@ struct AScore::Private
                 delete group;
             }
 
-            //If no groups left, remove ImoInstrGroups child
+            //If no groups left, remove ImoGroupLayouts child
             if (pGroups->get_num_items() == 0)
             {
                 pScore->remove_child_imo(pGroups);
@@ -2272,7 +2272,7 @@ void AScore::move_down_instrument(AInstrument& instr)
 int AScore::num_instruments_groups() const
 {
     ensure_validity();
-    ImoInstrGroups* pGroups = const_cast<ImoScore*>(pimpl())->get_instrument_groups();
+    ImoGroupLayouts* pGroups = const_cast<ImoScore*>(pimpl())->get_instrument_groups();
     if (!pGroups)
         return 0;
 
@@ -2288,7 +2288,7 @@ int AScore::num_instruments_groups() const
 AInstrGroup AScore::instruments_group_at(int iGroup) const
 {
     ensure_validity();
-    ImoInstrGroups* pGroups = const_cast<ImoScore*>(pimpl())->get_instrument_groups();
+    ImoGroupLayouts* pGroups = const_cast<ImoScore*>(pimpl())->get_instrument_groups();
     if (!pGroups)
         return AInstrGroup();
 
@@ -2297,7 +2297,7 @@ AInstrGroup AScore::instruments_group_at(int iGroup) const
     for (itG= pGroups->begin(); itG != pGroups->end() && i < iGroup; ++itG, ++i);
     if (i == iGroup && itG != pGroups->end())
     {
-        ImoInstrGroup* pGroup = static_cast<ImoInstrGroup*>(*itG);
+        ImoGroupLayout* pGroup = static_cast<ImoGroupLayout*>(*itG);
         return AInstrGroup(pGroup, m_pDoc, m_imVersion);
     }
     else
@@ -2335,7 +2335,7 @@ AInstrGroup AScore::group_instruments(int iFirstInstr, int iLastInstr)
     if ((iFirstInstr >= 0 && iFirstInstr < maxInstr)
         && (iLastInstr > iFirstInstr && iLastInstr < maxInstr) )
     {
-        ImoInstrGroup* pGrp = static_cast<ImoInstrGroup*>(
+        ImoGroupLayout* pGrp = static_cast<ImoGroupLayout*>(
                                         ImFactory::inject(k_imo_instr_group, m_pDoc));
 
         pGrp->set_range(iFirstInstr, iLastInstr);
@@ -2362,7 +2362,7 @@ bool AScore::delete_instruments_group_at(int iGroup)
         return false;    //no success: invalid index, too low
 
     ensure_validity();
-    ImoInstrGroups* pGroups = pimpl()->get_instrument_groups();
+    ImoGroupLayouts* pGroups = pimpl()->get_instrument_groups();
     if (!pGroups)
         return false;    //no success: no groups
 
@@ -2389,11 +2389,11 @@ bool AScore::delete_instruments_group_at(int iGroup)
 bool AScore::delete_instruments_group(const AInstrGroup& group)
 {
     ensure_validity();
-    ImoInstrGroups* pGroups = pimpl()->get_instrument_groups();
+    ImoGroupLayouts* pGroups = pimpl()->get_instrument_groups();
     if (!pGroups)
         return false;    //no success: no groups
 
-    ImoInstrGroup* pGrp = static_cast<ImoInstrGroup*>(group.m_pImpl);
+    ImoGroupLayout* pGrp = static_cast<ImoGroupLayout*>(group.m_pImpl);
     pGroups->remove_child_imo(pGrp);
     delete pGrp;
     return true;    //success
@@ -2408,7 +2408,7 @@ bool AScore::delete_instruments_group(const AInstrGroup& group)
 void AScore::delete_all_instruments_groups()
 {
     ensure_validity();
-    ImoInstrGroups* pGroups = pimpl()->get_instrument_groups();
+    ImoGroupLayouts* pGroups = pimpl()->get_instrument_groups();
     if (!pGroups)
         return;
 

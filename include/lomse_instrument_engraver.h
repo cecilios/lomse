@@ -24,8 +24,8 @@ namespace lomse
 
 //forward declarations
 class ImoInstrument;
-class ImoInstrGroup;
-class ImoInstrGroups;
+class ImoGroupLayout;
+class ImoGroupLayouts;
 class ImoScore;
 class FontStorage;
 class GmoBox;
@@ -42,7 +42,7 @@ class RightAligner;
 class PartsEngraver : public Engraver
 {
 protected:
-    ImoInstrGroups* m_pGroups;
+    ImoGroupLayouts* m_pGroups;
     ImoScore* m_pScore;
     FontStorage* m_pFontStorage;
     ScoreLayouter* m_pScoreLyt;
@@ -70,7 +70,7 @@ protected:
 
 public:
     PartsEngraver(LibraryScope& libraryScope, ScoreMeter* pScoreMeter,
-                  ImoInstrGroups* pGroups, ImoScore* pScore, ScoreLayouter* pScoreLyt);
+                  ImoGroupLayouts* pGroups, ImoScore* pScore, ScoreLayouter* pScoreLyt);
     ~PartsEngraver();
 
     inline InstrumentEngraver* get_engraver_for(int iInstr)
@@ -211,7 +211,7 @@ protected:
 class GroupEngraver : public Engraver
 {
 protected:
-    ImoInstrGroup* m_pGroup;
+    ImoGroupLayout* m_pGroup;
     ImoScore* m_pScore;
     PartsEngraver* m_pParts;
     FontStorage* m_pFontStorage;
@@ -233,7 +233,7 @@ protected:
 
 public:
     GroupEngraver(LibraryScope& libraryScope, ScoreMeter* pScoreMeter,
-                  ImoInstrGroup* pGroup, ImoScore* pScore, PartsEngraver* pParts);
+                  ImoGroupLayout* pGroup, ImoScore* pScore, PartsEngraver* pParts);
     ~GroupEngraver();
 
     void measure_name_and_bracket();

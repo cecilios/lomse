@@ -136,7 +136,7 @@ protected:
 class MnxPartGroups
 {
 protected:
-    std::map<int, ImoInstrGroup*> m_groups;
+    std::map<int, ImoGroupLayout*> m_groups;
 
 //    int m_number;
 //    int m_symbol;
@@ -155,10 +155,10 @@ public:
 //    void set_barline(bool value);
 
     void add_instrument_to_groups(int iInstr);
-    void start_group(int number, ImoInstrGroup* pGrp);
+    void start_group(int number, ImoGroupLayout* pGrp);
     void terminate_group(int number);
     bool group_exists(int number);
-    ImoInstrGroup* get_group(int number);
+    ImoGroupLayout* get_group(int number);
     void check_if_all_groups_are_closed(ostream& reporter);
 
 };
@@ -270,9 +270,9 @@ public:
     void check_if_missing_parts() { m_partList.check_if_missing_parts(m_reporter); }
 
     //part-group
-    ImoInstrGroup* start_part_group(int number);
+    ImoGroupLayout* start_part_group(int number);
     void terminate_part_group(int number);
-    ImoInstrGroup* get_part_group(int number);
+    ImoGroupLayout* get_part_group(int number);
     void check_if_all_groups_are_closed();
 
     //global info: setters, getters and checkers

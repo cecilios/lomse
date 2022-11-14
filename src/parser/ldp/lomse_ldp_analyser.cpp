@@ -2691,7 +2691,7 @@ public:
             return;
 
         Document* pDoc = m_pAnalyser->get_document_being_analysed();
-        ImoInstrGroup* pGrp = static_cast<ImoInstrGroup*>(
+        ImoGroupLayout* pGrp = static_cast<ImoGroupLayout*>(
                         ImFactory::inject(k_imo_instr_group, pDoc, get_node_id()));
 
         // [<name>]
@@ -2716,7 +2716,7 @@ public:
 
 protected:
 
-    void set_symbol(ImoInstrGroup* pGrp)
+    void set_symbol(ImoGroupLayout* pGrp)
     {
         m_pParamToAnalyse = m_pParamToAnalyse->get_parameter(1);
         string symbol = get_string_value();
@@ -2733,7 +2733,7 @@ protected:
                       "'bracket' or 'line'. 'none' assumed.");
     }
 
-    void set_join_barlines(ImoInstrGroup* pGrp)
+    void set_join_barlines(ImoGroupLayout* pGrp)
     {
         m_pParamToAnalyse = m_pParamToAnalyse->get_parameter(1);
         string value = get_string_value();
@@ -2751,7 +2751,7 @@ protected:
         }
     }
 
-    void add_instruments_to_group(ImoScore* pScore, ImoInstrGroup* pGrp,
+    void add_instruments_to_group(ImoScore* pScore, ImoGroupLayout* pGrp,
                                   ImoInstrument* pFirstInstr, ImoInstrument* pLastInstr)
     {
         int iFirstInstr = pScore->get_instr_number_for(pFirstInstr);

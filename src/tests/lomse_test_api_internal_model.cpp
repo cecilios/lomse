@@ -1258,7 +1258,7 @@ SUITE(InternalModelApiTest)
         CHECK( instr2.object_id() == 600 );
 
 //        cout << test_name() << ", num.instrs=" << group.num_instruments() << endl;
-//        ImoInstrGroup* pGrp = group.internal_object();
+//        ImoGroupLayout* pGrp = group.internal_object();
 //        int numInstrs = pGrp->num_instruments();
 //        for (int i=0; i < numInstrs; ++i)
 //        {
@@ -1300,7 +1300,7 @@ SUITE(InternalModelApiTest)
         CHECK( instr2.object_id() == 500 );
 
 //        cout << test_name() << ", num.instrs=" << group.num_instruments() << endl;
-//        ImoInstrGroup* pGrp = group.internal_object();
+//        ImoGroupLayout* pGrp = group.internal_object();
 //        int numInstrs = pGrp->num_instruments();
 //        for (int i=0; i < numInstrs; ++i)
 //        {
@@ -1401,7 +1401,7 @@ SUITE(InternalModelApiTest)
         CHECK( group.last_instrument().object_id() == 600L );
 
 //        cout << test_name() << ", num.instrs=" << group.num_instruments() << endl;
-//        ImoInstrGroup* pGrp = group.internal_object();
+//        ImoGroupLayout* pGrp = group.internal_object();
 //        int numInstrs = pGrp->num_instruments();
 //        for (int i=0; i < numInstrs; ++i)
 //        {
@@ -1477,7 +1477,7 @@ SUITE(InternalModelApiTest)
         CHECK( group.last_instrument().object_id() == 500L );
 
 //        cout << test_name() << ", num.instrs=" << group.num_instruments() << endl;
-//        ImoInstrGroup* pGrp = group.internal_object();
+//        ImoGroupLayout* pGrp = group.internal_object();
 //        int numInstrs = pGrp->num_instruments();
 //        for (int i=0; i < numInstrs; ++i)
 //        {
@@ -1553,7 +1553,7 @@ SUITE(InternalModelApiTest)
         CHECK( group.last_instrument().object_id() == 500L );
 
 //        cout << test_name() << ", num.instrs=" << group.num_instruments() << endl;
-//        ImoInstrGroup* pGrp = group.internal_object();
+//        ImoGroupLayout* pGrp = group.internal_object();
 //        int numInstrs = pGrp->num_instruments();
 //        for (int i=0; i < numInstrs; ++i)
 //        {

@@ -1558,7 +1558,7 @@ SUITE(SvgDrawerTest)
 
     TEST_FIXTURE(SvgDrawerTestFixture, shapes_4200)
     {
-        //@4200 shape GmoShapeText. ImoInstrGroup. name, abbrev
+        //@4200 shape GmoShapeText. ImoGroupLayout. name, abbrev
         Document doc(m_libraryScope);
         ImoObj* pImo = ImFactory::inject(k_imo_instr_group, &doc, 83);
         GmoShapeText shape(pImo, 0, "Flutes", nullptr, "en",

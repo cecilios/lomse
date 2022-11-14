@@ -4726,7 +4726,7 @@ protected:
 
     friend class ImFactory;
     friend class ImoInstrument;
-    friend class ImoInstrGroup;
+    friend class ImoGroupLayout;
     ImoScoreText() : ImoAuxObj(k_imo_score_text), m_text() {}
     ImoScoreText(int objtype) : ImoAuxObj(objtype), m_text() {}
 
@@ -4945,16 +4945,16 @@ protected:
 };
 
 //---------------------------------------------------------------------------------------
-/** %ImoInstrGroup is a terminal node containing info about a group of instruments,
+/** %ImoGroupLayout is a terminal node containing info about a group of instruments,
     such as:
     - the instrument indexes for the instruments that form the group.
     - the name and abbreviation for the group.
     - applicable styles for name & abbreviation
     - the type of brace/bracket to display the group
 
-    It is a child of ImoInstrGroups.
+    It is a child of ImoGroupLayouts.
 */
-class ImoInstrGroup : public ImoSimpleObj
+class ImoGroupLayout : public ImoSimpleObj
 {
 protected:
     int m_joinBarlines ;                //value from enum EJoinBarlines
@@ -4967,15 +4967,15 @@ protected:
     ImoId m_abbrevStyle = k_no_imoid;
 
     friend class ImFactory;
-    ImoInstrGroup();
+    ImoGroupLayout();
 
 public:
     //the five special
-    ~ImoInstrGroup() override {}
-    ImoInstrGroup(const ImoInstrGroup&) = default;
-    ImoInstrGroup& operator= (const ImoInstrGroup&) = default;
-    ImoInstrGroup(ImoInstrGroup&&) = delete;
-    ImoInstrGroup& operator= (ImoInstrGroup&&) = delete;
+    ~ImoGroupLayout() override {}
+    ImoGroupLayout(const ImoGroupLayout&) = default;
+    ImoGroupLayout& operator= (const ImoGroupLayout&) = default;
+    ImoGroupLayout(ImoGroupLayout&&) = delete;
+    ImoGroupLayout& operator= (ImoGroupLayout&&) = delete;
 
     //getters
     inline int join_barlines() { return m_joinBarlines; }
@@ -5194,19 +5194,19 @@ public:
 };
 
 //---------------------------------------------------------------------------------------
-class ImoInstrGroups : public ImoCollection
+class ImoGroupLayouts : public ImoCollection
 {
 protected:
     friend class ImFactory;
-    ImoInstrGroups() : ImoCollection(k_imo_instrument_groups) {}
+    ImoGroupLayouts() : ImoCollection(k_imo_instrument_groups) {}
 
 public:
     //the five special
-    ~ImoInstrGroups() override {}
-    ImoInstrGroups(const ImoInstrGroups&) = default;
-    ImoInstrGroups& operator= (const ImoInstrGroups&) = default;
-    ImoInstrGroups(ImoInstrGroups&&) = delete;
-    ImoInstrGroups& operator= (ImoInstrGroups&&) = delete;
+    ~ImoGroupLayouts() override {}
+    ImoGroupLayouts(const ImoGroupLayouts&) = default;
+    ImoGroupLayouts& operator= (const ImoGroupLayouts&) = default;
+    ImoGroupLayouts(ImoGroupLayouts&&) = delete;
+    ImoGroupLayouts& operator= (ImoGroupLayouts&&) = delete;
 
 };
 
@@ -6063,9 +6063,9 @@ public:
     int get_instr_number_for(ImoInstrument* pInstr);
 
     //instrument groups
-    void add_instruments_group(ImoInstrGroup* pGroup);
-    ImoInstrGroups* get_instrument_groups();
-    std::list<ImoInstrGroup*> find_groups_containing_instrument(ImoInstrument* pInstr);
+    void add_instruments_group(ImoGroupLayout* pGroup);
+    ImoGroupLayouts* get_instrument_groups();
+    std::list<ImoGroupLayout*> find_groups_containing_instrument(ImoInstrument* pInstr);
 
     //options
     ImoOptions* get_options();

@@ -3378,11 +3378,11 @@ protected:
         //@           group-abbreviation?, group-abbreviation-display?,
         //@           group-symbol?, group-barline?, group-time?, %editorial;)>
 
-        ImoInstrGroups* pGroups = m_pObj->get_instrument_groups();
+        ImoGroupLayouts* pGroups = m_pObj->get_instrument_groups();
         int numGroups = (pGroups ? pGroups->get_num_items() : 0);
         for (int i=0; i < numGroups; ++i)
         {
-            ImoInstrGroup* pGroup = static_cast<ImoInstrGroup*>(pGroups->get_item(i));
+            ImoGroupLayout* pGroup = static_cast<ImoGroupLayout*>(pGroups->get_item(i));
             if (pGroup->get_index_to_first_instrument() == iInstr)
             {
                 start_element("part-group");
@@ -3430,11 +3430,11 @@ protected:
     //-----------------------------------------------------------------------------------
     void end_groups_at(int iInstr)
     {
-        ImoInstrGroups* pGroups = m_pObj->get_instrument_groups();
+        ImoGroupLayouts* pGroups = m_pObj->get_instrument_groups();
         int numGroups = (pGroups ? pGroups->get_num_items() : 0);
         for (int i=0; i < numGroups; ++i)
         {
-            ImoInstrGroup* pGroup = static_cast<ImoInstrGroup*>(pGroups->get_item(i));
+            ImoGroupLayout* pGroup = static_cast<ImoGroupLayout*>(pGroups->get_item(i));
             if (pGroup->get_index_to_last_instrument() == iInstr)
             {
                 start_element("part-group");

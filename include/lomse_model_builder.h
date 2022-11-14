@@ -27,7 +27,7 @@ namespace lomse
 class ImoBarline;
 class ImoDocument;
 class ImoInstrument;
-class ImoInstrGroup;
+class ImoGroupLayout;
 class ImoKeySignature;
 class ImoNote;
 class ImoObj;
@@ -130,7 +130,7 @@ public:
 	void set_barline_layout_in_instruments(ImoScore* pScore);
 
 protected:
-    void set_barlines_layout_for(ImoInstrGroup* pGrp);
+    void set_barlines_layout_for(ImoGroupLayout* pGrp);
 };
 
 

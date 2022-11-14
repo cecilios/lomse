@@ -29,7 +29,7 @@ namespace lomse
 //---------------------------------------------------------------------------------------
 
 PartsEngraver::PartsEngraver(LibraryScope& libraryScope, ScoreMeter* pScoreMeter,
-                             ImoInstrGroups* pGroups, ImoScore* pScore,
+                             ImoGroupLayouts* pGroups, ImoScore* pScore,
                              ScoreLayouter* pScoreLyt)
     : Engraver(libraryScope, pScoreMeter)
     , m_pGroups(pGroups)
@@ -64,7 +64,7 @@ void PartsEngraver::create_group_engravers()
         ImoObj::children_iterator it;
         for (it= m_pGroups->begin(); it != m_pGroups->end(); ++it)
         {
-            ImoInstrGroup* pGroup = static_cast<ImoInstrGroup*>(*it);
+            ImoGroupLayout* pGroup = static_cast<ImoGroupLayout*>(*it);
             m_groupEngravers.push_back(
                 LOMSE_NEW GroupEngraver(m_libraryScope, m_pMeter, pGroup, m_pScore, this) );
         }
@@ -382,7 +382,7 @@ void PartsEngraver::reposition_staves_in_engravers(const vector<LUnits>& yShifts
 //---------------------------------------------------------------------------------------
 
 GroupEngraver::GroupEngraver(LibraryScope& libraryScope, ScoreMeter* pScoreMeter,
-                             ImoInstrGroup* pGroup, ImoScore* pScore,
+                             ImoGroupLayout* pGroup, ImoScore* pScore,
                              PartsEngraver* pParts)
     : Engraver(libraryScope, pScoreMeter)
     , m_pGroup(pGroup)

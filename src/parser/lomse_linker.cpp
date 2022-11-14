@@ -51,7 +51,7 @@ ImoObj* Linker::add_child_to_model(ImoObj* pParent, ImoObj* pChild, int ldpChild
             return add_instrument(static_cast<ImoInstrument*>(pChild));
 
         case k_imo_instr_group:
-            return add_instruments_group(static_cast<ImoInstrGroup*>(pChild));
+            return add_instruments_group(static_cast<ImoGroupLayout*>(pChild));
 
         case k_imo_listitem:
             return add_listitem(static_cast<ImoListItem*>(pChild));
@@ -145,7 +145,7 @@ ImoObj* Linker::add_content(ImoContent* pContent)
 
 
 //---------------------------------------------------------------------------------------
-ImoObj* Linker::add_instruments_group(ImoInstrGroup* pGrp)
+ImoObj* Linker::add_instruments_group(ImoGroupLayout* pGrp)
 {
     if (m_pParent && m_pParent->is_score())
     {
@@ -317,7 +317,7 @@ ImoObj* Linker::add_instrument(ImoInstrument* pInstrument)
     {
 //        if (m_pParent->is_instr_group())
 //        {
-//            ImoInstrGroup* pGrp = static_cast<ImoInstrGroup*>( m_pParent );
+//            ImoGroupLayout* pGrp = static_cast<ImoGroupLayout*>( m_pParent );
 //            pGrp->add_instrument(pInstrument);
 //        }
         if (m_pParent->is_score())
@@ -370,7 +370,7 @@ ImoObj* Linker::add_text(ImoScoreText* pText)
 
         if (m_pParent->is_instr_group())
         {
-            ImoInstrGroup* pGrp = static_cast<ImoInstrGroup*>(m_pParent);
+            ImoGroupLayout* pGrp = static_cast<ImoGroupLayout*>(m_pParent);
             //could be 'name' or 'abbrev'
             if (m_ldpChildType == k_name)
             {

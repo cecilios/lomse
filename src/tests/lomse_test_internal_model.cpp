@@ -253,7 +253,7 @@ SUITE(InternalModelTest)
 
     TEST_FIXTURE(InternalModelTestFixture, ScoreInitialize)
     {
-        //@ score has default options, empty ImoInstruments, and no ImoInstrGroups
+        //@ score has default options, empty ImoInstruments, and no ImoGroupLayouts
 
         Document doc(m_libraryScope);
         ImoScore* pScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, &doc));
@@ -273,7 +273,7 @@ SUITE(InternalModelTest)
         CHECK( pScore->get_option("Render.SpacingValue")->get_long_value() == 35L );
         ImoInstruments* pColInstr = pScore->get_instruments();
         CHECK( pColInstr != nullptr );
-        ImoInstrGroups* pGroups = pScore->get_instrument_groups();
+        ImoGroupLayouts* pGroups = pScore->get_instrument_groups();
         CHECK( pGroups == nullptr );
         CHECK( pColInstr->get_num_children() == 0 );
         CHECK( pScore->get_num_instruments() == 0 );
@@ -296,7 +296,7 @@ SUITE(InternalModelTest)
 
         ImoInstruments* pColInstr = pScore->get_instruments();
         CHECK( pColInstr != nullptr );
-        ImoInstrGroups* pGroups = pScore->get_instrument_groups();
+        ImoGroupLayouts* pGroups = pScore->get_instrument_groups();
         CHECK( pGroups == nullptr );
         CHECK( pScore->get_num_instruments() == 1 );
         CHECK( pScore->get_instrument(0) == pInstr );
@@ -308,7 +308,7 @@ SUITE(InternalModelTest)
 
     TEST_FIXTURE(InternalModelTestFixture, ScoreAddFirstInstrGroup)
     {
-        //@ adding the first <group> creates an ImoInstrGroups in score.
+        //@ adding the first <group> creates an ImoGroupLayouts in score.
 
         Document doc(m_libraryScope);
         ImoScore* pScore = static_cast<ImoScore*>(
@@ -327,12 +327,12 @@ SUITE(InternalModelTest)
         pScore->add_instrument(pInstr3, "P3");
         CHECK( pScore->get_num_instruments() == 3 );
 
-        ImoInstrGroup* pGroup = static_cast<ImoInstrGroup*>(
+        ImoGroupLayout* pGroup = static_cast<ImoGroupLayout*>(
                                     ImFactory::inject(k_imo_instr_group, &doc));
         pGroup->set_range(0, 1);
         pScore->add_instruments_group(pGroup);
 
-        ImoInstrGroups* pGroups = pScore->get_instrument_groups();
+        ImoGroupLayouts* pGroups = pScore->get_instrument_groups();
         CHECK( pGroups != nullptr );
         //cout << "Num.instruments = " << pScore->get_num_instruments() << endl;
 
@@ -346,10 +346,10 @@ SUITE(InternalModelTest)
 
 //    TEST_FIXTURE(InternalModelTestFixture, GroupTwoInstruments)
 //    {
-//        //@ adding the first <group> creates an ImoInstrGroups in score
+//        //@ adding the first <group> creates an ImoGroupLayouts in score
 //
 //        Document doc(m_libraryScope);
-//        ImoInstrGroup* pGroup = static_cast<ImoInstrGroup*>(
+//        ImoGroupLayout* pGroup = static_cast<ImoGroupLayout*>(
 //                                    ImFactory::inject(k_imo_instr_group, &doc));
 //        CHECK( pGroup->get_num_instruments() == 0 );
 //        ImoInstrument* pInstr1 = static_cast<ImoInstrument*>(
@@ -382,7 +382,7 @@ SUITE(InternalModelTest)
 //        Document doc(m_libraryScope);
 //        ImoScore* pScore = static_cast<ImoScore*>(
 //                                    ImFactory::inject(k_imo_score, &doc));
-//        ImoInstrGroup* pGroup = static_cast<ImoInstrGroup*>(
+//        ImoGroupLayout* pGroup = static_cast<ImoGroupLayout*>(
 //                                    ImFactory::inject(k_imo_instr_group, &doc));
 //        ImoInstrument* pInstr1 = static_cast<ImoInstrument*>(
 //                                    ImFactory::inject(k_imo_instrument, &doc));

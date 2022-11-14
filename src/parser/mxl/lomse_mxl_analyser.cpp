@@ -147,7 +147,7 @@ PartGroups::PartGroups()
 //---------------------------------------------------------------------------------------
 PartGroups::~PartGroups()
 {
-    map<int, ImoInstrGroup*>::iterator it;
+    map<int, ImoGroupLayout*>::iterator it;
     for (it = m_groups.begin(); it != m_groups.end(); ++it)
         delete it->second;
 
@@ -157,16 +157,16 @@ PartGroups::~PartGroups()
 //---------------------------------------------------------------------------------------
 void PartGroups::add_instrument_to_groups(int iInstr)
 {
-    map<int, ImoInstrGroup*>::const_iterator it;
+    map<int, ImoGroupLayout*>::const_iterator it;
     for (it = m_groups.begin(); it != m_groups.end(); ++it)
     {
-        ImoInstrGroup* pGrp = it->second;
+        ImoGroupLayout* pGrp = it->second;
         pGrp->add_instrument(iInstr);
     }
 }
 
 //---------------------------------------------------------------------------------------
-void PartGroups::start_group(int number, ImoInstrGroup* pGrp)
+void PartGroups::start_group(int number, ImoGroupLayout* pGrp)
 {
     m_groups[number] = pGrp;
 }
@@ -174,7 +174,7 @@ void PartGroups::start_group(int number, ImoInstrGroup* pGrp)
 //---------------------------------------------------------------------------------------
 void PartGroups::terminate_group(int number)
 {
-    map<int, ImoInstrGroup*>::iterator it = m_groups.find(number);
+    map<int, ImoGroupLayout*>::iterator it = m_groups.find(number);
 	if (it == m_groups.end())
         return;
 
@@ -184,14 +184,14 @@ void PartGroups::terminate_group(int number)
 //---------------------------------------------------------------------------------------
 bool PartGroups::group_exists(int number)
 {
-    map<int, ImoInstrGroup*>::const_iterator it = m_groups.find(number);
+    map<int, ImoGroupLayout*>::const_iterator it = m_groups.find(number);
 	return (it != m_groups.end());
 }
 
 //---------------------------------------------------------------------------------------
-ImoInstrGroup* PartGroups::get_group(int number)
+ImoGroupLayout* PartGroups::get_group(int number)
 {
-    map<int, ImoInstrGroup*>::iterator it = m_groups.find(number);
+    map<int, ImoGroupLayout*>::iterator it = m_groups.find(number);
 	if (it != m_groups.end())
         return it->second;
     else
@@ -202,7 +202,7 @@ ImoInstrGroup* PartGroups::get_group(int number)
 //---------------------------------------------------------------------------------------
 void PartGroups::check_if_all_groups_are_closed(ostream& reporter)
 {
-    map<int, ImoInstrGroup*>::const_iterator it;
+    map<int, ImoGroupLayout*>::const_iterator it;
     for (it = m_groups.begin(); it != m_groups.end(); ++it)
     {
         reporter << "Error: missing <part-group type='stop'> for <part-group> number='"
@@ -6156,7 +6156,7 @@ public:
 
         if (type == "stop")
         {
-            ImoInstrGroup* pGrp = m_pAnalyser->get_part_group(number);
+            ImoGroupLayout* pGrp = m_pAnalyser->get_part_group(number);
             if (pGrp)
             {
                 ImoScore* pScore = m_pAnalyser->get_score_being_analysed();
@@ -6178,7 +6178,7 @@ public:
             return nullptr;
         }
 
-        ImoInstrGroup* pGrp = m_pAnalyser->start_part_group(number);
+        ImoGroupLayout* pGrp = m_pAnalyser->start_part_group(number);
         if (pGrp == nullptr)
         {
             error_msg("<part-group> type=start for number already started and not stopped");
@@ -6230,7 +6230,7 @@ public:
 
 protected:
 
-    void set_symbol(ImoInstrGroup* pGrp)
+    void set_symbol(ImoGroupLayout* pGrp)
     {
         string symbol = m_childToAnalyse.first_child().value();
         if (symbol == "brace")
@@ -6246,7 +6246,7 @@ protected:
                       "'none', 'brace', 'line' or 'bracket'. 'none' assumed.");
     }
 
-    void set_join_barlines(ImoInstrGroup* pGrp)
+    void set_join_barlines(ImoGroupLayout* pGrp)
     {
         string value = m_childToAnalyse.value();
         if (value == "yes")
@@ -9930,13 +9930,13 @@ void MxlAnalyser::add_marging_space_for_lyrics(ImoNote* pNote, ImoLyric* pLyric)
 }
 
 //---------------------------------------------------------------------------------------
-ImoInstrGroup* MxlAnalyser::start_part_group(int number)
+ImoGroupLayout* MxlAnalyser::start_part_group(int number)
 {
     if (m_partGroups.group_exists(number))
         return nullptr;
 
     Document* pDoc = get_document_being_analysed();
-    ImoInstrGroup* pGrp = static_cast<ImoInstrGroup*>(
+    ImoGroupLayout* pGrp = static_cast<ImoGroupLayout*>(
                                     ImFactory::inject(k_imo_instr_group, pDoc));
 
     m_partGroups.start_group(number, pGrp);
@@ -9946,13 +9946,13 @@ ImoInstrGroup* MxlAnalyser::start_part_group(int number)
 //---------------------------------------------------------------------------------------
 void MxlAnalyser::terminate_part_group(int number)
 {
-    ImoInstrGroup* pGrp = m_partGroups.get_group(number);
+    ImoGroupLayout* pGrp = m_partGroups.get_group(number);
     if (pGrp)
         m_partGroups.terminate_group(number);
 }
 
 //---------------------------------------------------------------------------------------
-ImoInstrGroup* MxlAnalyser::get_part_group(int number)
+ImoGroupLayout* MxlAnalyser::get_part_group(int number)
 {
     return m_partGroups.get_group(number);
 }

@@ -2192,7 +2192,7 @@ public:
             return nullptr;
 
         Document* pDoc = m_pAnalyser->get_document_being_analysed();
-        ImoInstrGroup* pGrp = static_cast<ImoInstrGroup*>(
+        ImoGroupLayout* pGrp = static_cast<ImoGroupLayout*>(
                                     ImFactory::inject(k_imo_instr_group, pDoc));
         int iFirstInstr = pScore->get_instr_number_for(pFirstInstr);
         int iLastInstr = pScore->get_instr_number_for(pLastInstr);
@@ -2232,7 +2232,7 @@ public:
 
 protected:
 
-    void set_symbol(ImoInstrGroup* pGrp)
+    void set_symbol(ImoGroupLayout* pGrp)
     {
         string symbol = m_childToAnalyse.first_child().value();
         if (symbol == "brace")

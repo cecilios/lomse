@@ -3714,9 +3714,9 @@ list<ImoStaffObj*> ImoInstrument::insert_staff_objects_at(ImoStaffObj* pAt,
 
 
 //=======================================================================================
-// ImoInstrGroup implementation
+// ImoGroupLayout implementation
 //=======================================================================================
-ImoInstrGroup::ImoInstrGroup()
+ImoGroupLayout::ImoGroupLayout()
     : ImoSimpleObj(k_imo_instr_group)
     , m_joinBarlines(EJoinBarlines::k_joined_barlines)
     , m_symbol(k_group_symbol_none)
@@ -3724,31 +3724,31 @@ ImoInstrGroup::ImoInstrGroup()
 }
 
 //---------------------------------------------------------------------------------------
-void ImoInstrGroup::set_name(TypeTextInfo& text)
+void ImoGroupLayout::set_name(TypeTextInfo& text)
 {
     m_name = text;
 }
 
 //---------------------------------------------------------------------------------------
-void ImoInstrGroup::set_abbrev(TypeTextInfo& text)
+void ImoGroupLayout::set_abbrev(TypeTextInfo& text)
 {
     m_abbrev = text;
 }
 
 //---------------------------------------------------------------------------------------
-void ImoInstrGroup::set_name(const string& value)
+void ImoGroupLayout::set_name(const string& value)
 {
     m_name.text = value;
 }
 
 //---------------------------------------------------------------------------------------
-void ImoInstrGroup::set_abbrev(const string& value)
+void ImoGroupLayout::set_abbrev(const string& value)
 {
     m_abbrev.text = value;
 }
 
 //---------------------------------------------------------------------------------------
-void ImoInstrGroup::set_name_style(ImoStyle* style)
+void ImoGroupLayout::set_name_style(ImoStyle* style)
 {
     if (style)
         m_nameStyle = style->get_id();
@@ -3757,7 +3757,7 @@ void ImoInstrGroup::set_name_style(ImoStyle* style)
 }
 
 //---------------------------------------------------------------------------------------
-void ImoInstrGroup::set_abbrev_style(ImoStyle* style)
+void ImoGroupLayout::set_abbrev_style(ImoStyle* style)
 {
     if (style)
         m_abbrevStyle = style->get_id();
@@ -3766,7 +3766,7 @@ void ImoInstrGroup::set_abbrev_style(ImoStyle* style)
 }
 
 //---------------------------------------------------------------------------------------
-ImoStyle* ImoInstrGroup::get_style_imo(ImoId id)
+ImoStyle* ImoGroupLayout::get_style_imo(ImoId id)
 {
     if (id != k_no_imoid)
         return dynamic_cast<ImoStyle*>(get_the_document()->get_pointer_to_imo(id));
@@ -3775,13 +3775,13 @@ ImoStyle* ImoInstrGroup::get_style_imo(ImoId id)
 }
 
 //---------------------------------------------------------------------------------------
-ImoScore* ImoInstrGroup::get_score()
+ImoScore* ImoGroupLayout::get_score()
 {
     return static_cast<ImoScore*>(get_ancestor_of_type(k_imo_score));
 }
 
 //---------------------------------------------------------------------------------------
-ImoInstrument* ImoInstrGroup::get_instrument(int iInstr)    //iInstr = 0..n-1
+ImoInstrument* ImoGroupLayout::get_instrument(int iInstr)    //iInstr = 0..n-1
 {
     if (iInstr < m_numInstrs && m_iFirstInstr >= 0)
         return get_score()->get_instrument(iInstr + m_iFirstInstr);
@@ -3790,33 +3790,33 @@ ImoInstrument* ImoInstrGroup::get_instrument(int iInstr)    //iInstr = 0..n-1
 }
 
 //---------------------------------------------------------------------------------------
-ImoInstrument* ImoInstrGroup::get_first_instrument()
+ImoInstrument* ImoGroupLayout::get_first_instrument()
 {
     return get_score()->get_instrument(m_iFirstInstr);
 }
 
 //---------------------------------------------------------------------------------------
-ImoInstrument* ImoInstrGroup::get_last_instrument()
+ImoInstrument* ImoGroupLayout::get_last_instrument()
 {
     return get_score()->get_instrument(m_iFirstInstr + m_numInstrs - 1);
 }
 
 //---------------------------------------------------------------------------------------
-bool ImoInstrGroup::contains_instrument(ImoInstrument* pInstr)
+bool ImoGroupLayout::contains_instrument(ImoInstrument* pInstr)
 {
     int index = get_score()->get_instr_number_for(pInstr);
     return (index >= m_iFirstInstr) && (index < m_iFirstInstr + m_numInstrs);
 }
 
 //---------------------------------------------------------------------------------------
-void ImoInstrGroup::set_range(int iFirstInstr, int iLastInstr)
+void ImoGroupLayout::set_range(int iFirstInstr, int iLastInstr)
 {
     m_iFirstInstr = iFirstInstr;
     m_numInstrs = iLastInstr - iFirstInstr + 1;
 }
 
 //---------------------------------------------------------------------------------------
-void ImoInstrGroup::add_instrument(int iInstr)
+void ImoGroupLayout::add_instrument(int iInstr)
 {
     if (m_iFirstInstr == -1)
     {
@@ -4592,22 +4592,22 @@ void ImoScore::add_sytem_info(ImoSystemInfo* pSL)
 }
 
 //---------------------------------------------------------------------------------------
-ImoInstrGroups* ImoScore::get_instrument_groups()
+ImoGroupLayouts* ImoScore::get_instrument_groups()
 {
-    return static_cast<ImoInstrGroups*>( get_child_of_type(k_imo_instrument_groups) );
+    return static_cast<ImoGroupLayouts*>( get_child_of_type(k_imo_instrument_groups) );
 }
 
 //---------------------------------------------------------------------------------------
-list<ImoInstrGroup*> ImoScore::find_groups_containing_instrument(ImoInstrument* pInstr)
+list<ImoGroupLayout*> ImoScore::find_groups_containing_instrument(ImoInstrument* pInstr)
 {
-    list<ImoInstrGroup*> groups;
-    ImoInstrGroups* pGroups = get_instrument_groups();
+    list<ImoGroupLayout*> groups;
+    ImoGroupLayouts* pGroups = get_instrument_groups();
     if (pGroups)
     {
         ImoObj::children_iterator itG;
         for (itG= pGroups->begin(); itG != pGroups->end(); ++itG)
         {
-            ImoInstrGroup* pGroup = static_cast<ImoInstrGroup*>(*itG);
+            ImoGroupLayout* pGroup = static_cast<ImoGroupLayout*>(*itG);
             if (pGroup->contains_instrument(pInstr))
                 groups.push_back(pGroup);
         }
@@ -4616,12 +4616,12 @@ list<ImoInstrGroup*> ImoScore::find_groups_containing_instrument(ImoInstrument* 
 }
 
 //---------------------------------------------------------------------------------------
-void ImoScore::add_instruments_group(ImoInstrGroup* pGroup)
+void ImoScore::add_instruments_group(ImoGroupLayout* pGroup)
 {
-    ImoInstrGroups* pGroups = get_instrument_groups();
+    ImoGroupLayouts* pGroups = get_instrument_groups();
     if (!pGroups)
     {
-        pGroups = static_cast<ImoInstrGroups*>(
+        pGroups = static_cast<ImoGroupLayouts*>(
                         ImFactory::inject(k_imo_instrument_groups, m_pDocModel) );
         append_child_imo(pGroups);
     }

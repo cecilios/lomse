@@ -2950,7 +2950,7 @@ protected:
 
     void add_parts()
     {
-        ImoInstrGroups* pGroups = m_pObj->get_instrument_groups();
+        ImoGroupLayouts* pGroups = m_pObj->get_instrument_groups();
         if (pGroups == nullptr)
             return;
 
@@ -2974,13 +2974,13 @@ protected:
 
     void add_groups()
     {
-        ImoInstrGroups* pGroups = m_pObj->get_instrument_groups();
+        ImoGroupLayouts* pGroups = m_pObj->get_instrument_groups();
         ImoObj::children_iterator it;
         for (it= pGroups->begin(); it != pGroups->end(); ++it)
         {
             start_element("group", k_no_imoid, k_in_new_line);
 
-            ImoInstrGroup* pGrp = static_cast<ImoInstrGroup*>(*it);
+            ImoGroupLayout* pGrp = static_cast<ImoGroupLayout*>(*it);
             ImoInstrument* pInstr = pGrp->get_first_instrument();
             m_source << " " << pInstr->get_instr_id();
             pInstr = pGrp->get_last_instrument();

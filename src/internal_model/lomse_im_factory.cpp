@@ -65,10 +65,10 @@ ImoObj* ImFactory::inject(int type, DocModel* pDocModel, ImoId id)
         case k_imo_heading:             pObj = LOMSE_NEW ImoHeading();            break;
         case k_imo_image:               pObj = LOMSE_NEW ImoImage();              break;
         case k_imo_inline_wrapper:      pObj = LOMSE_NEW ImoInlineWrapper();      break;
-        case k_imo_instr_group:         pObj = LOMSE_NEW ImoInstrGroup();         break;
+        case k_imo_instr_group:         pObj = LOMSE_NEW ImoGroupLayout();         break;
         case k_imo_instrument:          pObj = LOMSE_NEW ImoInstrument();         break;
         case k_imo_instruments:         pObj = LOMSE_NEW ImoInstruments();        break;
-        case k_imo_instrument_groups:   pObj = LOMSE_NEW ImoInstrGroups();        break;
+        case k_imo_instrument_groups:   pObj = LOMSE_NEW ImoGroupLayouts();        break;
         case k_imo_key_signature:       pObj = LOMSE_NEW ImoKeySignature();       break;
         case k_imo_line:                pObj = LOMSE_NEW ImoLine();               break;
         case k_imo_line_style_dto:      pObj = LOMSE_NEW ImoLineStyleDto();       break;
@@ -194,10 +194,10 @@ ImoObj* ImFactory::clone(ImoObj* a)
         case k_imo_heading:             pImo = LOMSE_NEW ImoHeading(*(static_cast<ImoHeading*>(a)));                        break;
         case k_imo_image:               pImo = LOMSE_NEW ImoImage(*(static_cast<ImoImage*>(a)));                            break;
         case k_imo_inline_wrapper:      pImo = LOMSE_NEW ImoInlineWrapper(*(static_cast<ImoInlineWrapper*>(a)));            break;
-        case k_imo_instr_group:         pImo = LOMSE_NEW ImoInstrGroup(*(static_cast<ImoInstrGroup*>(a)));                  break;
+        case k_imo_instr_group:         pImo = LOMSE_NEW ImoGroupLayout(*(static_cast<ImoGroupLayout*>(a)));                  break;
         case k_imo_instrument:          pImo = LOMSE_NEW ImoInstrument(*(static_cast<ImoInstrument*>(a)));                  break;
         case k_imo_instruments:         pImo = LOMSE_NEW ImoInstruments(*(static_cast<ImoInstruments*>(a)));                break;
-        case k_imo_instrument_groups:   pImo = LOMSE_NEW ImoInstrGroups(*(static_cast<ImoInstrGroups*>(a)));                break;
+        case k_imo_instrument_groups:   pImo = LOMSE_NEW ImoGroupLayouts(*(static_cast<ImoGroupLayouts*>(a)));                break;
         case k_imo_key_signature:       pImo = LOMSE_NEW ImoKeySignature(*(static_cast<ImoKeySignature*>(a)));              break;
         case k_imo_line:                pImo = LOMSE_NEW ImoLine(*(static_cast<ImoLine*>(a)));                              break;
         case k_imo_line_style_dto:      pImo = LOMSE_NEW ImoLineStyleDto(*(static_cast<ImoLineStyleDto*>(a)));              break;

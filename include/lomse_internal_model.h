@@ -36,7 +36,7 @@ class ImoContentObj;
 class ImoDocument;
 class ImoDynamic;
 class ImoInstrument;
-class ImoInstrGroup;
+class ImoGroupLayout;
 class ImoLink;
 class ImoList;
 class ImoMidiInfo;
@@ -287,7 +287,7 @@ class LOMSE_EXPORT AInstrument : public AObject
 // AInstrGroup provides access to the information for an instruments group.
 class LOMSE_EXPORT AInstrGroup : public AObject
 {
-    LOMSE_DECLARE_IM_API_CLASS(AInstrGroup, ImoInstrGroup)
+    LOMSE_DECLARE_IM_API_CLASS(AInstrGroup, ImoGroupLayout)
     friend class AScore;
 
     //access to group properties
@@ -312,7 +312,7 @@ class LOMSE_EXPORT AInstrGroup : public AObject
     bool set_range(int iFirstInstr, int iLastInstr);
 
     // Transitional, to facilitate migration to this new public API.
-    ImoInstrGroup* internal_object() const;
+    ImoGroupLayout* internal_object() const;
 };
 
 
@@ -609,7 +609,7 @@ class LOMSE_EXPORT AInstrument : public virtual AObject
 //
 class LOMSE_EXPORT AInstrGroup : public virtual AObject
 {
-    LOMSE_DECLARE_IM_API_CLASS(AInstrGroup, ImoInstrGroup)
+    LOMSE_DECLARE_IM_API_CLASS(AInstrGroup, ImoGroupLayout)
     friend class AScore;
 
     //access to group properties
@@ -638,7 +638,7 @@ class LOMSE_EXPORT AInstrGroup : public virtual AObject
     // use this method open an issue at https://github.com/lenmus/lomse/issues
     // explaining the need, so that the public API could be fixed and your app.
     // would not be affected in future when this method is removed.
-    ImoInstrGroup* internal_object() const;
+    ImoGroupLayout* internal_object() const;
 };
 
 

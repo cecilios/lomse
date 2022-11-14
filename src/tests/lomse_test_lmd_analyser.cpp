@@ -2664,9 +2664,9 @@ SUITE(LmdAnalyserTest)
         CHECK( pRoot->is_score() == true );
         ImoScore* pScore = dynamic_cast<ImoScore*>( pRoot );
         CHECK( pScore->get_num_instruments() == 2 );
-        ImoInstrGroups* pGroups = pScore->get_instrument_groups();
+        ImoGroupLayouts* pGroups = pScore->get_instrument_groups();
         CHECK( pGroups != nullptr );
-        ImoInstrGroup* pGroup = dynamic_cast<ImoInstrGroup*>( pGroups->get_first_child() );
+        ImoGroupLayout* pGroup = dynamic_cast<ImoGroupLayout*>( pGroups->get_first_child() );
         CHECK( pGroup != nullptr );
         CHECK( pGroup->get_instrument(0) != nullptr );
         CHECK( pGroup->get_instrument(1) != nullptr );
@@ -2710,9 +2710,9 @@ SUITE(LmdAnalyserTest)
         CHECK( pRoot->is_score() == true );
         ImoScore* pScore = dynamic_cast<ImoScore*>( pRoot );
         CHECK( pScore->get_num_instruments() == 2 );
-        ImoInstrGroups* pGroups = pScore->get_instrument_groups();
+        ImoGroupLayouts* pGroups = pScore->get_instrument_groups();
         CHECK( pGroups != nullptr );
-        ImoInstrGroup* pGroup = dynamic_cast<ImoInstrGroup*>( pGroups->get_first_child() );
+        ImoGroupLayout* pGroup = dynamic_cast<ImoGroupLayout*>( pGroups->get_first_child() );
         CHECK( pGroup != nullptr );
         CHECK( pGroup->get_instrument(0) != nullptr );
         CHECK( pGroup->get_instrument(1) != nullptr );
