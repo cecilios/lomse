@@ -40,7 +40,7 @@ NoterestsCollisionsFixer::NoterestsCollisionsFixer(GmoShape* pShape,
     : m_iFirstLine(pEntry->line())
     , m_pMeter(pMeter)
     , m_iInstr(pEntry->num_instrument())
-    , m_idxStaff( pMeter->staff_index(m_iInstr, pEntry->staff()) )
+    , m_idxStaff( pEntry->idxstaff() )
 {
     add_noterest(pShape, pEntry);
 }
@@ -531,15 +531,15 @@ void NoterestsCollisionsFixer::fix_two_chords_overlap(size_t i, size_t j)
     int posEnd2 = m_notes[iEnd2]->posOnStaff;
     if (posStart1 < posEnd1)
     {
-        int i = posStart1;
+        int k = posStart1;
         posStart1 = posEnd1;
-        posEnd1 = i;
+        posEnd1 = k;
     }
     if (posStart2 < posEnd2)
     {
-        int i = posStart2;
+        int k = posStart2;
         posStart2 = posEnd2;
-        posEnd2 = i;
+        posEnd2 = k;
     }
 
     //determine if overlapping parts
@@ -852,8 +852,8 @@ void NoterestsCollisionsFixer::move_chord(size_t iStart1, size_t iEnd1,
                 GmoShapeAccidentals* pAccShape = pNoteShape->get_accidentals_shape();
                 if (pAccShape)
                 {
-                    LUnits xShift = -xAnchor + space;
-                    move_accidental_to_left(pNoteShape, xShift);
+                    LUnits dx = -xAnchor + space;
+                    move_accidental_to_left(pNoteShape, dx);
                 }
             }
 

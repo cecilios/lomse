@@ -136,7 +136,7 @@ string ColStaffObjsEntry::dump(bool fWithIds)
 {
     stringstream s;
     s << fixed << setprecision(0) << setfill(' ');
-    s << m_instr << "\t" << m_staff << "\t" << m_measure << "\t" << time();
+    s << num_instrument() << "\t" << staff() << "\t" << measure() << "\t" << time();
     if (m_pImo->is_note_rest())
     {
         if (m_pImo->is_grace_note())
@@ -153,7 +153,7 @@ string ColStaffObjsEntry::dump(bool fWithIds)
     {
         s << "\t" << "-" << "\t" << "-";
     }
-    s << "\t" << m_line << " - " << m_pImo->get_voice()
+    s << "\t" << line() << " - " << m_pImo->get_voice()
       << "\t" << (fWithIds ? to_string_with_ids() : to_string()) << endl;
 
     return s.str();
@@ -200,11 +200,11 @@ ColStaffObjs::~ColStaffObjs()
 }
 
 //---------------------------------------------------------------------------------------
-ColStaffObjsEntry* ColStaffObjs::add_entry(int measure, int instr, int voice, int staff,
-                                           ImoStaffObj* pImo)
+ColStaffObjsEntry* ColStaffObjs::add_entry(int measure, int voice, StaffIndexes stfndx,
+                                 ImoStaffObj* pImo)
 {
     ColStaffObjsEntry* pEntry =
-        LOMSE_NEW ColStaffObjsEntry(measure, instr, voice, staff, pImo);
+        LOMSE_NEW ColStaffObjsEntry(measure, voice, stfndx, pImo);
     add_entry_to_list(pEntry);
     ++m_numEntries;
     return pEntry;
@@ -521,11 +521,14 @@ ColStaffObjs* ColStaffObjsBuilderEngine::do_build()
 void ColStaffObjsBuilderEngine::create_table()
 {
     initializations();
+    int idxStaff0 = 0;
     int totalInstruments = m_pImScore->get_num_instruments();
     for (int instr = 0; instr < totalInstruments; instr++)
     {
-        create_entries_for_instrument(instr);
+        ImoInstrument* pInstr = m_pImScore->get_instrument(instr);
+        create_entries_for_instrument(instr, pInstr, idxStaff0);
         prepare_for_next_instrument();
+        idxStaff0 += pInstr->get_num_staves();
     }
 
     //the table is created. Fix notes playback time and playback duration
@@ -627,9 +630,9 @@ void ColStaffObjsBuilderEngine::set_num_lines()
 }
 
 //---------------------------------------------------------------------------------------
-void ColStaffObjsBuilderEngine::add_entries_for_key_or_time_signature(ImoObj* pImo, int nInstr)
+void ColStaffObjsBuilderEngine::add_entries_for_key_or_time_signature(ImoObj* pImo,
+                                    int nInstr, ImoInstrument* pInstr, int idxStaff0)
 {
-    ImoInstrument* pInstr = m_pImScore->get_instrument(nInstr);
     int numStaves = pInstr->get_num_staves();
 
     ImoStaffObj* pSO = static_cast<ImoStaffObj*>(pImo);
@@ -644,14 +647,16 @@ void ColStaffObjsBuilderEngine::add_entries_for_key_or_time_signature(ImoObj* pI
         for (int nStaff=0; nStaff < numStaves; nStaff++)
         {
             int nLine = get_line_for(0, nStaff);
-            m_pColStaffObjs->add_entry(m_nCurMeasure, nInstr, nLine, nStaff, pSO);
+            StaffIndexes stfndx(nInstr, nStaff, idxStaff0+nStaff);
+            m_pColStaffObjs->add_entry(m_nCurMeasure, nLine, stfndx, pSO);
         }
     }
     else
     {
         //key signature, specific for one staff
         int nLine = get_line_for(0, staff);
-        m_pColStaffObjs->add_entry(m_nCurMeasure, nInstr, nLine, staff, pSO);
+        StaffIndexes stfndx(nInstr, staff, idxStaff0+staff);
+        m_pColStaffObjs->add_entry(m_nCurMeasure, nLine, stfndx, pSO);
     }
 }
 
@@ -978,9 +983,9 @@ void ColStaffObjsBuilderEngine1x::initializations()
 }
 
 //---------------------------------------------------------------------------------------
-void ColStaffObjsBuilderEngine1x::create_entries_for_instrument(int nInstr)
+void ColStaffObjsBuilderEngine1x::create_entries_for_instrument(int nInstr,
+                                                 ImoInstrument* pInstr, int idxStaff0)
 {
-    ImoInstrument* pInstr = m_pImScore->get_instrument(nInstr);
     ImoMusicData* pMusicData = pInstr->get_musicdata();
     if (!pMusicData)
         return;
@@ -1005,14 +1010,14 @@ void ColStaffObjsBuilderEngine1x::create_entries_for_instrument(int nInstr)
         {
             if (m_pLastBarline)
                 m_pLastBarline->set_tk_change();
-            add_entries_for_key_or_time_signature(*it, nInstr);
+            add_entries_for_key_or_time_signature(*it, nInstr, pInstr, idxStaff0);
             m_pLastBarline = nullptr;
             ++it;
         }
         else
         {
             ImoStaffObj* pSO = static_cast<ImoStaffObj*>(*it);
-            add_entry_for_staffobj(pSO, nInstr);
+            add_entry_for_staffobj(pSO, nInstr, idxStaff0);
             update_measure(pSO);
             m_pLastBarline = ((*it)->is_barline() ? static_cast<ImoBarline*>(*it)
                                                   : nullptr);
@@ -1022,7 +1027,8 @@ void ColStaffObjsBuilderEngine1x::create_entries_for_instrument(int nInstr)
 }
 
 //---------------------------------------------------------------------------------------
-void ColStaffObjsBuilderEngine1x::add_entry_for_staffobj(ImoObj* pImo, int nInstr)
+void ColStaffObjsBuilderEngine1x::add_entry_for_staffobj(ImoObj* pImo, int nInstr,
+                                                         int idxStaff0)
 {
     ImoStaffObj* pSO = static_cast<ImoStaffObj*>(pImo);
     determine_timepos(pSO);
@@ -1046,8 +1052,9 @@ void ColStaffObjsBuilderEngine1x::add_entry_for_staffobj(ImoObj* pImo, int nInst
         }
     }
     int nLine = get_line_for(nVoice, nStaff);
-    ColStaffObjsEntry* pEntry = m_pColStaffObjs->add_entry(m_nCurMeasure, nInstr,
-                                                           nLine, nStaff, pSO);
+    StaffIndexes stfndx(nInstr, nStaff, idxStaff0+nStaff);
+    ColStaffObjsEntry* pEntry = m_pColStaffObjs->add_entry(m_nCurMeasure, nLine,
+                                                           stfndx, pSO);
     if (pSO->is_grace_note())
         m_graces.push_back(pEntry);
 }
@@ -1157,10 +1164,10 @@ void ColStaffObjsBuilderEngine2x::initializations()
 }
 
 //---------------------------------------------------------------------------------------
-void ColStaffObjsBuilderEngine2x::create_entries_for_instrument(int nInstr)
+void ColStaffObjsBuilderEngine2x::create_entries_for_instrument(int nInstr,
+                                                 ImoInstrument* pInstr, int idxStaff0)
 {
 //    cout << "**** ColStaffObjsBuilderEngine2x::create_entries_for_instrument()" << endl;
-    ImoInstrument* pInstr = m_pImScore->get_instrument(nInstr);
     ImoMusicData* pMusicData = pInstr->get_musicdata();
     if (!pMusicData)
         return;
@@ -1176,13 +1183,13 @@ void ColStaffObjsBuilderEngine2x::create_entries_for_instrument(int nInstr)
         {
             if (m_pLastBarline)
                 m_pLastBarline->set_tk_change();
-            add_entries_for_key_or_time_signature(*it, nInstr);
+            add_entries_for_key_or_time_signature(*it, nInstr, pInstr, idxStaff0);
             m_pLastBarline = nullptr;
         }
         else
         {
             ImoStaffObj* pSO = static_cast<ImoStaffObj*>(*it);
-            add_entry_for_staffobj(pSO, nInstr);
+            add_entry_for_staffobj(pSO, nInstr, idxStaff0);
             m_pLastBarline = nullptr;
 
             if (pSO->is_barline())
@@ -1195,7 +1202,8 @@ void ColStaffObjsBuilderEngine2x::create_entries_for_instrument(int nInstr)
 }
 
 //---------------------------------------------------------------------------------------
-void ColStaffObjsBuilderEngine2x::add_entry_for_staffobj(ImoObj* pImo, int nInstr)
+void ColStaffObjsBuilderEngine2x::add_entry_for_staffobj(ImoObj* pImo, int nInstr,
+                                                         int idxStaff0)
 {
     ImoStaffObj* pSO = static_cast<ImoStaffObj*>(pImo);
     determine_timepos(pSO);
@@ -1231,8 +1239,9 @@ void ColStaffObjsBuilderEngine2x::add_entry_for_staffobj(ImoObj* pImo, int nInst
         nVoice = m_curVoice;
 
     int nLine = get_line_for(nVoice, nStaff);
-    ColStaffObjsEntry* pEntry = m_pColStaffObjs->add_entry(m_nCurMeasure, nInstr,
-                                                           nLine, nStaff, pSO);
+    StaffIndexes stfndx(nInstr, nStaff, idxStaff0+nStaff);
+    ColStaffObjsEntry* pEntry = m_pColStaffObjs->add_entry(m_nCurMeasure, nLine,
+                                                           stfndx, pSO);
 //    cout << "    add_entry_for_staffobj() pSO=" << pSO->to_string()
 //        << ", time=" << pSO->get_time()
 //        << ", get_line_for(nVoice=" << nVoice << ", nStaff=" << nStaff

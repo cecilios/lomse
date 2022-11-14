@@ -179,9 +179,8 @@ void SelectionSet::add_staffobj_to_collection(ImoStaffObj* pSO)
         m_pCollection = LOMSE_NEW ColStaffObjs();
 
     m_pCollection->add_entry(pEntry->measure(),
-                             pEntry->num_instrument(),
                              pEntry->line(),
-                             pEntry->staff(),
+                             pEntry->staff_indexes(),
                              pEntry->imo_object() );
 }
 

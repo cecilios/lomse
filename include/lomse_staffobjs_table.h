@@ -38,39 +38,64 @@ class ImoTimeSignature;
 
 
 //---------------------------------------------------------------------------------------
+// Helper structs, for compacting data
+//---------------------------------------------------------------------------------------
+struct MeasureLine {
+    int iMeasure : 16;  //up to 32768 measures per score, plus value -1
+    int iLine : 16;     //up to 32768 lines per score, plus value -1
+
+    MeasureLine() : iMeasure(0), iLine(0) {}
+};
+
+struct StaffIndexes {
+    int iInstr : 16;    //up to 32768 instruments per score, plus value -1
+    int iStaff : 16;    //up to 32768 staves per instrument, plus value -1
+    int idxStaff: 16;   //up to 32768 staves per system, plus value -1
+
+//    StaffIndexes() : iInstr(0), iStaff(0), idxStaff(0) {}
+    StaffIndexes(int instr, int staff, int idx)
+        : iInstr(instr)
+        , iStaff(staff)
+        , idxStaff(idx)
+    {
+    }
+
+};
+
+
+//---------------------------------------------------------------------------------------
 // ColStaffObjsEntry: an entry in the ColStaffObjs table
 //---------------------------------------------------------------------------------------
 class ColStaffObjsEntry
 {
 protected:
-    int                 m_measure;
-    int                 m_instr;
-    int                 m_line;
-    int                 m_staff;
-    ImoStaffObj*        m_pImo;
+    MeasureLine     m_measline;
+    StaffIndexes    m_stfndx;
+    ImoStaffObj*    m_pImo;
 
     ColStaffObjsEntry*  m_pNext;    //next entry in the collection
     ColStaffObjsEntry*  m_pPrev;    //prev. entry in the collection
 
 public:
-    ColStaffObjsEntry(int measure, int instr, int line, int staff, ImoStaffObj* pImo)
-        : m_measure(measure)
-        , m_instr(instr)
-        , m_line(line)
-        , m_staff(staff)
+    ColStaffObjsEntry(int measure, int line, StaffIndexes stfndx, ImoStaffObj* pImo)
+        : m_stfndx(stfndx)
         , m_pImo(pImo)
         , m_pNext(nullptr)
         , m_pPrev(nullptr)
     {
+        m_measline.iMeasure = measure;
+        m_measline.iLine = line;
         m_pImo->set_colstaffobjs_entry(this);
     }
 
     //getters
-    inline int measure() const { return m_measure; }
+    inline int measure() const { return m_measline.iMeasure; }
+    inline int line() const { return m_measline.iLine; }
     inline TimeUnits time() const { return m_pImo->get_time(); }
-    inline int num_instrument() const { return m_instr; }
-    inline int line() const { return m_line; }
-    inline int staff() const { return m_staff; }
+    inline int num_instrument() const { return m_stfndx.iInstr; }
+    inline int staff() const { return m_stfndx.iStaff; }
+    inline int idxstaff() const { return m_stfndx.idxStaff; }
+    inline StaffIndexes staff_indexes() const { return m_stfndx; }
     inline ImoStaffObj* imo_object() const { return m_pImo; }
     inline long element_id() { return m_pImo->get_id(); }
     inline TimeUnits duration() const { return m_pImo->get_duration(); }
@@ -133,6 +158,9 @@ public:
     //table management
     ColStaffObjsEntry* add_entry(int measure, int instr, int voice, int staff,
                                  ImoStaffObj* pImo);
+    ColStaffObjsEntry* add_entry(int measure, int voice, StaffIndexes stfndx,
+                                 ImoStaffObj* pImo);
+
     void delete_entry_for(ImoStaffObj* pSO);
 
     //iterator related
@@ -166,9 +194,14 @@ public:
 
 	        ColStaffObjsEntry* operator *() const { return m_pCurrent; }
 
-            iterator& operator ++() {
+            iterator& operator ++() {   //prefix operator
                 move_next();
                 return *this;
+            }
+            iterator operator ++(int) {   //postfix operator
+                iterator temp = *this;
+                move_next();
+                return temp;
             }
             iterator& operator --() {
                 move_prev();
@@ -316,7 +349,8 @@ public:
 protected:
     virtual void initializations()=0;
     virtual void determine_timepos(ImoStaffObj* pSO)=0;
-    virtual void create_entries_for_instrument(int nInstr)=0;
+    virtual void create_entries_for_instrument(int nInstr, ImoInstrument* pInstr,
+                                               int idxStaff0)=0;
     virtual void prepare_for_next_instrument()=0;
 
     void create_table();
@@ -324,7 +358,8 @@ protected:
     void collect_note_rest_info(ImoNoteRest* pNR);
     int get_line_for(int nVoice, int nStaff);
     void set_num_lines();
-    void add_entries_for_key_or_time_signature(ImoObj* pImo, int nInstr);
+    void add_entries_for_key_or_time_signature(ImoObj* pImo, int nInstr,
+                                               ImoInstrument* pInstr, int idxStaff0);
     void set_min_note_duration();
     void compute_grace_notes_playback_time();
     void process_grace_relobj(ImoGraceNote* pGrace, ImoGraceRelObj* pGRO,
@@ -370,14 +405,15 @@ private:
     //overrides for base class ColStaffObjsBuilderEngine
     void initializations() override;
     void determine_timepos(ImoStaffObj* pSO) override;
-    void create_entries_for_instrument(int nInstr) override;
+    void create_entries_for_instrument(int nInstr, ImoInstrument* pInstr,
+                                       int idxStaff0) override;
     void prepare_for_next_instrument() override;
 
     //specific
     void reset_counters();
     void update_measure(ImoStaffObj* pSO);
     void update_time_counter(ImoGoBackFwd* pGBF);
-    void add_entry_for_staffobj(ImoObj* pImo, int nInstr);
+    void add_entry_for_staffobj(ImoObj* pImo, int nInstr, int idxStaff0);
     ImoDirection* anchor_object(ImoAuxObj* pImo);
     void delete_node(ImoGoBackFwd* pGBF, ImoMusicData* pMusicData);
 
@@ -412,13 +448,14 @@ private:
     //overrides for base class ColStaffObjsBuilderEngine
     void initializations() override;
     void determine_timepos(ImoStaffObj* pSO) override;
-    void create_entries_for_instrument(int nInstr) override;
+    void create_entries_for_instrument(int nInstr, ImoInstrument* pInstr,
+                                       int idxStaff0) override;
     void prepare_for_next_instrument() override;
 
     //specific
     void reset_counters();
     void update_measure();
-    void add_entry_for_staffobj(ImoObj* pImo, int nInstr);
+    void add_entry_for_staffobj(ImoObj* pImo, int nInstr, int idxStaff0);
 
 };
 

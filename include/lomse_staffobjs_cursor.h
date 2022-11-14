@@ -80,7 +80,7 @@ public:
     inline ImoObj* imo_object() { return (*m_it)->imo_object(); }
     ImoStaffObj* get_staffobj();
     inline ColStaffObjsEntry* cur_entry() { return *m_it; }
-    int staff_index() { return staff_index_for(num_instrument(), staff()); }
+    int staff_index() { return (*m_it)->idxstaff(); }
 
     //access next/prev object without moving cursor position
     inline ColStaffObjsEntry* next_entry() { return m_it.next(); }
