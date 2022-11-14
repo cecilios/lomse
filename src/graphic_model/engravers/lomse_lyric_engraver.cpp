@@ -246,8 +246,8 @@ void LyricEngraver::create_shape(int iNote, GmoShapeNote* pNoteShape, ImoLyric* 
         if (pNextNoteShape)
         {
             LUnits space = pNextNoteShape->get_left() - syllablesRight;
-            LUnits shift = (space - pShape->get_width()) / 2.0f;
-            pShape->shift_origin(USize(shift, 0.0f));
+            LUnits xShift = (space - pShape->get_width()) / 2.0f;
+            pShape->shift_origin(USize(xShift, 0.0f));
         }
 
         xCur = pShape->get_right();

@@ -70,7 +70,7 @@ class Renderer
 protected:
     double m_lunitsToPixels;
 
-    //renderization parameters
+    //rendition parameters
     double m_expand;
     double m_gamma;
 
@@ -240,7 +240,7 @@ public:
         //set expand value for strokes
         expand(m_expand);
 
-        //do renderization. Method doing renderization is a template member, so that
+        //do rendition. Method doing rendition is a template member, so that
         //it can be created for different Renderer types.
         double alpha = 1.0;
         render(ras, sl, m_renSolid, m_mtx, m_renBase.clip_box(), alpha);
@@ -492,7 +492,7 @@ protected:
 
 
         #if (1)     //hasAlpha)  //bitmap has alpha channel: use rgba filter
-            //define a span generator to fill lines with the image and do renderization
+            //define a span generator to fill lines with the image and do rendition
             if (quality == k_quality_low)
             {
                 //nearest-neighbor filter
@@ -512,7 +512,7 @@ protected:
             }
 
         #else  //bitmap without alpha channel: use rgb filter
-            //define a span generator to fill lines with the image and do renderization
+            //define a span generator to fill lines with the image and do rendition
             if (quality == k_quality_low)
             {
                 //nearest-neighbor filter

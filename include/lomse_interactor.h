@@ -202,7 +202,7 @@ public:
         - <b>k_timing_gmodel_build_time = 0</b> - elapsed time for building the graphic model.
         - <b>k_timing_gmodel_draw_time = 1</b> - elapsed time for rendering the graphic model
         - <b>k_timing_visual_effects_draw_time = 2</b> - elapsed time for rendering the visual effects
-        - <b>k_timing_total_render_time = 3</b> - total elapsed time for renderization
+        - <b>k_timing_total_render_time = 3</b> - total elapsed time for rendition
         - <b>k_timing_repaint_time = 4</b> - elapsed time for repainting the view
         - <b>k_timing_max_value</b> - Not used as index. This value is for knowing how many items you should expect in the
             returned vector, for allocating space.
@@ -423,7 +423,7 @@ public:
 
 
 
-        //interface to GraphicView. Renderization
+        //interface to GraphicView. Rendition
         /// @name Interface to GraphicView. Rendering
         //@{
 
@@ -1651,7 +1651,7 @@ public:
                 //inform lomse that the buffer has been copied
                 spInteractor->timing_repaint_done();
 
-                //Display ellapsed times for the different renderization steps
+                //Display ellapsed times for the different rendition steps
                 double* pTimes = spInteractor->get_elapsed_times();
                 std::ostringstream msg;
                 msg << std::fixed << std::setprecision(2)

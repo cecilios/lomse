@@ -438,7 +438,7 @@ public:
 //                  bool fVisible = true);
 //    virtual ~GmoShapeWindow() {}
 //
-//    //renderization
+//    //rendition
 //    void on_draw(Drawer* pDrawer, RenderOptions& opt);
 //
 //	//specific methods

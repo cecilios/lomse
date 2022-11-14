@@ -354,10 +354,10 @@ int TupletEngraver::count_nested_tuplets()
             list<ImoRelObj*>& relobjs = pRels->get_relobjs();
             if (relobjs.size() > 0)
             {
-                list<ImoRelObj*>::iterator it;
-                for (it = relobjs.begin(); it != relobjs.end(); ++it)
+                list<ImoRelObj*>::iterator it2;
+                for (it2 = relobjs.begin(); it2 != relobjs.end(); ++it2)
                 {
-                    ImoRelObj* pRO = static_cast<ImoRelObj*>(*it);
+                    ImoRelObj* pRO = static_cast<ImoRelObj*>(*it2);
                     if (pRO->is_tuplet())
                     {
                         if (pRO->get_start_object() == pNR)

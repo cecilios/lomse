@@ -153,7 +153,7 @@ protected:
     RenderOptions m_options;
     OverlaysGenerator* m_pOverlaysGenerator;
 
-    //renderization parameters
+    //rendition parameters
     double m_expand;
     double m_gamma;
     double m_rotation;
@@ -218,7 +218,7 @@ public:
     ///@}    //Interface with the Drawer
 
 
-    /// @name Renderization related
+    /// @name Rendition related
     ///@{
     VRect get_damaged_rectangle();
     UPoint get_page_origin_for(GmoObj* pGmo);
@@ -231,7 +231,7 @@ public:
     void draw_selected_objects();
     void draw_handler(Handler* pHandler);
     void set_background(Color color) { m_backgroundColor = color; }
-    ///@}    //Renderization related
+    ///@}    //Rendition related
 
 
     /// @name Scrolling support

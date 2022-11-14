@@ -35,7 +35,7 @@
 #include "agg_span_interpolator_linear.h"
 #include "agg_span_allocator.h"
 
-#include "lomse_font_cache_manager.h"     //font renderization using FreeType
+#include "lomse_font_cache_manager.h"     //font rendition using FreeType
 #include "lomse_font_freetype.h"
 
 using namespace agg;

@@ -683,7 +683,7 @@ public:
     inline void set_number(int num) { m_numPage = num; }
     inline int get_number() { return m_numPage; }
 
-    //renderization
+    //rendition
     void on_draw(Drawer* pDrawer, RenderOptions& opt) override;
 
     //shapes

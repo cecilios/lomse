@@ -81,7 +81,7 @@ bool FontStorage::set_font(const std::string& fontFullName, double height,
     if(! m_fontEngine.select_font(fontFullName, 0, gren))
         return !m_fValidFont;    //error
 
-    //set curren values for renderization
+    //set curren values for rendition
     m_fontCacheType = type;
     set_font_size(height);
 

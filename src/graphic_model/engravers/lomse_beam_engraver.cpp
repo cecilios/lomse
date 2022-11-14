@@ -1758,9 +1758,9 @@ void BeamEngraver::position_segments(std::vector<SegmentData>* pSegs)
     //As each segment in ShapeBeam is drawn using ‘line’ method with vertical edge, so
     //compute segments refered to center
     SegmentData& sg = pSegs->at(0);
-    LUnits yStart = sg.yStart;
-    LUnits yEnd = sg.yEnd;
-    add_segment(sg.xStart, yStart, sg.xEnd, yEnd);
+//    LUnits yStart = sg.yStart;
+//    LUnits yEnd = sg.yEnd;
+    add_segment(sg.xStart, sg.yStart, sg.xEnd, sg.yEnd);
 
     //coordinates of center of principal beam line
     m_size.width = sg.xEnd - sg.xStart;

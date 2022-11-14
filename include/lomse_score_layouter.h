@@ -166,7 +166,7 @@ protected:
 
     int m_iCurColumn;   //[0..n-1] current column. (-1 if no column yet created!)
 
-    //renderization options and parameters
+    //rendition options and parameters
     long    m_truncateStaffLines;
     long    m_justifyLastSystem;
 

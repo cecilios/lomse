@@ -973,7 +973,7 @@ SUITE(InternalModelTest)
     {
         //@ Relations must be rendered in a predefined order,
         //@ e.g., beams before tuplets. For this, they must be stored in
-        //@ renderization order.
+        //@ rendition order.
 
         Document doc(m_libraryScope);
         ImoNote* pNote = ImFactory::inject_note(&doc, k_step_A, 4, k_eighth);
