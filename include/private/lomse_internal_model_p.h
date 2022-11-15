@@ -78,7 +78,6 @@ class ImoBeamData;
 class ImoBeamDto;
 class ImoBeam;
 class ImoBlocksContainer;
-class ImoInlinesContainer;
 class ImoBoxInline;
 class ImoBlockLevelObj;
 class ImoButton;
@@ -91,9 +90,11 @@ class ImoDynamic;
 class ImoFontStyleDto;
 class ImoHeading;
 class ImoImage;
+class ImoInlinesContainer;
 class ImoInlineLevelObj;
 class ImoInlineWrapper;
 class ImoInstrument;
+class ImoGroupLayouts;
 class ImoKeySignature;
 class ImoLineStyleDto;
 class ImoLink;
@@ -817,7 +818,7 @@ enum EImoObjType
     k_imo_bezier_info,
     k_imo_cursor_info,
     k_imo_figured_bass_info,
-    k_imo_instr_group,
+    k_imo_group_layout,
     k_imo_lyrics_text_info,
     k_imo_midi_info,
     k_imo_page_info,
@@ -844,9 +845,11 @@ enum EImoObjType
     k_imo_collection,
     k_imo_attachments,
     k_imo_instruments,
-    k_imo_instrument_groups,
+    k_imo_group_layouts,
+    k_imo_layouts,
     k_imo_music_data,
     k_imo_options,
+    k_imo_score_layouts,
     k_imo_score_titles,
     k_imo_sounds,
     k_imo_parameters,
@@ -860,7 +863,9 @@ enum EImoObjType
 
     // ImoContainerObj (A)
     k_imo_containerobj,
+    k_imo_system_layout,
     k_imo_instrument,
+    k_imo_score_layout,
     k_imo_containerobj_last,
 
     k_imo_simpleobj_last,
@@ -1633,12 +1638,13 @@ public:
     inline bool is_go_back_fwd() { return m_objtype == k_imo_go_back_fwd; }
     bool is_gap();      ///a rest representing a goFwd element
     inline bool is_grace_relobj() { return m_objtype == k_imo_grace_relobj; }
+    inline bool is_group_layout() { return m_objtype == k_imo_group_layout; }
     inline bool is_heading() { return m_objtype == k_imo_heading; }
     inline bool is_image() { return m_objtype == k_imo_image; }
     inline bool is_inline_wrapper() { return m_objtype == k_imo_inline_wrapper; }
     inline bool is_instrument() { return m_objtype == k_imo_instrument; }
-    inline bool is_instr_group() { return m_objtype == k_imo_instr_group; }
     inline bool is_key_signature() { return m_objtype == k_imo_key_signature; }
+    inline bool is_system_layout() { return m_objtype == k_imo_system_layout; }
     inline bool is_line() { return m_objtype == k_imo_line; }
     inline bool is_line_style() { return m_objtype == k_imo_line_style_dto; }
     inline bool is_link() { return m_objtype == k_imo_link; }
@@ -1672,6 +1678,7 @@ public:
     inline bool is_repetition_mark() { return m_objtype == k_imo_text_repetition_mark
                || m_objtype == k_imo_symbol_repetition_mark; }
     inline bool is_score() { return m_objtype == k_imo_score; }
+    inline bool is_score_layout() { return m_objtype == k_imo_score_layout; }
     inline bool is_score_line() { return m_objtype == k_imo_score_line; }
     inline bool is_score_player() { return m_objtype == k_imo_score_player; }
     inline bool is_score_text() { return m_objtype == k_imo_score_text; }
@@ -1719,6 +1726,9 @@ public:
     inline bool is_mouse_over_generator() { return   m_objtype == k_imo_link
                   || m_objtype == k_imo_button
                   ; }
+
+    //helper
+    ImoObj* get_pointer_to_imo(ImoId id);
 
 
     //IM attributes interface ------------------------------------
@@ -1784,6 +1794,7 @@ public:
     virtual size_t get_num_attributes() { return m_attribs.size(); }
     inline AttrObj* get_first_attribute() { return m_attribs.front(); }
     virtual list<TIntAttribute> get_supported_attributes();
+
 
 protected:
     ImoObj& clone(const ImoObj& a);
@@ -2300,6 +2311,7 @@ protected:
     ImoRelations() : ImoSimpleObj(k_imo_relations) {}
 
 public:
+    //the five special
     ~ImoRelations() override;
     ImoRelations(const ImoRelations& a) : ImoSimpleObj(a) { clone(a); }
     ImoRelations& operator= (const ImoRelations& a) { clone(a); return *this; }
@@ -2325,7 +2337,8 @@ protected:
 };
 
 //---------------------------------------------------------------------------------------
-// ContainerObj: A collection of containers and contained objs.
+/** %ImoContainerObj: A collection of containers and contained objs.
+*/
 class ImoContainerObj : public ImoObj
 {
 protected:
@@ -4952,6 +4965,12 @@ protected:
     - applicable styles for name & abbreviation
     - the type of brace/bracket to display the group
 
+    All instruments in a group are consecutive. Thus, only first instrument is needed.
+
+    All indexes iInstr are referred to instruments in the score, with the exception
+    of method get_instrument(int iInstr). In this method iInstr (0..n-1) is relative
+    to instruments in the group
+
     It is a child of ImoGroupLayouts.
 */
 class ImoGroupLayout : public ImoSimpleObj
@@ -4962,7 +4981,7 @@ protected:
     TypeTextInfo m_name;
     TypeTextInfo m_abbrev;
     int m_numInstrs = 0;                //number of instruments in the group
-    int m_iFirstInstr = -1;             //index to first instrument
+    int m_iFirstInstr = -1;             //index to first instrument, relative to score instruments
     ImoId m_nameStyle = k_no_imoid;
     ImoId m_abbrevStyle = k_no_imoid;
 
@@ -5000,10 +5019,14 @@ public:
     //instruments
     ImoInstrument* get_first_instrument();
     ImoInstrument* get_last_instrument();
+    //returns index iInstr (0..n-1) relative to instruments in the score
     inline int get_index_to_first_instrument() { return m_iFirstInstr; }
+    //returns index iInstr (0..n-1) relative to instruments in the score
     inline int get_index_to_last_instrument() { return m_iFirstInstr + m_numInstrs - 1; }
+    //indexes iFirstInstr, iLastInstr (0..n-1) are referred to instruments in the score
     void set_range(int iFirstInstr, int iLastInstr);
-    ImoInstrument* get_instrument(int iInstr);   //0..n-1
+    //iInstr = 0..n-1, relative to instruments in the group
+    ImoInstrument* get_instrument(int iInstr);
     inline int get_num_instruments() { return m_numInstrs; }
     bool contains_instrument(ImoInstrument* pInstr);
 
@@ -5173,10 +5196,166 @@ protected:
     void set_measures_table(ImMeasuresTable* pTable);
 
     ImoStyle* get_style_imo(ImoId id);
+};
+
+//---------------------------------------------------------------------------------------
+/** %ImoSystemLayout object defines a visual layout that can be used by ImoSystem
+    or ImoScoreLayout objects.
+
+    For example, a layout might say "Include the vocal part, with the piano part directly
+    below. For the piano part, use a grand-staff brace.". To encode this information,
+    ImoSystem will have two children: a ImoStaffLayout describing the parts to
+    include (voice and piano) and a ImoGroupLayout to instruct to use a grand-staff brace
+    for the piano staff.
+
+    Children: (ImoStaffLayout | ImoGroupLayout)*, ImoStyleSelector*
+*/
+class ImoSystemLayout : public ImoContainerObj
+{
+protected:
+    std::string m_name;     //a unique identifier for this layout. Required
+    std::list< std::pair<ImoId, int> > m_instruments;   //instruments included in this
+                                                        //layout, id + absolute index
+    std::vector<int> m_staffIndex;
+    int m_numStaves = 0;
+
+    friend class ImFactory;
+    ImoSystemLayout();
+    ImoSystemLayout(const std::string& name);
+
+public:
+    //the five special
+    ~ImoSystemLayout() override {}
+    ImoSystemLayout(const ImoSystemLayout&) = default;
+    ImoSystemLayout& operator= (const ImoSystemLayout&) = default;
+    ImoSystemLayout(ImoSystemLayout&&) = delete;
+    ImoSystemLayout& operator= (ImoSystemLayout&&) = delete;
+
+    //building
+    void set_name(const std::string& name) { m_name = name; }
+
+    //accessors
+    const std::string& get_name() const { return m_name; }
+
+
+    //instruments
+
+    ///iInstr (0..n-1) is absolute, that is, refers to the score
+    void add_instrument(int iInstr);
+
+    int num_instruments() { return int(m_instruments.size()); }
+    int get_relative_index(ImoInstrument* pInstr);
+    int get_absolute_index(ImoInstrument* pInstr);
+
+    ///Returns ptr to instrument iRelInstr (0..n-1, relative to this layout)
+    ImoInstrument* get_instrument(int iRelInstr);
+
+    ///Returns absolute index (0..n-1, referred to the score) for last instrument
+    int last_instrument_abs_index();
+
+    /** Returns @true if instrument is included in this layout. iInstr (0..n-1) is absolute,
+        that is, refers to the score */
+    bool is_instrument_included(int iInstr);
+
+    ///Returns the list of instruments included in this layout (id, abs.index)
+    std::list< std::pair<ImoId, int> >& get_instruments() { return m_instruments; }
+
+    /** Given an absolute instrument index (that is, referred to the score) returns a
+        relative index referred to this system layout instruments */
+    int make_relative(int iInstr);
+
+    /** Given relative instrument index (that is, referred to this layout) returns the
+        absolute index referred to the score */
+    int make_absolute(int iRelInstr);
+
+    //groups
+    void add_group_layout(ImoGroupLayout* pGroup);
+    ImoGroupLayouts* get_group_layouts();
+    std::list<ImoGroupLayout*> find_groups_containing_instrument(ImoInstrument* pInstr);
+
+
+    //info about staves
+
+    /** Returns number of staves (1..n) for this system layout */
+    inline int num_staves() { return m_numStaves; }
+
+    /** Returns relative staff index (0..n-1) referred to this system layout.
+        iInstr (0..n-1) is absolute index referred to the score
+    */
+    inline int staff_index(int iInstr, int iStaff) { return m_staffIndex[iInstr] + iStaff; }
+
+
+protected:
+    void initialize_staves();
 
 };
 
 //---------------------------------------------------------------------------------------
+/** %ImoScoreLayout object represents a particular rendering of the music: which
+    instruments are included, how they're visually arranged, where system and page
+    breaks happen and where multimeasure rests will be displayed.
+
+    A score can contain multiple %ImoScoreLayout objects. For example, to define a
+    "full score" vs. individual parts, within a single score document.
+
+    Scores are not required to contain a %ImoScoreLayout object. If no %ImoScoreLayout
+    provided, the default rendering behavior is to include all instruments — in the same
+    order in which the ImoInstrument objects appear in the document — with line breaks
+    and page breaks determined automatically by Lomse.
+
+    A %ImoScoreLayout object also is not required to contain any ImoPage chidren,
+    and in this case page breaks will be determined automatically by Lomse.
+
+    Children: (ImoPage | ImoStyleSelector)*, ImoMultimeasureRests?
+*/
+class ImoScoreLayout : public ImoContainerObj
+{
+protected:
+    std::string m_name; 	//mandatory. The name of this layout, suitable for display
+                            //to people viewing or selecting this particular layout
+                            //within user application; e.g. "Full score", "Flute 1 part".
+    ImoId m_layoutId = k_no_imoid;      //layout to use for all systems, if provided.
+                                        //Can be overriden by ImoSystem children
+//    std::list<int> m_instruments;   //indexes to instruments included in this layout
+
+    friend class ImFactory;
+    ImoScoreLayout() : ImoContainerObj(k_imo_score_layout) {}
+    ImoScoreLayout(const std::string& name) : ImoContainerObj(k_imo_score_layout), m_name(name) {}
+
+public:
+    //the five special
+    ~ImoScoreLayout() override {}
+    ImoScoreLayout(const ImoScoreLayout&) = default;
+    ImoScoreLayout& operator= (const ImoScoreLayout&) = default;
+    ImoScoreLayout(ImoScoreLayout&&) = delete;
+    ImoScoreLayout& operator= (ImoScoreLayout&&) = delete;
+
+    //building
+    void set_name(const std::string& name) { m_name = name; }
+    void set_layout(ImoId id) { m_layoutId = id; }
+//    void add_instrument(int iInstr);
+
+    //accessors
+    const std::string& get_name() const { return m_name; }
+    ImoId get_layout_id() const { return m_layoutId; }
+    ImoSystemLayout* get_system_layout();
+
+    //facade methods, accesing ImoSystemLayout
+    ImoGroupLayouts* get_group_layouts();
+    int get_num_instruments();
+    ImoInstrument* get_instrument_relative(int iRelInstr);
+
+    ///Returns the list of instruments included in this layout (id, abs.index)
+    std::list< std::pair<ImoId, int> >& get_instruments();
+
+    //helper
+    ImoInstrument* get_instrument(ImoId id);
+
+};
+
+//---------------------------------------------------------------------------------------
+/** %ImoInstruments: a collection of score parts (ImoInstrument objects).
+*/
 class ImoInstruments : public ImoCollection
 {
 protected:
@@ -5198,7 +5377,7 @@ class ImoGroupLayouts : public ImoCollection
 {
 protected:
     friend class ImFactory;
-    ImoGroupLayouts() : ImoCollection(k_imo_instrument_groups) {}
+    ImoGroupLayouts() : ImoCollection(k_imo_group_layouts) {}
 
 public:
     //the five special
@@ -5207,6 +5386,44 @@ public:
     ImoGroupLayouts& operator= (const ImoGroupLayouts&) = default;
     ImoGroupLayouts(ImoGroupLayouts&&) = delete;
     ImoGroupLayouts& operator= (ImoGroupLayouts&&) = delete;
+
+};
+
+//---------------------------------------------------------------------------------------
+/** %ImoLayouts: a collection of ImoSystemLayout objects.
+*/
+class ImoLayouts : public ImoCollection
+{
+protected:
+    friend class ImFactory;
+    ImoLayouts() : ImoCollection(k_imo_layouts) {}
+
+public:
+    //the five special
+    ~ImoLayouts() override {}
+    ImoLayouts(const ImoLayouts&) = default;
+    ImoLayouts& operator= (const ImoLayouts&) = default;
+    ImoLayouts(ImoLayouts&&) = delete;
+    ImoLayouts& operator= (ImoLayouts&&) = delete;
+
+};
+
+//---------------------------------------------------------------------------------------
+/** %ImoScoreLayouts: a collection of ImoScoreLayout objects.
+*/
+class ImoScoreLayouts : public ImoCollection
+{
+protected:
+    friend class ImFactory;
+    ImoScoreLayouts() : ImoCollection(k_imo_score_layouts) {}
+
+public:
+    //the five special
+    ~ImoScoreLayouts() override {}
+    ImoScoreLayouts(const ImoScoreLayouts&) = default;
+    ImoScoreLayouts& operator= (const ImoScoreLayouts&) = default;
+    ImoScoreLayouts(ImoScoreLayouts&&) = delete;
+    ImoScoreLayouts& operator= (ImoScoreLayouts&&) = delete;
 
 };
 
@@ -5978,6 +6195,9 @@ protected:
 };
 
 //---------------------------------------------------------------------------------------
+const std::string k_default_system_layout = "default-generated-layout";
+const std::string k_default_score_layout = "Default generated full score";
+
 class ImoScore : public ImoBlockLevelObj      //ImoBlocksContainer
 {
 protected:
@@ -6001,6 +6221,7 @@ protected:
     enum {
         k_modified_scaling =    0x00000001,     //global scaling has been modified
     };
+
 
     friend class ImFactory;
     ImoScore();
@@ -6062,10 +6283,11 @@ public:
     ImoInstruments* get_instruments();
     int get_instr_number_for(ImoInstrument* pInstr);
 
-    //instrument groups
-    void add_instruments_group(ImoGroupLayout* pGroup);
-    ImoGroupLayouts* get_instrument_groups();
-    std::list<ImoGroupLayout*> find_groups_containing_instrument(ImoInstrument* pInstr);
+    //group layouts
+    void add_group_layout(ImoGroupLayout* pGroup, const std::string& layout = k_default_system_layout);
+    ImoGroupLayouts* get_group_layouts(const std::string& layout = k_default_system_layout);
+    std::list<ImoGroupLayout*> find_groups_containing_instrument(ImoInstrument* pInstr,
+                                    const std::string& layout = k_default_system_layout);
 
     //options
     ImoOptions* get_options();
@@ -6077,7 +6299,15 @@ public:
     void add_or_replace_option(ImoOptionInfo* pOpt);
     bool has_default_value(ImoOptionInfo* pOpt);
 
-    //score layout
+    //layouts
+    ImoLayouts* get_layouts();
+    ImoSystemLayout* get_system_layout(const std::string& name = k_default_system_layout);
+    ImoScoreLayouts* get_score_layouts();
+    ImoScoreLayout* get_score_layout(const std::string& name = k_default_score_layout);
+    ImoSystemLayout* new_system_layout(const std::string& name);
+    ImoScoreLayout* new_score_layout(const std::string& name, ImoId systemLayoutId);
+
+
     void add_sytem_info(ImoSystemInfo* pSL);
     inline ImoSystemInfo* get_first_system_info() { return &m_systemInfoFirst; }
     inline ImoSystemInfo* get_other_system_info() { return &m_systemInfoOther; }

@@ -2950,7 +2950,7 @@ protected:
 
     void add_parts()
     {
-        ImoGroupLayouts* pGroups = m_pObj->get_instrument_groups();
+        ImoGroupLayouts* pGroups = m_pObj->get_group_layouts();
         if (pGroups == nullptr)
             return;
 
@@ -2974,7 +2974,7 @@ protected:
 
     void add_groups()
     {
-        ImoGroupLayouts* pGroups = m_pObj->get_instrument_groups();
+        ImoGroupLayouts* pGroups = m_pObj->get_group_layouts();
         ImoObj::children_iterator it;
         for (it= pGroups->begin(); it != pGroups->end(); ++it)
         {

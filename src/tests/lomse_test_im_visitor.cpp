@@ -239,13 +239,13 @@ SUITE(ImVisitorTest)
     TEST_FIXTURE(ImVisitorTestFixture, EbookExample)
     {
         Document doc(m_libraryScope);
-        doc.from_file(m_scores_path + "09002-ebook-example.lms" );
+        doc.from_file(m_scores_path + "unit-tests/other/09002-ebook-example.lms" );
         ImoDocument* pRoot = doc.get_im_root();
 
         MyObjVisitor v(m_libraryScope);
         pRoot->accept_visitor(v);
 
-        CHECK( check_result(v, 9, 136) );
+        CHECK( check_result(v, 9, 144) );
     }
 
 //    TEST_FIXTURE(ImVisitorTestFixture, EbookExample2)
@@ -268,7 +268,7 @@ SUITE(ImVisitorTest)
     TEST_FIXTURE(ImVisitorTestFixture, ParagraphVisitor)
     {
         Document doc(m_libraryScope);
-        doc.from_file(m_scores_path + "09002-ebook-example.lms" );
+        doc.from_file(m_scores_path + "unit-tests/other/09002-ebook-example.lms" );
         ImoDocument* pRoot = doc.get_im_root();
 
         MyParaVisitor v(m_libraryScope);
@@ -280,7 +280,7 @@ SUITE(ImVisitorTest)
     TEST_FIXTURE(ImVisitorTestFixture, ParagraphHeadingVisitor)
     {
         Document doc(m_libraryScope);
-        doc.from_file(m_scores_path + "09002-ebook-example.lms" );
+        doc.from_file(m_scores_path + "unit-tests/other/09002-ebook-example.lms" );
         ImoDocument* pRoot = doc.get_im_root();
 
         MyHPVisitor v(m_libraryScope);

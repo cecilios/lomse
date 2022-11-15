@@ -93,7 +93,7 @@ void ScoreLayoutScope::initialice(ImoScore* pScore, EngraversMap* pEngraversMap)
     m_pEngraversMap = pEngraversMap;
 
     //create parts engraver
-    ImoGroupLayouts* pGroups = m_pScore->get_instrument_groups();
+    ImoGroupLayouts* pGroups = m_pScore->get_group_layouts();
     m_pPartsEngraver = LOMSE_NEW PartsEngraver(m_libraryScope, m_pScoreMeter,
                                                pGroups, m_pScore, m_pScoreLyt);
 

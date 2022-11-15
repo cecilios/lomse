@@ -197,7 +197,7 @@ public:
     bool is_image() const;
     bool is_inline_wrapper() const;
     bool is_instrument() const;
-    bool is_instr_group() const;
+    bool is_group_layout() const;
     bool is_link() const;
     bool is_list() const;
     bool is_list_item() const;
@@ -491,7 +491,7 @@ public:
     bool is_image() const;
     bool is_inline_wrapper() const;
     bool is_instrument() const;
-    bool is_instr_group() const;
+    bool is_group_layout() const;
     bool is_link() const;
     bool is_list() const;
     bool is_list_item() const;

@@ -3378,7 +3378,7 @@ protected:
         //@           group-abbreviation?, group-abbreviation-display?,
         //@           group-symbol?, group-barline?, group-time?, %editorial;)>
 
-        ImoGroupLayouts* pGroups = m_pObj->get_instrument_groups();
+        ImoGroupLayouts* pGroups = m_pObj->get_group_layouts();
         int numGroups = (pGroups ? pGroups->get_num_items() : 0);
         for (int i=0; i < numGroups; ++i)
         {
@@ -3430,7 +3430,7 @@ protected:
     //-----------------------------------------------------------------------------------
     void end_groups_at(int iInstr)
     {
-        ImoGroupLayouts* pGroups = m_pObj->get_instrument_groups();
+        ImoGroupLayouts* pGroups = m_pObj->get_group_layouts();
         int numGroups = (pGroups ? pGroups->get_num_items() : 0);
         for (int i=0; i < numGroups; ++i)
         {

@@ -2692,7 +2692,7 @@ public:
 
         Document* pDoc = m_pAnalyser->get_document_being_analysed();
         ImoGroupLayout* pGrp = static_cast<ImoGroupLayout*>(
-                        ImFactory::inject(k_imo_instr_group, pDoc, get_node_id()));
+                        ImFactory::inject(k_imo_group_layout, pDoc, get_node_id()));
 
         // [<name>]
         analyse_optional(k_name, pGrp);

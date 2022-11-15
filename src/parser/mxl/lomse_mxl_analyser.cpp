@@ -6160,7 +6160,7 @@ public:
             if (pGrp)
             {
                 ImoScore* pScore = m_pAnalyser->get_score_being_analysed();
-                pScore->add_instruments_group(pGrp);
+                pScore->add_group_layout(pGrp);
                 m_pAnalyser->terminate_part_group(number);
                 return pGrp;
             }
@@ -9937,7 +9937,7 @@ ImoGroupLayout* MxlAnalyser::start_part_group(int number)
 
     Document* pDoc = get_document_being_analysed();
     ImoGroupLayout* pGrp = static_cast<ImoGroupLayout*>(
-                                    ImFactory::inject(k_imo_instr_group, pDoc));
+                                    ImFactory::inject(k_imo_group_layout, pDoc));
 
     m_partGroups.start_group(number, pGrp);
     return pGrp;

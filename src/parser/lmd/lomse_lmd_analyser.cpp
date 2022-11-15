@@ -2193,7 +2193,7 @@ public:
 
         Document* pDoc = m_pAnalyser->get_document_being_analysed();
         ImoGroupLayout* pGrp = static_cast<ImoGroupLayout*>(
-                                    ImFactory::inject(k_imo_instr_group, pDoc));
+                                    ImFactory::inject(k_imo_group_layout, pDoc));
         int iFirstInstr = pScore->get_instr_number_for(pFirstInstr);
         int iLastInstr = pScore->get_instr_number_for(pLastInstr);
         pGrp->set_range(iFirstInstr, iLastInstr);

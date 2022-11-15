@@ -72,7 +72,7 @@ public:
 
 protected:
     ImoObj* add_content(ImoContent* pContent);
-    ImoObj* add_instruments_group(ImoGroupLayout* pGrp);
+    ImoObj* add_group_layout(ImoGroupLayout* pGrp);
     ImoObj* add_option(ImoOptionInfo* pOpt);
     ImoObj* add_page_info(ImoPageInfo* pPI);
     ImoObj* add_system_info(ImoSystemInfo* pSI);

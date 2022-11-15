@@ -701,7 +701,7 @@ void GroupBarlinesFixer::set_barline_layout_in_instruments(ImoScore* pScore)
     }
 
     //compute barlines layout for groups
-    ImoGroupLayouts* pGroups = pScore->get_instrument_groups();
+    ImoGroupLayouts* pGroups = pScore->get_group_layouts();
     if (pGroups)
     {
         ImoObj::children_iterator itG;

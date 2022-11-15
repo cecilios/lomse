@@ -50,9 +50,7 @@ FontStorage::FontStorage(LibraryScope* pLibScope)
     //grid-fitting) is used to enhance the quality of glyphs at small bitmap sizes.
     //Therefore, you can not use hinting unless you are authorized (you purchased
     //a license from Apple, or because you are in a country where the patents do
-    //not apply, etc.). Nevertheless lenmus font doesn't include hinting information
-    //and, so, previous flag value doesn't matter. But its value is important
-    //if I finally use FreeType for all fonts.
+    //not apply, etc.).
 
     //font settings
     unsigned ppi = unsigned(pLibScope->get_screen_ppi());

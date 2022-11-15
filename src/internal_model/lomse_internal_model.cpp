@@ -9,10 +9,12 @@
 
 ///@cond INTERNALS
 
+#include <algorithm>
+#include <math.h>                 //pow
+using namespace std;
+
 #include "lomse_internal_model.h"
 
-#include <algorithm>
-#include <math.h>                   //pow
 #include "lomse_staffobjs_table.h"
 #include "lomse_im_note.h"
 #include "lomse_midi_table.h"
@@ -30,8 +32,6 @@
 #include "lomse_score_utilities.h"
 #include "lomse_relobj_cloner.h"
 
-
-using namespace std;
 
 namespace lomse
 {
@@ -720,7 +720,7 @@ const string& ImoObj::get_name(int type)
         m_TypeToName[k_imo_cursor_info] = "cursor";
         m_TypeToName[k_imo_figured_bass_info] = "figured-bass";
         m_TypeToName[k_imo_font_style_dto] = "font-style";
-        m_TypeToName[k_imo_instr_group] = "instr-group";
+        m_TypeToName[k_imo_group_layout] = "group-layout";
         m_TypeToName[k_imo_line_style_dto] = "line-style-dto";
         m_TypeToName[k_imo_lyrics_text_info] = "lyric-text";
         m_TypeToName[k_imo_midi_info] = "midi-info";
@@ -754,11 +754,13 @@ const string& ImoObj::get_name(int type)
         m_TypeToName[k_imo_tie_data] = "tie-data";
 //
         //ImoCollection(A)
+        m_TypeToName[k_imo_layouts] = "layouts";
+        m_TypeToName[k_imo_group_layouts] = "group-layouts";
         m_TypeToName[k_imo_instruments] = "instruments";
-        m_TypeToName[k_imo_instrument_groups] = "instr-groups";
         m_TypeToName[k_imo_music_data] = "musicData";
         m_TypeToName[k_imo_options] = "options";
         m_TypeToName[k_imo_styles] = "styles";
+        m_TypeToName[k_imo_score_layouts] = "score-layouts";
         m_TypeToName[k_imo_score_titles] = "score-titles";
         m_TypeToName[k_imo_sounds] = "sounds";
         m_TypeToName[k_imo_parameters] = "parameters";
@@ -771,6 +773,8 @@ const string& ImoObj::get_name(int type)
 
         // ImoContainerObj (A)
         m_TypeToName[k_imo_instrument] = "instrument";
+        m_TypeToName[k_imo_score_layout] = "score-layout";
+        m_TypeToName[k_imo_system_layout] = "system-layout";
 
         // ImoAuxObj (A)
         m_TypeToName[k_imo_articulation_line] = "articulation-line";
@@ -1079,6 +1083,12 @@ string ImoObj::to_string(bool fWithIds)
     exporter.set_remove_newlines(true);
     exporter.set_add_id(fWithIds);
     return exporter.get_source(this);
+}
+
+//---------------------------------------------------------------------------------------
+ImoObj* ImoObj::get_pointer_to_imo(ImoId id)
+{
+    return m_pDocModel ? m_pDocModel->get_pointer_to_imo(id) : nullptr;
 }
 
 //---------------------------------------------------------------------------------------
@@ -1393,6 +1403,52 @@ std::list< pair<ImoStaffObj*, ImoRelDataObj*> >& ImoRelObj::get_related_objects(
     return *m_pointersList;
 }
 #endif
+
+
+//=======================================================================================
+// ImoScoreLayout implementation
+//=======================================================================================
+ImoSystemLayout* ImoScoreLayout::get_system_layout()
+{
+    return static_cast<ImoSystemLayout*>( get_doc_model()->get_pointer_to_imo(m_layoutId) );
+}
+
+//---------------------------------------------------------------------------------------
+ImoGroupLayouts* ImoScoreLayout::get_group_layouts()
+{
+    return get_system_layout()->get_group_layouts();
+}
+
+//---------------------------------------------------------------------------------------
+int ImoScoreLayout::get_num_instruments()
+{
+    return get_system_layout()->num_instruments();
+}
+
+//---------------------------------------------------------------------------------------
+list< pair<ImoId, int> >& ImoScoreLayout::get_instruments()
+{
+    return get_system_layout()->get_instruments();
+}
+
+//---------------------------------------------------------------------------------------
+ImoInstrument* ImoScoreLayout::get_instrument_relative(int iRelInstr)
+{
+    return get_system_layout()->get_instrument(iRelInstr);
+}
+
+//---------------------------------------------------------------------------------------
+ImoInstrument* ImoScoreLayout::get_instrument(ImoId id)
+{
+    return static_cast<ImoInstrument*>( get_pointer_to_imo(id) );
+}
+
+////---------------------------------------------------------------------------------------
+//void ImoScoreLayout::add_instrument(ImoId id)
+//{
+//    get_system_layout()->add_instrument(id);
+//}
+
 
 //=======================================================================================
 // ImoScoreObj implementation
@@ -3717,7 +3773,7 @@ list<ImoStaffObj*> ImoInstrument::insert_staff_objects_at(ImoStaffObj* pAt,
 // ImoGroupLayout implementation
 //=======================================================================================
 ImoGroupLayout::ImoGroupLayout()
-    : ImoSimpleObj(k_imo_instr_group)
+    : ImoSimpleObj(k_imo_group_layout)
     , m_joinBarlines(EJoinBarlines::k_joined_barlines)
     , m_symbol(k_group_symbol_none)
 {
@@ -3781,8 +3837,10 @@ ImoScore* ImoGroupLayout::get_score()
 }
 
 //---------------------------------------------------------------------------------------
-ImoInstrument* ImoGroupLayout::get_instrument(int iInstr)    //iInstr = 0..n-1
+ImoInstrument* ImoGroupLayout::get_instrument(int iInstr)
 {
+    //iInstr = 0..n-1, relative to instruments in the group
+
     if (iInstr < m_numInstrs && m_iFirstInstr >= 0)
         return get_score()->get_instrument(iInstr + m_iFirstInstr);
     else
@@ -3929,6 +3987,186 @@ void ImoKeySignature::transpose(const int semitones)
             m_fifths = -6;          //key G flat
     }
 }
+
+
+//=======================================================================================
+// ImoSystemLayout implementation
+//=======================================================================================
+ImoSystemLayout::ImoSystemLayout()
+    : ImoContainerObj(k_imo_system_layout)
+{
+}
+
+//---------------------------------------------------------------------------------------
+ImoSystemLayout::ImoSystemLayout(const std::string& name)
+    : ImoContainerObj(k_imo_system_layout)
+    , m_name(name)
+{
+}
+
+//---------------------------------------------------------------------------------------
+void ImoSystemLayout::add_instrument(int iInstr)
+{
+    //iInstr (0..n-1) is absolute, that is, refers to the score
+
+    if (m_instruments.size() == 0)
+        initialize_staves();
+
+    ImoScore* pScore = static_cast<ImoScore*>( get_ancestor_of_type(k_imo_score) );
+    ImoInstrument* pInstr = pScore->get_instrument(iInstr);
+    m_instruments.emplace_back(pInstr->get_id(), iInstr);
+    m_staffIndex[iInstr] = m_numStaves;
+    m_numStaves += pInstr->get_num_staves();
+}
+
+//---------------------------------------------------------------------------------------
+void ImoSystemLayout::initialize_staves()
+{
+    ImoScore* pScore = static_cast<ImoScore*>( get_ancestor_of_type(k_imo_score) );
+    if (pScore)
+    {
+        m_staffIndex.assign(pScore->get_num_instruments(), 0);
+        m_numStaves = 0;
+    }
+    else
+    {
+        stringstream msg;
+        msg << "Aborting. Attempting to use dettached ImoSystemLayout.";
+        LOMSE_LOG_ERROR(msg.str());
+        throw std::runtime_error(msg.str());
+    }
+}
+
+//---------------------------------------------------------------------------------------
+int ImoSystemLayout::last_instrument_abs_index()
+{
+    return m_instruments.back().second;
+}
+
+//---------------------------------------------------------------------------------------
+int ImoSystemLayout::get_relative_index(ImoInstrument* pInstr)
+{
+    ImoId id = pInstr->get_id();
+    int iRelIndex = 0;
+    for (auto p : m_instruments)
+    {
+        if (p.first == id)
+            return iRelIndex;
+
+        ++iRelIndex;
+    }
+    stringstream msg;
+    msg << "Invalid instrument, not included in this layout.";
+    LOMSE_LOG_ERROR(msg.str());
+    return -1;
+}
+
+//---------------------------------------------------------------------------------------
+int ImoSystemLayout::get_absolute_index(ImoInstrument* pInstr)
+{
+    ImoScore* pScore = static_cast<ImoScore*>( get_ancestor_of_type(k_imo_score) );
+    return pScore->get_instr_number_for(pInstr);
+}
+
+//---------------------------------------------------------------------------------------
+int ImoSystemLayout::make_relative(int iInstr)
+{
+    //iInstr (0..n-1) is absolute, that is, refered to the score
+
+    int iRelIndex = 0;
+    for (auto p : m_instruments)
+    {
+        if (p.second == iInstr)
+            return iRelIndex;
+
+        ++iRelIndex;
+    }
+    stringstream msg;
+    msg << "Invalid index " << iInstr;
+    LOMSE_LOG_ERROR(msg.str());
+    return 0;
+}
+
+//---------------------------------------------------------------------------------------
+int ImoSystemLayout::make_absolute(int iRelInstr)
+{
+    //iRelInstr (0..n-1) is relative to this layout
+
+    if (iRelInstr >=0 && iRelInstr < int(m_instruments.size()))
+    {
+        list< pair<ImoId, int> >::const_iterator it = std::next(m_instruments.begin(), iRelInstr);
+        return (*it).second;
+    }
+    stringstream msg;
+    msg << "Invalid index " << iRelInstr;
+    LOMSE_LOG_ERROR(msg.str());
+    return 0;
+}
+
+//---------------------------------------------------------------------------------------
+ImoInstrument* ImoSystemLayout::get_instrument(int iRelInstr)
+{
+    //iRelInstr (0..n-1) is relative to this layout
+
+    if (iRelInstr >=0 && iRelInstr < int(m_instruments.size()))
+    {
+        list< pair<ImoId, int> >::const_iterator it = std::next(m_instruments.begin(), iRelInstr);
+        return static_cast<ImoInstrument*>( m_pDocModel->get_pointer_to_imo((*it).first) );
+    }
+    stringstream msg;
+    msg << "Invalid index " << iRelInstr;
+    LOMSE_LOG_ERROR(msg.str());
+    return nullptr;
+}
+
+//---------------------------------------------------------------------------------------
+void ImoSystemLayout::add_group_layout(ImoGroupLayout* pGroup)
+{
+    ImoGroupLayouts* pGroups = get_group_layouts();
+    if (!pGroups)
+    {
+        pGroups = static_cast<ImoGroupLayouts*>(
+                        ImFactory::inject(k_imo_group_layouts, m_pDocModel) );
+        append_child_imo(pGroups);
+    }
+    pGroups->append_child_imo(pGroup);
+}
+
+//---------------------------------------------------------------------------------------
+ImoGroupLayouts* ImoSystemLayout::get_group_layouts()
+{
+    return static_cast<ImoGroupLayouts*>( get_child_of_type(k_imo_group_layouts) );
+}
+
+//---------------------------------------------------------------------------------------
+list<ImoGroupLayout*> ImoSystemLayout::find_groups_containing_instrument(ImoInstrument* pInstr)
+{
+    list<ImoGroupLayout*> groups;
+    ImoGroupLayouts* pGroups = get_group_layouts();
+    if (pGroups)
+    {
+        ImoObj::children_iterator itG;
+        for (itG= pGroups->begin(); itG != pGroups->end(); ++itG)
+        {
+            ImoGroupLayout* pGroup = static_cast<ImoGroupLayout*>(*itG);
+            if (pGroup->contains_instrument(pInstr))
+                groups.push_back(pGroup);
+        }
+    }
+    return groups;
+}
+
+//---------------------------------------------------------------------------------------
+bool ImoSystemLayout::is_instrument_included(int iInstr)
+{
+    for (auto p : m_instruments)
+    {
+        if (p.second == iInstr)
+            return true;
+    }
+    return false;
+}
+
 
 //=======================================================================================
 // ImoLink implementation
@@ -4242,6 +4480,24 @@ void ImoScore::initialize_object()
     append_child_imo( ImFactory::inject(k_imo_options, m_pDocModel) );
     append_child_imo( ImFactory::inject(k_imo_score_titles, m_pDocModel) );
     append_child_imo( ImFactory::inject(k_imo_instruments, m_pDocModel) );
+
+    ImoLayouts* pLayouts = static_cast<ImoLayouts*>(
+                                ImFactory::inject(k_imo_layouts, m_pDocModel) );
+    append_child_imo(pLayouts);
+    ImoSystemLayout* pLayout = static_cast<ImoSystemLayout*>(
+                                ImFactory::inject(k_imo_system_layout, m_pDocModel) );
+    pLayouts->append_child_imo(pLayout);
+    pLayout->set_name("default-generated-layout");
+
+    ImoScoreLayouts* pSLs = static_cast<ImoScoreLayouts*>(
+                                ImFactory::inject(k_imo_score_layouts, m_pDocModel) );
+    append_child_imo(pSLs);
+    ImoScoreLayout* pSL = static_cast<ImoScoreLayout*>(
+                                ImFactory::inject(k_imo_score_layout, m_pDocModel) );
+    pSLs->append_child_imo(pSL);
+    pSL->set_name("Default generated full score");
+    pSL->set_layout( pLayout->get_id() );
+
     set_defaults_for_system_info();
     set_defaults_for_options();
 }
@@ -4387,7 +4643,7 @@ void ImoScore::set_global_scaling(float millimeters, float tenths)
 }
 
 //---------------------------------------------------------------------------------------
-void ImoScore::set_float_option(const std::string& name, float value)
+void ImoScore::set_float_option(const string& name, float value)
 {
      ImoOptionInfo* pOpt = get_option(name);
      if (pOpt)
@@ -4405,7 +4661,7 @@ void ImoScore::set_float_option(const std::string& name, float value)
 }
 
 //---------------------------------------------------------------------------------------
-void ImoScore::set_bool_option(const std::string& name, bool value)
+void ImoScore::set_bool_option(const string& name, bool value)
 {
      ImoOptionInfo* pOpt = get_option(name);
      if (pOpt)
@@ -4423,7 +4679,7 @@ void ImoScore::set_bool_option(const std::string& name, bool value)
 }
 
 //---------------------------------------------------------------------------------------
-void ImoScore::set_long_option(const std::string& name, long value)
+void ImoScore::set_long_option(const string& name, long value)
 {
      ImoOptionInfo* pOpt = get_option(name);
      if (pOpt)
@@ -4535,7 +4791,7 @@ int ImoScore::get_num_instruments()
 }
 
 //---------------------------------------------------------------------------------------
-ImoOptionInfo* ImoScore::get_option(const std::string& name)
+ImoOptionInfo* ImoScore::get_option(const string& name)
 {
     ImoOptions* pColOpts = get_options();
     ImoObj::children_iterator it;
@@ -4592,40 +4848,32 @@ void ImoScore::add_sytem_info(ImoSystemInfo* pSL)
 }
 
 //---------------------------------------------------------------------------------------
-ImoGroupLayouts* ImoScore::get_instrument_groups()
+ImoGroupLayouts* ImoScore::get_group_layouts(const string& layout)
 {
-    return static_cast<ImoGroupLayouts*>( get_child_of_type(k_imo_instrument_groups) );
+    ImoSystemLayout* pLayout = get_system_layout(layout);
+    if (pLayout)
+        return pLayout->get_group_layouts();
+
+    return nullptr;
 }
 
 //---------------------------------------------------------------------------------------
-list<ImoGroupLayout*> ImoScore::find_groups_containing_instrument(ImoInstrument* pInstr)
+list<ImoGroupLayout*> ImoScore::find_groups_containing_instrument(ImoInstrument* pInstr,
+                                                                 const string& layout)
 {
-    list<ImoGroupLayout*> groups;
-    ImoGroupLayouts* pGroups = get_instrument_groups();
-    if (pGroups)
-    {
-        ImoObj::children_iterator itG;
-        for (itG= pGroups->begin(); itG != pGroups->end(); ++itG)
-        {
-            ImoGroupLayout* pGroup = static_cast<ImoGroupLayout*>(*itG);
-            if (pGroup->contains_instrument(pInstr))
-                groups.push_back(pGroup);
-        }
-    }
-    return groups;
+    ImoSystemLayout* pLayout = get_system_layout(layout);
+    if (pLayout)
+        return pLayout->find_groups_containing_instrument(pInstr);
+
+    return std::list<ImoGroupLayout*>();
 }
 
 //---------------------------------------------------------------------------------------
-void ImoScore::add_instruments_group(ImoGroupLayout* pGroup)
+void ImoScore::add_group_layout(ImoGroupLayout* pGroup, const string& layout)
 {
-    ImoGroupLayouts* pGroups = get_instrument_groups();
-    if (!pGroups)
-    {
-        pGroups = static_cast<ImoGroupLayouts*>(
-                        ImFactory::inject(k_imo_instrument_groups, m_pDocModel) );
-        append_child_imo(pGroups);
-    }
-    pGroups->append_child_imo(pGroup);
+    ImoSystemLayout* pLayout = get_system_layout(layout);
+    if (pLayout)
+        pLayout->add_group_layout(pGroup);
 }
 
 //---------------------------------------------------------------------------------------
@@ -4639,6 +4887,77 @@ void ImoScore::add_title(ImoScoreTitle* pTitle)
 {
     ImoScoreTitles* pTitles = get_titles();
     pTitles->append_child_imo(pTitle);
+}
+
+//---------------------------------------------------------------------------------------
+ImoLayouts* ImoScore::get_layouts()
+{
+    return static_cast<ImoLayouts*>( get_child_of_type(k_imo_layouts) );
+}
+
+//---------------------------------------------------------------------------------------
+ImoSystemLayout* ImoScore::get_system_layout(const string& name)
+{
+    ImoLayouts* pLayouts = get_layouts();
+    ImoObj::children_iterator it = pLayouts->begin();
+    while (it != pLayouts->end())
+    {
+        ImoSystemLayout* pL = static_cast<ImoSystemLayout*>(*it);
+        if (pL->get_name() == name)
+            return pL;
+    }
+    return nullptr;
+}
+
+//---------------------------------------------------------------------------------------
+ImoScoreLayouts* ImoScore::get_score_layouts()
+{
+    return static_cast<ImoScoreLayouts*>( get_child_of_type(k_imo_score_layouts) );
+}
+
+//---------------------------------------------------------------------------------------
+ImoScoreLayout* ImoScore::get_score_layout(const std::string& name)
+{
+    ImoScoreLayouts* pLayouts = get_score_layouts();
+    ImoObj::children_iterator it = pLayouts->begin();
+    while (it != pLayouts->end())
+    {
+        ImoScoreLayout* pL = static_cast<ImoScoreLayout*>(*it);
+        if (pL->get_name() == name)
+            return pL;
+        ++it;
+    }
+    return nullptr;
+}
+//---------------------------------------------------------------------------------------
+ImoSystemLayout* ImoScore::new_system_layout(const std::string& name)
+{
+    //create the new system layout
+    ImoSystemLayout* pLayout = static_cast<ImoSystemLayout*>(
+                                    ImFactory::inject(k_imo_system_layout, m_pDocModel) );
+    pLayout->set_name(name);
+
+    //add it to the collection
+    ImoLayouts* pLayouts = get_layouts();
+    pLayouts->append_child_imo(pLayout);
+
+    return pLayout;
+}
+
+//---------------------------------------------------------------------------------------
+ImoScoreLayout* ImoScore::new_score_layout(const std::string& name, ImoId systemLayoutId)
+{
+    //create the new score layout
+    ImoScoreLayout* pLayout = static_cast<ImoScoreLayout*>(
+                                    ImFactory::inject(k_imo_score_layout, m_pDocModel) );
+    pLayout->set_name(name);
+    pLayout->set_layout(systemLayoutId);
+
+    //add it to the collection
+    ImoScoreLayouts* pLayouts = get_score_layouts();
+    pLayouts->append_child_imo(pLayout);
+
+    return pLayout;
 }
 
 //---------------------------------------------------------------------------------------

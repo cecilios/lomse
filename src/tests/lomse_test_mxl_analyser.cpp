@@ -779,7 +779,7 @@ SUITE(MxlAnalyserTest)
         ImoInstrument* pInstr = pScore->get_instrument(0);
         CHECK( pInstr != nullptr );
 
-        ImoGroupLayouts* pGroups = pScore->get_instrument_groups();
+        ImoGroupLayouts* pGroups = pScore->get_group_layouts();
         CHECK( pGroups != nullptr );
         ImoGroupLayout* pGroup = dynamic_cast<ImoGroupLayout*>( pGroups->get_first_child() );
         CHECK( pGroup != nullptr );
@@ -826,7 +826,7 @@ SUITE(MxlAnalyserTest)
         ImoInstrument* pInstr = pScore->get_instrument(0);
         CHECK( pInstr != nullptr );
 
-        ImoGroupLayouts* pGroups = pScore->get_instrument_groups();
+        ImoGroupLayouts* pGroups = pScore->get_group_layouts();
         CHECK( pGroups == nullptr );
 
         a.do_not_delete_instruments_in_destructor();
@@ -866,7 +866,7 @@ SUITE(MxlAnalyserTest)
         ImoInstrument* pInstr = pScore->get_instrument(0);
         CHECK( pInstr != nullptr );
 
-        ImoGroupLayouts* pGroups = pScore->get_instrument_groups();
+        ImoGroupLayouts* pGroups = pScore->get_group_layouts();
         CHECK( pGroups == nullptr );
 
         a.do_not_delete_instruments_in_destructor();
@@ -910,7 +910,7 @@ SUITE(MxlAnalyserTest)
                 ImoInstrument* pInstr = pScore->get_instrument(0);
                 CHECK( pInstr != nullptr );
 
-                ImoGroupLayouts* pGroups = pScore->get_instrument_groups();
+                ImoGroupLayouts* pGroups = pScore->get_group_layouts();
                 CHECK( pGroups == nullptr );
             }
         }
@@ -956,7 +956,7 @@ SUITE(MxlAnalyserTest)
                 ImoInstrument* pInstr = pScore->get_instrument(0);
                 CHECK( pInstr != nullptr );
 
-                ImoGroupLayouts* pGroups = pScore->get_instrument_groups();
+                ImoGroupLayouts* pGroups = pScore->get_group_layouts();
                 CHECK( pGroups == nullptr );
             }
         }
@@ -1002,7 +1002,7 @@ SUITE(MxlAnalyserTest)
                 ImoInstrument* pInstr = pScore->get_instrument(0);
                 CHECK( pInstr != nullptr );
 
-                ImoGroupLayouts* pGroups = pScore->get_instrument_groups();
+                ImoGroupLayouts* pGroups = pScore->get_group_layouts();
                 CHECK( pGroups == nullptr );
             }
         }
@@ -1050,7 +1050,7 @@ SUITE(MxlAnalyserTest)
                 ImoInstrument* pInstr = pScore->get_instrument(0);
                 CHECK( pInstr != nullptr );
 
-                ImoGroupLayouts* pGroups = pScore->get_instrument_groups();
+                ImoGroupLayouts* pGroups = pScore->get_group_layouts();
                 CHECK( pGroups != nullptr );
                 ImoGroupLayout* pGroup = dynamic_cast<ImoGroupLayout*>( pGroups->get_first_child() );
                 CHECK( pGroup != nullptr );
@@ -1108,7 +1108,7 @@ SUITE(MxlAnalyserTest)
                 CHECK( pScore->get_num_instruments() == 2 );
                 ImoInstrument* pInstr = pScore->get_instrument(0);
                 CHECK( pInstr != nullptr );
-                ImoGroupLayouts* pGroups = pScore->get_instrument_groups();
+                ImoGroupLayouts* pGroups = pScore->get_group_layouts();
                 CHECK( pGroups != nullptr );
                 if (pGroups)
                 {
@@ -1167,7 +1167,7 @@ SUITE(MxlAnalyserTest)
                 ImoInstrument* pInstr = pScore->get_instrument(0);
                 CHECK( pInstr != nullptr );
 
-                ImoGroupLayouts* pGroups = pScore->get_instrument_groups();
+                ImoGroupLayouts* pGroups = pScore->get_group_layouts();
                 CHECK( pGroups != nullptr );
                 ImoGroupLayout* pGroup = dynamic_cast<ImoGroupLayout*>( pGroups->get_first_child() );
                 CHECK( pGroup != nullptr );
@@ -1224,7 +1224,7 @@ SUITE(MxlAnalyserTest)
                 ImoInstrument* pInstr = pScore->get_instrument(0);
                 CHECK( pInstr != nullptr );
 
-                ImoGroupLayouts* pGroups = pScore->get_instrument_groups();
+                ImoGroupLayouts* pGroups = pScore->get_group_layouts();
                 CHECK( pGroups != nullptr );
                 ImoGroupLayout* pGroup = dynamic_cast<ImoGroupLayout*>( pGroups->get_first_child() );
                 CHECK( pGroup != nullptr );
@@ -1283,7 +1283,7 @@ SUITE(MxlAnalyserTest)
                 ImoInstrument* pInstr = pScore->get_instrument(0);
                 CHECK( pInstr != nullptr );
 
-                ImoGroupLayouts* pGroups = pScore->get_instrument_groups();
+                ImoGroupLayouts* pGroups = pScore->get_group_layouts();
                 CHECK( pGroups != nullptr );
                 if (pGroups)
                 {
@@ -1351,7 +1351,7 @@ SUITE(MxlAnalyserTest)
                     CHECK( pInstr != nullptr );
                     CHECK( pInstr->get_barline_layout() == ImoInstrument::k_nothing );
 
-                    ImoGroupLayouts* pGroups = pScore->get_instrument_groups();
+                    ImoGroupLayouts* pGroups = pScore->get_group_layouts();
                     CHECK( pGroups != nullptr );
                     if (pGroups)
                     {
@@ -9300,11 +9300,11 @@ SUITE(MxlAnalyserTest)
           //voice   obj
             { 0, "(clef G p1)" },
             { 0, "(clef F4 p2)" },
-            { 2, "(n a3 e v2 p2 (beam 47 +))" },
-            { 2, "(n e4 e v2 p1 (beam 47 =))" },
-            { 2, "(n a3 e v2 p2 (beam 47 =))" },
+            { 2, "(n a3 e v2 p2 (beam 51 +))" },
+            { 2, "(n e4 e v2 p1 (beam 51 =))" },
+            { 2, "(n a3 e v2 p2 (beam 51 =))" },
             { 2, "(clef F4 p1)" },
-            { 2, "(n e3 e v2 p1 (beam 47 -))" },
+            { 2, "(n e3 e v2 p1 (beam 51 -))" },
             { 0, "(barline simple)" }};
         CHECK( check_music_data2(pMD, result) );
         delete pRoot;

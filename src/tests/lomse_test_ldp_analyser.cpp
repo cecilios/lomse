@@ -7615,7 +7615,7 @@ SUITE(LdpAnalyserTest)
         ImoScore* pScore = static_cast<ImoScore*>( pRoot );
         pScore->end_of_changes();
         CHECK( pScore && pScore->get_num_instruments() == 2 );
-        ImoGroupLayouts* pGroups = pScore->get_instrument_groups();
+        ImoGroupLayouts* pGroups = pScore->get_group_layouts();
         CHECK( pGroups != nullptr );
         ImoGroupLayout* pGroup = dynamic_cast<ImoGroupLayout*>( pGroups->get_first_child() );
         CHECK( pGroup != nullptr );
@@ -7656,7 +7656,7 @@ SUITE(LdpAnalyserTest)
         ImoScore* pScore = static_cast<ImoScore*>( pRoot );
         pScore->end_of_changes();
         CHECK( pScore && pScore->get_num_instruments() == 2 );
-        ImoGroupLayouts* pGroups = pScore->get_instrument_groups();
+        ImoGroupLayouts* pGroups = pScore->get_group_layouts();
         CHECK( pGroups != nullptr );
         ImoGroupLayout* pGroup = dynamic_cast<ImoGroupLayout*>( pGroups->get_first_child() );
         CHECK( pGroup != nullptr );
@@ -7698,7 +7698,7 @@ SUITE(LdpAnalyserTest)
         ImoScore* pScore = static_cast<ImoScore*>( pRoot );
         pScore->end_of_changes();
         CHECK( pScore && pScore->get_num_instruments() == 2 );
-        ImoGroupLayouts* pGroups = pScore->get_instrument_groups();
+        ImoGroupLayouts* pGroups = pScore->get_group_layouts();
         CHECK( pGroups != nullptr );
         ImoGroupLayout* pGroup = dynamic_cast<ImoGroupLayout*>( pGroups->get_first_child() );
         CHECK( pGroup != nullptr );
@@ -7746,7 +7746,7 @@ SUITE(LdpAnalyserTest)
         ImoScore* pScore = static_cast<ImoScore*>( pRoot );
         pScore->end_of_changes();
         CHECK( pScore && pScore->get_num_instruments() == 3 );
-        ImoGroupLayouts* pGroups = pScore->get_instrument_groups();
+        ImoGroupLayouts* pGroups = pScore->get_group_layouts();
         CHECK( pGroups != nullptr );
         ImoGroupLayout* pGroup = dynamic_cast<ImoGroupLayout*>( pGroups->get_first_child() );
         CHECK( pGroup != nullptr );
@@ -7842,7 +7842,7 @@ SUITE(LdpAnalyserTest)
             CHECK( pScore->get_num_instruments() == 3 );
 
             ImoGroupLayout* pGrp = static_cast<ImoGroupLayout*>(
-                                        pScore->get_instrument_groups()->get_item(0) );
+                                        pScore->get_group_layouts()->get_item(0) );
             CHECK( pGrp != nullptr );
             CHECK( pGrp->get_name_string() == "Group" );
             CHECK( pGrp->get_abbrev_string() == "G." );
@@ -7886,7 +7886,7 @@ SUITE(LdpAnalyserTest)
             CHECK( pScore->get_num_instruments() == 3 );
 
             ImoGroupLayout* pGrp = static_cast<ImoGroupLayout*>(
-                                        pScore->get_instrument_groups()->get_item(0) );
+                                        pScore->get_group_layouts()->get_item(0) );
             CHECK( pGrp != nullptr );
             CHECK( pGrp->get_name_string() == "" );
             CHECK( pGrp->get_abbrev_string() == "G." );
@@ -7931,7 +7931,7 @@ SUITE(LdpAnalyserTest)
             CHECK( pScore->get_num_instruments() == 4 );
 
             ImoGroupLayout* pGrp = static_cast<ImoGroupLayout*>(
-                                        pScore->get_instrument_groups()->get_item(0) );
+                                        pScore->get_group_layouts()->get_item(0) );
             CHECK( pGrp != nullptr );
             CHECK( pGrp->get_name_string() == "Grp" );
             CHECK( pGrp->get_abbrev_string() == "" );
@@ -7976,7 +7976,7 @@ SUITE(LdpAnalyserTest)
             CHECK( pScore->get_num_instruments() == 3 );
 
             ImoGroupLayout* pGrp = static_cast<ImoGroupLayout*>(
-                                        pScore->get_instrument_groups()->get_item(0) );
+                                        pScore->get_group_layouts()->get_item(0) );
             CHECK( pGrp != nullptr );
             CHECK( pGrp->get_name_string() == "" );
             CHECK( pGrp->get_abbrev_string() == "" );
@@ -8021,7 +8021,7 @@ SUITE(LdpAnalyserTest)
             CHECK( pScore->get_num_instruments() == 3 );
 
             ImoGroupLayout* pGrp = static_cast<ImoGroupLayout*>(
-                                        pScore->get_instrument_groups()->get_item(0) );
+                                        pScore->get_group_layouts()->get_item(0) );
             CHECK( pGrp != nullptr );
             CHECK( pGrp->get_name_string() == "" );
             CHECK( pGrp->get_abbrev_string() == "" );
@@ -8062,7 +8062,7 @@ SUITE(LdpAnalyserTest)
         {
             pScore->end_of_changes();
             CHECK( pScore->get_num_instruments() == 3 );
-            ImoGroupLayouts* pGroups = pScore->get_instrument_groups();
+            ImoGroupLayouts* pGroups = pScore->get_group_layouts();
             CHECK( pGroups == nullptr );
         }
 

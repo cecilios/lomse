@@ -767,11 +767,11 @@ SUITE(SvgDrawerTest)
     {
         //@701 shape GmoShapeBrace. For group
         Document doc(m_libraryScope);
-        ImoObj* pImo = ImFactory::inject(k_imo_instr_group, &doc, 83);
+        ImoObj* pImo = ImFactory::inject(k_imo_group_layout, &doc, 83);
         GmoShapeBrace shape(pImo, 0, 100.0, 200.0, 200.0, 800.0, Color(0,0,0));
 
         stringstream expected;
-        expected << "<path id='m83-brace' class='instr-group-brace' d=' M 100 501.101 L 100 498.899 "
+        expected << "<path id='m83-brace' class='group-layout-brace' d=' M 100 501.101 L 100 498.899 "
             << "S 127.687 489.976 142.834 478.483 S 159.772 465.612 159.772 450.098 "
             << "S 159.772 438.386 146.743 413.728 S 123.616 369.829 122.476 367.422 "
             << "S 109.283 338.508 109.283 317.446 S 109.283 300.245 117.752 282.25 "
@@ -824,11 +824,11 @@ SUITE(SvgDrawerTest)
     {
         //@801 shape GmoShapeBracket. For group
         Document doc(m_libraryScope);
-        ImoObj* pImo = ImFactory::inject(k_imo_instr_group, &doc, 83);
+        ImoObj* pImo = ImFactory::inject(k_imo_group_layout, &doc, 83);
         GmoShapeBracket shape(pImo, 0, 100.0, 200.0, 200.0, 800.0, 50.0, Color(0,0,0));
 
         stringstream expected;
-        expected << "<path id='m83-bracket' class='instr-group-bracket' d=' M 100 176.98 "
+        expected << "<path id='m83-bracket' class='group-layout-bracket' d=' M 100 176.98 "
             << "S 188.925 175.33 282.736 166.172 S 308.795 162.459 326.71 158.416 "
             << "S 340.717 155.281 357.655 150 L 372.313 151.32 "
             << "S 361.889 156.848 347.557 161.469 S 335.831 165.264 313.355 170.957 "
@@ -1486,12 +1486,12 @@ SUITE(SvgDrawerTest)
     {
         //@3800 shape GmoShapeSquaredBracket
         Document doc(m_libraryScope);
-        ImoObj* pImo = ImFactory::inject(k_imo_instr_group, &doc, 83);
+        ImoObj* pImo = ImFactory::inject(k_imo_group_layout, &doc, 83);
         GmoShapeSquaredBracket shape(pImo, 0, 100.0, 200.0, 200.0, 800.0, 10.0, Color(0,0,0));
 
         stringstream expected;
         expected
-            << "<path id='m83-squared-bracket' class='instr-group-squared-bracket' "
+            << "<path id='m83-squared-bracket' class='group-layout-squared-bracket' "
             <<       "d=' M 200 200 H 100 V 800 H 200' stroke='#000' fill='#00000000' "
             <<       "stroke-width='10'/>" << endl;
 
@@ -1560,7 +1560,7 @@ SUITE(SvgDrawerTest)
     {
         //@4200 shape GmoShapeText. ImoGroupLayout. name, abbrev
         Document doc(m_libraryScope);
-        ImoObj* pImo = ImFactory::inject(k_imo_instr_group, &doc, 83);
+        ImoObj* pImo = ImFactory::inject(k_imo_group_layout, &doc, 83);
         GmoShapeText shape(pImo, 0, "Flutes", nullptr, "en",
                            TextEngraver::k_class_group_name,
                            200.0f, 500.0f, m_libraryScope);

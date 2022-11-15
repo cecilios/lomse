@@ -5051,7 +5051,7 @@ ImoGroupLayout* MnxAnalyser::start_part_group(int number)
 
     Document* pDoc = get_document_being_analysed();
     ImoGroupLayout* pGrp = static_cast<ImoGroupLayout*>(
-                                    ImFactory::inject(k_imo_instr_group, pDoc));
+                                    ImFactory::inject(k_imo_group_layout, pDoc));
 
     m_partGroups.start_group(number, pGrp);
     return pGrp;

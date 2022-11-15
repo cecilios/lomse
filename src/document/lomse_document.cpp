@@ -831,7 +831,7 @@ EImoObjType object_type_to_imo_type(EDocObject type)
         case k_obj_image:               return k_imo_image;
         case k_obj_inline_wrapper:      return k_imo_inline_wrapper;
         case k_obj_instrument:          return k_imo_instrument;
-        case k_obj_instr_group:         return k_imo_instr_group;
+        case k_obj_instr_group:         return k_imo_group_layout;
         case k_obj_link:                return k_imo_link;
         case k_obj_list:                return k_imo_list;
         case k_obj_list_item:           return k_imo_listitem;

@@ -50,8 +50,8 @@ ImoObj* Linker::add_child_to_model(ImoObj* pParent, ImoObj* pChild, int ldpChild
         case k_imo_instrument:
             return add_instrument(static_cast<ImoInstrument*>(pChild));
 
-        case k_imo_instr_group:
-            return add_instruments_group(static_cast<ImoGroupLayout*>(pChild));
+        case k_imo_group_layout:
+            return add_group_layout(static_cast<ImoGroupLayout*>(pChild));
 
         case k_imo_listitem:
             return add_listitem(static_cast<ImoListItem*>(pChild));
@@ -145,12 +145,12 @@ ImoObj* Linker::add_content(ImoContent* pContent)
 
 
 //---------------------------------------------------------------------------------------
-ImoObj* Linker::add_instruments_group(ImoGroupLayout* pGrp)
+ImoObj* Linker::add_group_layout(ImoGroupLayout* pGrp)
 {
     if (m_pParent && m_pParent->is_score())
     {
         ImoScore* pScore = static_cast<ImoScore*>(m_pParent);
-        pScore->add_instruments_group(pGrp);
+        pScore->add_group_layout(pGrp);
     }
     return pGrp;
 }
@@ -315,7 +315,7 @@ ImoObj* Linker::add_instrument(ImoInstrument* pInstrument)
 {
     if (m_pParent)
     {
-//        if (m_pParent->is_instr_group())
+//        if (m_pParent->is_group_layout())
 //        {
 //            ImoGroupLayout* pGrp = static_cast<ImoGroupLayout*>( m_pParent );
 //            pGrp->add_instrument(pInstrument);
@@ -368,7 +368,7 @@ ImoObj* Linker::add_text(ImoScoreText* pText)
             return nullptr;
         }
 
-        if (m_pParent->is_instr_group())
+        if (m_pParent->is_group_layout())
         {
             ImoGroupLayout* pGrp = static_cast<ImoGroupLayout*>(m_pParent);
             //could be 'name' or 'abbrev'
