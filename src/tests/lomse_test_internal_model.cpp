@@ -249,11 +249,11 @@ SUITE(InternalModelTest)
     }
 
 
-    //@ score ----------------------------------------------------------------------------
+    //@ score ---------------------------------------------------------------------------
 
-    TEST_FIXTURE(InternalModelTestFixture, ScoreInitialize)
+    TEST_FIXTURE(InternalModelTestFixture, im_score_0300)
     {
-        //@ score has default options, empty ImoInstruments, and no ImoGroupLayouts
+        //@0300. score has default options, empty ImoInstruments, and no ImoGroupLayouts
 
         Document doc(m_libraryScope);
         ImoScore* pScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, &doc));
@@ -280,9 +280,66 @@ SUITE(InternalModelTest)
         delete pScore;
     }
 
-    TEST_FIXTURE(InternalModelTestFixture, ScoreFirstInstrument)
+    TEST_FIXTURE(InternalModelTestFixture, im_score_0301)
     {
-        //@ adding an instrument creates a child in ImoInstruments
+        //@0301. score is created with default layout nodes
+
+        Document doc(m_libraryScope);
+        ImoScore* pScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, &doc));
+
+        ImoLayouts* pLayouts = static_cast<ImoLayouts*>(
+                                    pScore->get_child_of_type(k_imo_layouts) );
+        CHECK( pLayouts != nullptr );
+        ImoSystemLayout* pLayout = static_cast<ImoSystemLayout*>(
+                                    pLayouts->get_child_of_type(k_imo_system_layout) );
+        CHECK( pLayout && pLayout->get_name() == "default-generated-layout" );
+
+        ImoScoreLayouts* pSLs = static_cast<ImoScoreLayouts*>(
+                                    pScore->get_child_of_type(k_imo_score_layouts) );
+        CHECK( pSLs != nullptr );
+        ImoScoreLayout* pSL = static_cast<ImoScoreLayout*>(
+                                    pSLs->get_child_of_type(k_imo_score_layout) );
+        CHECK( pSL && pSL->get_name() == "Default generated full score" );
+        CHECK( pSL->get_layout_id() == pLayout->get_id() );
+
+        delete pScore;
+    }
+
+    TEST_FIXTURE(InternalModelTestFixture, im_score_0302)
+    {
+        //@0302. access to ImoSystemLayout by name
+
+        Document doc(m_libraryScope);
+        ImoScore* pScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, &doc));
+
+        ImoSystemLayout* pLayout = pScore->get_system_layout("default-generated-layout");
+        CHECK( pLayout && pLayout->get_name() == "default-generated-layout" );
+
+        pLayout = pScore->get_system_layout();
+        CHECK( pLayout && pLayout->get_name() == "default-generated-layout" );
+
+        delete pScore;
+    }
+
+    TEST_FIXTURE(InternalModelTestFixture, im_score_0303)
+    {
+        //@0303. access to ImoScoreLayout by name
+
+        Document doc(m_libraryScope);
+        ImoScore* pScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, &doc));
+
+        ImoScoreLayout* pSL = pScore->get_score_layout("Default generated full score");
+        CHECK( pSL && pSL->get_name() == "Default generated full score" );
+
+        pSL = pScore->get_score_layout();
+        CHECK( pSL && pSL->get_name() == "Default generated full score" );
+
+        delete pScore;
+    }
+
+    TEST_FIXTURE(InternalModelTestFixture, im_score_0304)
+    {
+        //@0304.  adding an instrument creates a child in ImoInstruments
 
         Document doc(m_libraryScope);
         ImoScore* pScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, &doc));
@@ -306,9 +363,9 @@ SUITE(InternalModelTest)
         delete pScore;
     }
 
-    TEST_FIXTURE(InternalModelTestFixture, ScoreAddFirstInstrGroup)
+    TEST_FIXTURE(InternalModelTestFixture, im_score_0305)
     {
-        //@ adding the first <group> creates an ImoGroupLayouts in score.
+        //@0305. adding the first <group> creates an ImoGroupLayouts in chosen ImoSystemLayout.
 
         Document doc(m_libraryScope);
         ImoScore* pScore = static_cast<ImoScore*>(
@@ -332,8 +389,12 @@ SUITE(InternalModelTest)
         pGroup->set_range(0, 1);
         pScore->add_group_layout(pGroup);
 
-        ImoGroupLayouts* pGroups = pScore->get_group_layouts();
-        CHECK( pGroups != nullptr );
+        CHECK( pScore->get_child_of_type(k_imo_group_layouts) == nullptr );
+        ImoSystemLayout* pLayout = pScore->get_system_layout("default-generated-layout");
+        ImoGroupLayouts* pGroups = pLayout->get_group_layouts();
+        ImoGroupLayouts* pGroups2 = pScore->get_group_layouts();
+        CHECK( pGroups && pGroups2 && pGroups == pGroups2 );
+
         //cout << "Num.instruments = " << pScore->get_num_instruments() << endl;
 
         CHECK( pScore->get_num_instruments() == 3 );

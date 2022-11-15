@@ -326,9 +326,8 @@ SUITE(DocModelTest)
         //@04. clone ImoDocument with several ImoRelObj
 
         Document doc(m_libraryScope);
-//        doc.from_file(m_scores_path + "unit-tests/xml-export/00050-grace-notes-alignment.xml", Document::k_format_mxl);
-        doc.from_file(m_scores_path + "00050-grace-notes-alignment.xml",
-                      Document::k_format_mxl);
+        doc.from_file(m_scores_path + "unit-tests/xml-export/" +
+            "030-grace-notes-alignment.xml", Document::k_format_mxl);
         ImoObj* pImo = doc.get_im_root();
 
         DocModel* pModelCopy = doc.create_model_copy();
@@ -484,6 +483,39 @@ SUITE(DocModelTest)
 //        ImoScore* pScore = static_cast<ImoScore*>( doc.get_content_item(0) );
 //        ColStaffObjs* pTable = pScore->get_staffobjs_table();
 //        cout << test_name() << endl << pTable->dump();
+
+        delete pModelCopy;
+    }
+
+    TEST_FIXTURE(DocModelTestFixture, clone_10)
+    {
+        //@10. Bug cloning SystemLayout
+
+        Document doc(m_libraryScope);
+        doc.from_string("(score (vers 2.0) "
+            "(instrument (musicData "
+            "(clef G)(key G)(time 4 4)"
+            "(n g4 q)(n a4 q)(n b4 q)(n c5 q)"
+            "(barline)"
+            "(n d5 q)(n e5 q)(n f5 q)(n g5 q)"
+            "(barline)"
+            ")))" );
+
+        DocModel* pModel = doc.get_doc_model();
+        ImoObj* pImo = pModel->get_im_root();
+        DocModel* pModelCopy = doc.create_model_copy();
+        ImoDocument* pImoCopy = pModelCopy->get_im_root();
+
+        CHECK( pImoCopy->get_doc_model() == pModelCopy );
+        CHECK( check_tree(pImo, pImoCopy) );
+        CHECK( check_to_string(pImo, pImoCopy) );
+        IdAssigner* pAssigner = pModel->get_id_assigner();
+        IdAssigner* pAssignerCopy = pModelCopy->get_id_assigner();
+        CHECK( check_equal_id_assigners(pAssigner, pAssignerCopy) );
+//        cout << pAssigner->dump() << endl;
+//        dump_tree(pImo);
+//        dump_tree(pImoCopy);
+        CHECK( check_tree_owner(pImoCopy, pModelCopy) );
 
         delete pModelCopy;
     }

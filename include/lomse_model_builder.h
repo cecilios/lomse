@@ -38,8 +38,9 @@ class ImMeasuresTableEntry;
 
 
 //---------------------------------------------------------------------------------------
-// ModelBuilder. Implements the final step of LDP compiler: code generation.
-// Traverses the parse tree and creates the internal model
+/** ModelBuilder. Implements the final step of LDP compiler: code generation.
+    Traverses the parse tree and creates the internal model
+*/
 class ModelBuilder
 {
 public:
@@ -79,9 +80,10 @@ protected:
 };
 
 //---------------------------------------------------------------------------------------
-// MidiAssigner. Implements the algorithm to traverse the score instruments and assign
-// midi channel and midi port pitch to the <sound-instruments>. It also ensures that
-// all ImoInstruments have at least one ImoSoundInfo, creating one if not.
+/** MidiAssigner. Implements the algorithm to traverse the score instruments and assign
+    midi channel and midi port pitch to the <sound-instruments>. It also ensures that
+    all ImoInstruments have at least one ImoSoundInfo, creating one if not.
+*/
 class MidiAssigner
 {
 protected:
@@ -101,15 +103,16 @@ protected:
 };
 
 //---------------------------------------------------------------------------------------
-// PartIdAssigner. Implements the algorithm to traverse the score instruments and assign
-// a unique partID to any instrument not having partID
+/** PartIdAssigner. Implements the algorithm to traverse the score instruments and assign
+    a unique partID to any instrument not having partID
+*/
 class PartIdAssigner
 {
 protected:
 
 public:
-    PartIdAssigner();
-    virtual ~PartIdAssigner();
+    PartIdAssigner() {}
+    virtual ~PartIdAssigner() {}
 
 	void assign_parts_id(ImoScore* pScore);
 
@@ -117,8 +120,9 @@ protected:
 };
 
 //---------------------------------------------------------------------------------------
-// GroupBarlinesFixer. Implements the algorithm for ensuring that barlines shared between
-// all instruments in a group are are identified and marked as such.
+/** GroupBarlinesFixer. Implements the algorithm for ensuring that barlines shared between
+    all instruments in a group are are identified and marked as such.
+*/
 class GroupBarlinesFixer
 {
 protected:
@@ -135,8 +139,9 @@ protected:
 
 
 //---------------------------------------------------------------------------------------
-// MeasuresTableBuilder. Implements the algorithm to traverse the ColStaffObjs table
-// for creating the ImMeasuresTable for each instrument.
+/** MeasuresTableBuilder. Implements the algorithm to traverse the ColStaffObjs table
+    for creating the ImMeasuresTable for each instrument.
+*/
 class MeasuresTableBuilder
 {
 protected:
@@ -155,6 +160,23 @@ protected:
                                   ColStaffObjsEntry* pStartEntry);
     void finish_current_measure(int iInstr, ColStaffObjsEntry* pEndEntry=nullptr);
     void start_new_measure(int iInstr, ColStaffObjsEntry* pStartEntry);
+};
+
+
+//---------------------------------------------------------------------------------------
+/** DefaultLayoutBuilder. Populates default ImoSystemLayout with the full list of instruments.
+*/
+class DefaultLayoutBuilder
+{
+protected:
+
+public:
+    DefaultLayoutBuilder() {}
+    virtual ~DefaultLayoutBuilder() {}
+
+	void build(ImoScore* pScore);
+
+protected:
 };
 
 

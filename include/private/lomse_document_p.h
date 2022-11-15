@@ -535,7 +535,7 @@ public:
     ImoBlockLevelObj* get_last_content_item() {
         return dynamic_cast<ImoBlockLevelObj*>( m_pModel->m_pImoDoc->get_last_content_item() );
     }
-
+    ImoScore* get_first_score();
 
     //styles
 

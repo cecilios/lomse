@@ -1184,3 +1184,46 @@ SUITE(MeasuresTableBuilderTest)
 
 };
 
+
+//=======================================================================================
+class DefaultLayoutBuilderTestFixture
+{
+public:
+    LibraryScope m_libraryScope;
+    std::string m_scores_path;
+
+    DefaultLayoutBuilderTestFixture()     //SetUp fixture
+        : m_libraryScope(cout)
+    {
+        m_scores_path = TESTLIB_SCORES_PATH;
+        m_libraryScope.set_default_fonts_path(TESTLIB_FONTS_PATH);
+    }
+
+    ~DefaultLayoutBuilderTestFixture()    //TearDown fixture
+    {
+    }
+};
+
+SUITE(DefaultLayoutBuilderTest)
+{
+
+    TEST_FIXTURE(DefaultLayoutBuilderTestFixture, DefaultLayout_01)
+    {
+        //@01. list of instruments properly built
+
+        Document doc(m_libraryScope);
+        doc.from_file(m_scores_path + "unit-tests/other/" +
+            "03-cursor-score-in-exercise.lmd", Document::k_format_lmd );
+
+        ImoScore* pScore = doc.get_first_score();
+        CHECK( pScore != nullptr );
+        ImoScoreLayout* pScL = pScore->get_score_layout();
+        CHECK( pScL && pScL->get_name() == "Default generated full score" );
+        ImoSystemLayout* pLayout = pScL->get_system_layout();
+        CHECK( pLayout && pLayout->get_name() == "default-generated-layout" );
+        CHECK( pLayout && pLayout->num_instruments() == 1 );
+    }
+
+
+};
+

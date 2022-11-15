@@ -756,6 +756,38 @@ Observable* Document::get_observable_child(int childType, ImoId childId)
 }
 
 //---------------------------------------------------------------------------------------
+ImoScore* Document::get_first_score()
+{
+    ImoContent* pCont = get_content();
+    if (pCont == nullptr)
+        return nullptr;
+
+    ImoObj::children_iterator it(pCont);
+    while (*it && (*it)->is_content())
+    {
+        bool fIncrement = true;
+        ImoObj* pContent = *it;
+        ImoObj::children_iterator it2;
+        for (it2= pContent->begin(); it2 != pContent->end(); ++it2)
+        {
+            if ((*it2)->is_score())
+            {
+                return static_cast<ImoScore*>(*it2);
+            }
+            else if ((*it2)->is_content())
+            {
+                it = it2;
+                fIncrement = false;
+                break;
+            }
+        }
+        if (fIncrement)
+            ++it;
+    }
+    return nullptr;
+}
+
+//---------------------------------------------------------------------------------------
 ImoObj* Document::get_pointer_to_imo(ImoId id) const
 {
     return m_pModel->get_pointer_to_imo(id);
@@ -1374,19 +1406,9 @@ AObject ADocument::last_child() const
 */
 AScore ADocument::first_score() const
 {
-    ImoDocument* pRoot = pimpl()->get_im_root();
-    ImoContent* pContent = pRoot->get_content();
-    ImoObj::children_iterator it;
-    for (it= pContent->begin(); it != pContent->end(); ++it)
-    {
-        if ((*it)->is_score())
-        {
-            ImoScore* pScore = static_cast<ImoScore*>(*it);
-            Document* pDoc = const_cast<Document*>(pimpl());
-            return AScore(pScore, pDoc, pDoc->get_model_ref());
-        }
-    }
-    return AScore();
+    Document* pDoc = const_cast<Document*>(pimpl());
+    ImoScore* pScore = pDoc->get_first_score();
+    return pScore ? AScore(pScore, pDoc, pDoc->get_model_ref()) : AScore();
 }
 
 //@}    //Content traversal

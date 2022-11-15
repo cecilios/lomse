@@ -41,6 +41,9 @@ public:
 class DocContentCursorTestFixture
 {
 public:
+    LibraryScope m_libraryScope;
+    std::string m_scores_path;
+    Document* m_pDoc;
 
     DocContentCursorTestFixture()     //SetUp fixture
         : m_libraryScope(cout)
@@ -78,9 +81,11 @@ public:
         m_pDoc->from_string("(lenmusdoc (vers 0.0) (content ))");
     }
 
-    LibraryScope m_libraryScope;
-    std::string m_scores_path;
-    Document* m_pDoc;
+    inline const char* test_name()
+    {
+        return UnitTest::CurrentTest::Details()->testName;
+    }
+
 };
 
 SUITE(DocContentCursorTest)
@@ -356,6 +361,9 @@ public:
 class DocCursorTestFixture
 {
 public:
+    LibraryScope m_libraryScope;
+    std::string m_scores_path;
+    Document* m_pDoc;
 
     DocCursorTestFixture()     //SetUp fixture
         : m_libraryScope(cout)
@@ -390,15 +398,15 @@ public:
     void create_document_3()
     {
         m_pDoc = LOMSE_NEW Document(m_libraryScope);
-        m_pDoc->from_file(m_scores_path + "09007-score-in-exercise.lmd",
-                          Document::k_format_lmd );
+        m_pDoc->from_file(m_scores_path + "unit-tests/other/" +
+            "03-cursor-score-in-exercise.lmd", Document::k_format_lmd );
     }
 
     void create_document_4()
     {
         m_pDoc = LOMSE_NEW Document(m_libraryScope);
-        m_pDoc->from_file(m_scores_path + "09008-score-in-exercise.lmd",
-                          Document::k_format_lmd );
+        m_pDoc->from_file(m_scores_path + "unit-tests/other/" +
+            "04-cursor-score-in-exercise.lmd", Document::k_format_lmd );
     }
 
     void create_empty_document()
@@ -407,9 +415,11 @@ public:
         m_pDoc->from_string("(lenmusdoc (vers 0.0) (content ))");
     }
 
-    LibraryScope m_libraryScope;
-    std::string m_scores_path;
-    Document* m_pDoc;
+    inline const char* test_name()
+    {
+        return UnitTest::CurrentTest::Details()->testName;
+    }
+
 };
 
 SUITE(DocCursorTest)
@@ -467,11 +477,13 @@ SUITE(DocCursorTest)
         //104. copy constructor. Several layers
         create_document_3();
         MyDocCursor cursor(m_pDoc);
-        cursor.point_to(68L);       //key in score
+//        ImoScore* pScore = m_pDoc->get_first_score();
+//        cout << test_name() << endl << pScore->to_string(true) << endl;
+        cursor.point_to(168L);       //key in score
         CHECK( *cursor != nullptr );
         CHECK( (*cursor)->is_key_signature() == true );
-        CHECK( cursor.get_pointee_id() == 68L );
-        CHECK( cursor.get_parent_id() == 64L );
+        CHECK( cursor.get_pointee_id() == 168L );
+        CHECK( cursor.get_parent_id() == 60L );
         CHECK( cursor.is_inside_terminal_node() == true );
 
         DocCursor cursor2(&cursor);
@@ -479,15 +491,15 @@ SUITE(DocCursorTest)
 
         CHECK( *cursor2 != nullptr );
         CHECK( (*cursor2)->is_key_signature() == true );
-        CHECK( cursor2.get_pointee_id() == 68L );
-        CHECK( cursor2.get_parent_id() == 64L );
+        CHECK( cursor2.get_pointee_id() == 168L );
+        CHECK( cursor2.get_parent_id() == 60L );
         CHECK( cursor2.is_inside_terminal_node() == true );
 
         ++cursor2;      //time
-        CHECK( cursor2.get_pointee_id() == 69L );
-        CHECK( cursor2.get_parent_id() == 64L );
-        CHECK( cursor.get_pointee_id() == 68L );
-        CHECK( cursor.get_parent_id() == 64L );
+        CHECK( cursor2.get_pointee_id() == 169L );
+        CHECK( cursor2.get_parent_id() == 60L );
+        CHECK( cursor.get_pointee_id() == 168L );
+        CHECK( cursor.get_parent_id() == 60L );
     }
 
     TEST_FIXTURE(DocCursorTestFixture, move_next_201)
@@ -544,14 +556,14 @@ SUITE(DocCursorTest)
 
         ++cursor;
         CHECK( (*cursor)->is_score() == true );
-        CHECK( cursor.get_pointee_id() == 64L );
+        CHECK( cursor.get_pointee_id() == 60L );
         CHECK( cursor.get_parent_id() == 23L );
         //cursor.dump_ids();
 
         ++cursor;
         CHECK( (*cursor)->is_paragraph() == true );
-        CHECK( cursor.get_pointee_id() == 105L );
-        CHECK( cursor.get_parent_id() == 105L );
+        CHECK( cursor.get_pointee_id() == 205L );
+        CHECK( cursor.get_parent_id() == 205L );
         //cursor.dump_ids();
 
         ++cursor;
@@ -588,15 +600,15 @@ SUITE(DocCursorTest)
         //302. move backwards until first object and remains there. Several levels
         create_document_3();
         MyDocCursor cursor(m_pDoc);
-        cursor.point_to(105L);
+        cursor.point_to(205L);
         CHECK( (*cursor)->is_paragraph() == true );
-        CHECK( cursor.get_pointee_id() == 105L );
-        CHECK( cursor.get_parent_id() == 105L );
+        CHECK( cursor.get_pointee_id() == 205L );
+        CHECK( cursor.get_parent_id() == 205L );
         //cursor.dump_ids();
 
         --cursor;
         CHECK( (*cursor)->is_score() == true );
-        CHECK( cursor.get_pointee_id() == 64L );
+        CHECK( cursor.get_pointee_id() == 60L );
         CHECK( cursor.get_parent_id() == 23L );
         //cursor.dump_ids();
 
@@ -659,14 +671,14 @@ SUITE(DocCursorTest)
         //304 to last element if pointing to 'end-of-document' value. Several levels
         create_document_4();
         MyDocCursor cursor(m_pDoc);
-        cursor.point_to(64L);   //last score
+        cursor.point_to(60L);   //last score
         ++cursor;
         CHECK( *cursor == nullptr );
         CHECK( cursor.get_pointee_id() == k_cursor_at_end );
 
         --cursor;
         CHECK( (*cursor)->is_score() == true );
-        CHECK( cursor.get_pointee_id() == 64L );
+        CHECK( cursor.get_pointee_id() == 60L );
         CHECK( cursor.get_parent_id() == 23L );
         CHECK( cursor.is_inside_terminal_node() == false );
         //cursor.dump_ids();
@@ -814,11 +826,11 @@ SUITE(DocCursorTest)
         create_document_3();
         MyDocCursor cursor(m_pDoc);
 
-        cursor.point_to(64L);   //score
+        cursor.point_to(60L);   //score
 
         CHECK( *cursor != nullptr );
         CHECK( (*cursor)->is_score() == true );
-        CHECK( cursor.get_pointee_id() == 64L );
+        CHECK( cursor.get_pointee_id() == 60L );
         CHECK( cursor.get_parent_id() == 23L );
         CHECK( cursor.is_inside_terminal_node() == false );
         //cursor.dump_ids();
@@ -830,12 +842,12 @@ SUITE(DocCursorTest)
         create_document_3();
         MyDocCursor cursor(m_pDoc);
 
-        cursor.point_to(71L);   //first note in score
+        cursor.point_to(171L);   //first note in score
 
         CHECK( *cursor != nullptr );
         CHECK( (*cursor)->is_note() == true );
-        CHECK( cursor.get_pointee_id() == 71L );
-        CHECK( cursor.get_parent_id() == 64L );
+        CHECK( cursor.get_pointee_id() == 171L );
+        CHECK( cursor.get_parent_id() == 60L );
         CHECK( cursor.is_inside_terminal_node() == true );
         //cursor.dump_ids();
     }
@@ -951,7 +963,7 @@ SUITE(DocCursorTest)
         //706. get state. Non-terminal at inner level at end
         create_document_4();
         MyDocCursor cursor(m_pDoc);
-        cursor.point_to(64L);       //score 64L inside content 14L
+        cursor.point_to(60L);       //score 60L inside content 14L
         ++cursor;                   //at end
         CHECK( cursor.get_pointee_id() == k_cursor_at_end );
 
@@ -966,14 +978,14 @@ SUITE(DocCursorTest)
         //707. get state. Parent is inner level. delegating
         create_document_3();
         MyDocCursor cursor(m_pDoc);
-        cursor.point_to(71L);   //first note in score 64L
+        cursor.point_to(171L);   //first note in score 64L
 
         DocCursorState state = cursor.get_state();
 
-        CHECK( state.get_parent_level_id() == 64L );     //score
+        CHECK( state.get_parent_level_id() == 60L );     //score
         CHECK( state.get_delegate_state() != nullptr );
         ScoreCursorState* pSCE = dynamic_cast<ScoreCursorState*>( state.get_delegate_state().get() );
-        CHECK( pSCE && pSCE->id() == 71L );
+        CHECK( pSCE && pSCE->id() == 171L );
         CHECK( pSCE && pSCE->instrument() == 0 );
         CHECK( pSCE && pSCE->measure() == 0 );
         CHECK( pSCE && pSCE->staff() == 0 );
@@ -985,7 +997,7 @@ SUITE(DocCursorTest)
         //708. get state. Parent is inner level. delegating. At end of score
         create_document_3();
         MyDocCursor cursor(m_pDoc);
-        cursor.point_to(101L);   //last barline in score 64L
+        cursor.point_to(201L);   //last barline in score 60L
         ++cursor;
         CHECK( *cursor == nullptr );
         CHECK( cursor.get_pointee_id() == k_cursor_at_end_of_child );
@@ -994,7 +1006,7 @@ SUITE(DocCursorTest)
         //cout << cursor.dump_cursor() << endl;
         //cursor.dump_ids();
 
-        CHECK( state.get_parent_level_id() == 64L );     //score
+        CHECK( state.get_parent_level_id() == 60L );     //score
         CHECK( state.get_delegate_state() != nullptr );
         ScoreCursorState* pSCE =
             dynamic_cast<ScoreCursorState*>( state.get_delegate_state().get() );
@@ -1062,14 +1074,14 @@ SUITE(DocCursorTest)
         //723. restore_state. Terminal, pointing object. Parent at inner level.
         create_document_3();
         MyDocCursor cursor(m_pDoc);
-        cursor.point_to(71L);   //first note, score 64
+        cursor.point_to(171L);   //first note, score 64
         DocCursorState state = cursor.get_state();
 
         cursor.to_start();      //move to antoher place
         cursor.restore_state(state);
 
-        CHECK( cursor.get_pointee_id() == 71L );
-        CHECK( cursor.get_parent_id() == 64L );
+        CHECK( cursor.get_pointee_id() == 171L );
+        CHECK( cursor.get_parent_id() == 60L );
         CHECK( cursor.is_inside_terminal_node() == true );
     }
 
@@ -1114,7 +1126,7 @@ SUITE(DocCursorTest)
         //726. restore state. Non-terminal at inner level at end
         create_document_4();
         MyDocCursor cursor(m_pDoc);
-        cursor.point_to(64L);       //score 64 inside content 14
+        cursor.point_to(60L);       //score 60 inside content 14
         ++cursor;                   //at end
         CHECK( cursor.get_pointee_id() == k_cursor_at_end );
         DocCursorState state = cursor.get_state();
@@ -1131,11 +1143,11 @@ SUITE(DocCursorTest)
         //727. restore state. Parent is inner level. delegating. At end of score
         create_document_3();
         MyDocCursor cursor(m_pDoc);
-        cursor.point_to(101L);   //last barline in score 64
+        cursor.point_to(201L);   //last barline in score 64
         ++cursor;
         CHECK( *cursor == nullptr );
         CHECK( cursor.get_pointee_id() == k_cursor_at_end_of_child );
-        CHECK( cursor.get_parent_id() == 64L );
+        CHECK( cursor.get_parent_id() == 60L );
         DocCursorState state = cursor.get_state();
 
         cursor.to_start();      //move to antoher place
@@ -1143,7 +1155,7 @@ SUITE(DocCursorTest)
 
         CHECK( *cursor == nullptr );
         CHECK( cursor.get_pointee_id() == k_cursor_at_end_of_child );
-        CHECK( cursor.get_parent_id() == 64L );
+        CHECK( cursor.get_parent_id() == 60L );
     }
 
     TEST_FIXTURE(DocCursorTestFixture, delegating_801)
@@ -1245,7 +1257,7 @@ SUITE(DocCursorTest)
         //813. when last object is deleted, go to end. Deleted object at inner level
         create_document_4();
         MyDocCursor cursor(m_pDoc);
-        cursor.point_to(64L);   //score
+        cursor.point_to(60L);   //score
         ImoId id = cursor.find_previous_pos_state().get_parent_level_id();
 
         ImoScore* pImo = static_cast<ImoScore*>( *cursor );
@@ -1286,7 +1298,7 @@ SUITE(DocCursorTest)
 
         ++cursor;
         CHECK( (*cursor)->is_score() );
-        CHECK( cursor.get_pointee_id() == 64L );
+        CHECK( cursor.get_pointee_id() == 60L );
         CHECK( cursor.get_parent_id() == 23L );
     }
 
@@ -1296,12 +1308,12 @@ SUITE(DocCursorTest)
         create_document_3();
         MyDocCursor cursor(m_pDoc);
 
-        bool fJailed = cursor.jailed_mode_in(64L);    //score
+        bool fJailed = cursor.jailed_mode_in(60L);    //score
 
         CHECK( *cursor != nullptr );
         CHECK( (*cursor)->is_clef() == true );
-        CHECK( cursor.get_pointee_id() == 67L );
-        CHECK( cursor.get_parent_id() == 64L );
+        CHECK( cursor.get_pointee_id() == 167L );
+        CHECK( cursor.get_parent_id() == 60L );
         CHECK( cursor.is_inside_terminal_node() == true );
         CHECK( cursor.my_is_jailed() == true );
         CHECK( fJailed == true );
@@ -1314,7 +1326,7 @@ SUITE(DocCursorTest)
         create_document_3();
         MyDocCursor cursor(m_pDoc);
 
-        bool fJailed = cursor.jailed_mode_in(71L);    //first note
+        bool fJailed = cursor.jailed_mode_in(171L);    //first note
 
         CHECK( *cursor != nullptr );
         CHECK( (*cursor)->is_heading() == true );
@@ -1331,14 +1343,14 @@ SUITE(DocCursorTest)
         //822. cannot exit element
         create_document_3();
         MyDocCursor cursor(m_pDoc);
-        cursor.jailed_mode_in(64L);    //score
+        cursor.jailed_mode_in(60L);    //score
 
         cursor.exit_element();
 
         CHECK( *cursor != nullptr );
         CHECK( (*cursor)->is_clef() == true );
-        CHECK( cursor.get_pointee_id() == 67L );
-        CHECK( cursor.get_parent_id() == 64L );
+        CHECK( cursor.get_pointee_id() == 167L );
+        CHECK( cursor.get_parent_id() == 60L );
         CHECK( cursor.is_inside_terminal_node() == true );
         CHECK( cursor.my_is_jailed() == true );
         //cursor.dump_ids();
@@ -1349,14 +1361,14 @@ SUITE(DocCursorTest)
         //823. exiting jailed mode allows moving out
         create_document_3();
         MyDocCursor cursor(m_pDoc);
-        cursor.jailed_mode_in(64L);    //score
+        cursor.jailed_mode_in(60L);    //score
 
         cursor.terminate_jailed_mode();
         cursor.exit_element();
 
         CHECK( *cursor != nullptr );
         CHECK( (*cursor)->is_score() == true );
-        CHECK( cursor.get_pointee_id() == 64L );
+        CHECK( cursor.get_pointee_id() == 60L );
         CHECK( cursor.get_parent_id() == 23L );
         CHECK( cursor.is_inside_terminal_node() == false );
         CHECK( cursor.my_is_jailed() == false );
@@ -1368,14 +1380,14 @@ SUITE(DocCursorTest)
         //824. cannot point_to an element out of parent box
         create_document_3();
         MyDocCursor cursor(m_pDoc);
-        cursor.jailed_mode_in(64L);    //score
+        cursor.jailed_mode_in(60L);    //score
 
         cursor.point_to(20L);
 
         CHECK( *cursor != nullptr );
         CHECK( (*cursor)->is_clef() == true );
-        CHECK( cursor.get_pointee_id() == 67L );
-        CHECK( cursor.get_parent_id() == 64L );
+        CHECK( cursor.get_pointee_id() == 167L );
+        CHECK( cursor.get_parent_id() == 60L );
         CHECK( cursor.is_inside_terminal_node() == true );
         CHECK( cursor.my_is_jailed() == true );
         //cursor.dump_ids();
@@ -1386,14 +1398,14 @@ SUITE(DocCursorTest)
         //825. but can point_to elements inside parent box
         create_document_3();
         MyDocCursor cursor(m_pDoc);
-        cursor.jailed_mode_in(64L);    //score
+        cursor.jailed_mode_in(60L);    //score
 
-        cursor.point_to(101L);  //last barline
+        cursor.point_to(201L);  //last barline
 
         CHECK( *cursor != nullptr );
         CHECK( (*cursor)->is_barline() == true );
-        CHECK( cursor.get_pointee_id() == 101L );
-        CHECK( cursor.get_parent_id() == 64L );
+        CHECK( cursor.get_pointee_id() == 201L );
+        CHECK( cursor.get_parent_id() == 60L );
         CHECK( cursor.is_inside_terminal_node() == true );
         CHECK( cursor.my_is_jailed() == true );
         //cursor.dump_ids();
@@ -1406,14 +1418,14 @@ SUITE(DocCursorTest)
         MyDocCursor cursor(m_pDoc);
         cursor.point_to(20L);       //paragraph inside content
         DocCursorState state = cursor.get_state();
-        cursor.jailed_mode_in(64L);    //score, pointing to clef 67L
+        cursor.jailed_mode_in(60L);    //score, pointing to clef 167L
 
         cursor.restore_state(state);
 
         CHECK( *cursor != nullptr );
         CHECK( (*cursor)->is_clef() == true );
-        CHECK( cursor.get_pointee_id() == 67L );
-        CHECK( cursor.get_parent_id() == 64L );
+        CHECK( cursor.get_pointee_id() == 167L );
+        CHECK( cursor.get_parent_id() == 60L );
         CHECK( cursor.is_inside_terminal_node() == true );
         CHECK( cursor.my_is_jailed() == true );
         //cursor.dump_ids();
@@ -1424,16 +1436,16 @@ SUITE(DocCursorTest)
         //827. but can restore state to point to elements inside parent box
         create_document_3();
         MyDocCursor cursor(m_pDoc);
-        cursor.point_to(101L);       //score, last barline
+        cursor.point_to(201L);       //score, last barline
         DocCursorState state = cursor.get_state();
-        cursor.jailed_mode_in(64L);    //score, pointing to clef 67
+        cursor.jailed_mode_in(60L);    //score, pointing to clef 67
 
         cursor.restore_state(state);
 
         CHECK( *cursor != nullptr );
         CHECK( (*cursor)->is_barline() == true );
-        CHECK( cursor.get_pointee_id() == 101L );
-        CHECK( cursor.get_parent_id() == 64L );
+        CHECK( cursor.get_pointee_id() == 201L );
+        CHECK( cursor.get_parent_id() == 60L );
         CHECK( cursor.is_inside_terminal_node() == true );
         CHECK( cursor.my_is_jailed() == true );
         //cursor.dump_ids();

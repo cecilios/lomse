@@ -35,55 +35,55 @@
             <para style="Default style">
             </para>
             <ldpmusic>
-               (score#64 (vers 2.0)
+               (score (vers 2.0)
                   (systemLayout first 
                      (systemMargins 0 0 2000 540))
-                  (instrument#65 
+                  (instrument 
                      (staves 1)
-                     (musicData#66 
+                     (musicData 
 
                         /* measure 1 */
-                        (clef#67 G p1 )
-                        (key#68 C)
-                        (time#69 2 4)
-                        (n#71 e4 q v1  p1 )
-                        (n#72 g4 q v1  p1 )
-                        (barline#73 simple)
+                        (clef G p1 )
+                        (key C)
+                        (time 2 4)
+                        (n e4 q v1  p1 )
+                        (n g4 q v1  p1 )
+                        (barline simple)
 
                         /* measure 2 */
-                        (r#75 q v1  p1 )
-                        (n#76 g4 q v1  p1 )
-                        (barline#77 simple)
+                        (r q v1  p1 )
+                        (n g4 q v1  p1 )
+                        (barline simple)
 
                         /* measure 3 */
-                        (n#79 g4 q v1  p1 )
-                        (n#80 g4 q v1  p1 )
-                        (barline#81 simple)
+                        (n g4 q v1  p1 )
+                        (n g4 q v1  p1 )
+                        (barline simple)
 
                         /* measure 4 */
-                        (n#83 f4 q v1  p1 )
-                        (n#84 f4 q v1  p1 )
-                        (barline#85 simple)
+                        (n f4 q v1  p1 )
+                        (n f4 q v1  p1 )
+                        (barline simple)
 
                         /* measure 5 */
-                        (n#87 f4 q v1  p1 )
-                        (r#88 q v1  p1 )
-                        (barline#89 simple)
+                        (n f4 q v1  p1 )
+                        (r q v1  p1 )
+                        (barline simple)
 
                         /* measure 6 */
-                        (r#91 q v1  p1 )
-                        (n#92 g4 q v1  p1 )
-                        (barline#93 simple)
+                        (r q v1  p1 )
+                        (n g4 q v1  p1 )
+                        (barline simple)
 
                         /* measure 7 */
-                        (n#95 f4 q v1  p1 )
-                        (n#96 f4 q v1  p1 )
-                        (barline#97 simple)
+                        (n f4 q v1  p1 )
+                        (n f4 q v1  p1 )
+                        (barline simple)
 
                         /* measure 8 */
-                        (n#99 e4 q v1  p1 )
-                        (r#100 q v1  p1 )
-                        (barline#101 end)
+                        (n e4 q v1  p1 )
+                        (r q v1  p1 )
+                        (barline end)
                      )
                   )
                )

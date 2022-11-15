@@ -179,7 +179,7 @@ SUITE(DocumentTest)
     {
         //@001. from_file. valid file, ldp format
         Document doc(m_libraryScope);
-        doc.from_file(m_scores_path + "00011-empty-fill-page.lms");
+        doc.from_file(m_scores_path + "unit-tests/other/" + "00011-empty-fill-page.lms");
         ImoDocument* pImoDoc = doc.get_im_root();
         CHECK( pImoDoc != nullptr );
         CHECK( doc.is_dirty() == true );
@@ -191,7 +191,8 @@ SUITE(DocumentTest)
     {
         //@002. from_file. valid file, lmd format
         Document doc(m_libraryScope);
-        doc.from_file(m_scores_path + "08011-paragraph.lmd", Document::k_format_lmd);
+        doc.from_file(m_scores_path + "unit-tests/other/" +
+            "08011-paragraph.lmd", Document::k_format_lmd);
         ImoDocument* pImoDoc = doc.get_im_root();
         CHECK( pImoDoc != nullptr );
         CHECK( doc.is_dirty() == true );
@@ -302,7 +303,8 @@ SUITE(DocumentTest)
         doc.create_empty();
         try
         {
-            doc.from_file(m_scores_path + "00011-empty-fill-page.lms");
+            doc.from_file(m_scores_path + "unit-tests/other/" +
+                "00011-empty-fill-page.lms");
         }
         catch(std::exception& e)
         {
@@ -379,8 +381,9 @@ SUITE(DocumentTest)
 
         stringstream errormsg;
         Document doc(m_libraryScope, errormsg);
-        doc.from_file(m_scores_path + "10014-compressed-flat-lmd.zip#zip:lenmusdoc-example.lmd",
-                      Document::k_format_lmd);
+        doc.from_file(m_scores_path + "unit-tests/other/" +
+            "10014-compressed-flat-lmd.zip#zip:lenmusdoc-example.lmd",
+            Document::k_format_lmd);
         ImoDocument* pImoDoc = doc.get_im_root();
 #if (LOMSE_ENABLE_COMPRESSION == 1)
         //@011. Compression enabled. Compressed LMB file read ok
@@ -413,7 +416,7 @@ SUITE(DocumentTest)
     {
         //@101. return the score if not empty. Valid score from file
         Document doc(m_libraryScope);
-        doc.from_file(m_scores_path + "00011-empty-fill-page.lms");
+        doc.from_file(m_scores_path + "unit-tests/other/00011-empty-fill-page.lms");
         ImoScore* pScore = static_cast<ImoScore*>( doc.get_im_root()->get_content_item(0) );
         CHECK( pScore != nullptr );
 //        CHECK( pScore.to_string() == "(score (vers 1.6) (systemLayout first (systemMargins 0 0 0 2000)) (systemLayout other (systemMargins 0 0 1200 2000)) (opt Score.FillPageWithEmptyStaves true) (opt StaffLines.Truncate 1) (instrument (musicData)))" );

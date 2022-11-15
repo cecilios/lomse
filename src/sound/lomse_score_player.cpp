@@ -865,15 +865,15 @@ void ScorePlayer::do_play(int nEvStart, int nEvEnd, bool fVisualTracking,
     if (fVisualTracking && !m_fQuit)
     {
         m_fFinalEventSent = true;
-        SpEventVisualTracking pEvent(
+        SpEventVisualTracking pEvent2(
             LOMSE_NEW EventVisualTracking(wpInteractor, m_pScore->get_id()) );
-        pEvent->add_item(EventVisualTracking::k_end_of_visual_tracking, k_no_imoid);
+        pEvent2->add_item(EventVisualTracking::k_end_of_visual_tracking, k_no_imoid);
         LOMSE_LOG_DEBUG(Logger::k_events | Logger::k_score_player,
                         "Flush pending events");
         if (m_fPostEvents)
-            m_libScope.post_event(pEvent);
+            m_libScope.post_event(pEvent2);
         else if (pInteractor)
-            pInteractor->handle_event(pEvent);
+            pInteractor->handle_event(pEvent2);
     }
     LOMSE_LOG_DEBUG(Logger::k_score_player, "<< Exit");
 }

@@ -119,6 +119,9 @@ void ModelBuilder::structurize(ImoObj* pImo)
 
         GroupBarlinesFixer fixer;
         fixer.set_barline_layout_in_instruments(pScore);
+
+        DefaultLayoutBuilder layout;
+        layout.build(pScore);
     }
 }
 
@@ -623,16 +626,6 @@ void MidiAssigner::assign_port_and_channel()
 //=======================================================================================
 // PartIdAssigner implementation
 //=======================================================================================
-PartIdAssigner::PartIdAssigner()
-{
-}
-
-//---------------------------------------------------------------------------------------
-PartIdAssigner::~PartIdAssigner()
-{
-}
-
-//---------------------------------------------------------------------------------------
 void PartIdAssigner::assign_parts_id(ImoScore* pScore)
 {
     list<long> ids;
@@ -833,6 +826,24 @@ void MeasuresTableBuilder::start_new_measure(int iInstr, ColStaffObjsEntry* pSta
 
     if (m_curMeasure[iInstr] == nullptr)
         m_curMeasure[iInstr] = pMeasure;
+}
+
+
+//=======================================================================================
+// DefaultLayoutBuilder implementation
+//=======================================================================================
+void DefaultLayoutBuilder::build(ImoScore* pScore)
+{
+    ImoScoreLayout* pScoreLayout = pScore->get_score_layout();
+    ImoSystemLayout* pLayout = pScoreLayout->get_system_layout();
+    if (pLayout)
+    {
+        int numInstrs = pScore->get_num_instruments();
+        for (int i=0; i < numInstrs; ++i)
+        {
+            pLayout->add_instrument(i);
+        }
+    }
 }
 
 

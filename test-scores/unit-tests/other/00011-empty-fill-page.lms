@@ -1,0 +1,11 @@
+(score 
+   (vers 1.6) 
+   (systemLayout first (systemMargins 0 0 1500 1500)) 
+   (systemLayout other (systemMargins 0 0 1500 1000)) 
+   (opt Score.FillPageWithEmptyStaves true) 
+   (opt StaffLines.StopAtFinalBarline false) 
+   (instrument
+      (musicData
+      )
+   )
+)
