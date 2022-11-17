@@ -83,7 +83,8 @@ ScoreLayoutScope::~ScoreLayoutScope()
 }
 
 //---------------------------------------------------------------------------------------
-void ScoreLayoutScope::initialice(ImoScore* pScore, EngraversMap* pEngraversMap)
+void ScoreLayoutScope::initialice(ImoScore* pScore, EngraversMap* pEngraversMap,
+                                  ScoreLayoutOptions* pOptions)
 {
     //score and score meter
     m_pScore = pScore;
@@ -92,10 +93,12 @@ void ScoreLayoutScope::initialice(ImoScore* pScore, EngraversMap* pEngraversMap)
     //engravers map
     m_pEngraversMap = pEngraversMap;
 
+    //score layout/engraving options
+    m_pOptions = pOptions;
+
     //create parts engraver
-    ImoGroupLayouts* pGroups = m_pScore->get_group_layouts();
-    m_pPartsEngraver = LOMSE_NEW PartsEngraver(m_libraryScope, m_pScoreMeter,
-                                               pGroups, m_pScore, m_pScoreLyt);
+    m_pPartsEngraver = LOMSE_NEW PartsEngraver(m_libraryScope, m_pScoreMeter, m_pScore,
+                                               m_pScoreLyt);
 
     //create shapes creator
     m_pShapesCreator = LOMSE_NEW ShapesCreator(m_libraryScope, m_pScoreMeter,
@@ -106,7 +109,7 @@ void ScoreLayoutScope::initialice(ImoScore* pScore, EngraversMap* pEngraversMap)
                                             m_pScoreLyt, m_pScore, *m_pEngraversMap,
                                             m_pShapesCreator, m_pPartsEngraver);
 
-//    get_score_renderization_options();
+//    get_score_rendition_options();
 //    create_stub();
 
     //For debugging:
@@ -119,8 +122,9 @@ void ScoreLayoutScope::initialice(ImoScore* pScore, EngraversMap* pEngraversMap)
 // ScoreLayouter implementation
 //=======================================================================================
 ScoreLayouter::ScoreLayouter(ImoContentObj* pItem, Layouter* pParent,
-                             GraphicModel* pGModel, LibraryScope& libraryScope)
-    : Layouter(pItem, pParent, pGModel, libraryScope, nullptr, true)
+                             GraphicModel* pGModel, LibraryScope& libraryScope,
+                             ViewOptions* pOptions)
+    : Layouter(pItem, pParent, pGModel, libraryScope, pOptions, nullptr, true)
     , m_scoreLayoutScope(this, libraryScope, pGModel)
     , m_pScore( static_cast<ImoScore*>(pItem) )
     //variables stored in ScoreLayoutScope
@@ -269,13 +273,14 @@ void ScoreLayouter::layout_in_box()
 //---------------------------------------------------------------------------------------
 void ScoreLayouter::initialice_score_layouter()
 {
-    m_scoreLayoutScope.initialice(m_pScore, &m_engravers);
+    m_scoreLayoutScope.initialice(m_pScore, &m_engravers,
+                                  m_pOptions->get_score_options(m_pScore->get_id()));
     m_pScoreMeter = m_scoreLayoutScope.get_score_meter();
     m_pPartsEngraver = m_scoreLayoutScope.get_parts_engraver();
     m_pShapesCreator = m_scoreLayoutScope.get_shapes_creator();
     m_pSpAlgorithm = m_scoreLayoutScope.get_spacing_algorithm();
 
-    get_score_renderization_options();
+    get_score_rendition_options();
     create_stub();
 
     //For debugging:
@@ -717,7 +722,7 @@ ColumnData* ScoreLayouter::get_column(int i)
 }
 
 //---------------------------------------------------------------------------------------
-void ScoreLayouter::get_score_renderization_options()
+void ScoreLayouter::get_score_rendition_options()
 {
     ImoOptionInfo* pOpt = m_pScore->get_option("StaffLines.Truncate");
     m_truncateStaffLines = pOpt->get_long_value();

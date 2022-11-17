@@ -27,8 +27,9 @@ namespace lomse
 //=======================================================================================
 InlinesContainerLayouter::InlinesContainerLayouter(ImoContentObj* pItem, Layouter* pParent,
                                      GraphicModel* pGModel, LibraryScope& libraryScope,
-                                     ImoStyles* pStyles, bool fAddShapesToModel)
-    : Layouter(pItem, pParent, pGModel, libraryScope, pStyles, fAddShapesToModel)
+                                     ViewOptions* pOptions, ImoStyles* pStyles,
+                                     bool fAddShapesToModel)
+    : Layouter(pItem, pParent, pGModel, libraryScope, pOptions, pStyles, fAddShapesToModel)
     , m_libraryScope(libraryScope)
     , m_pPara( dynamic_cast<ImoInlinesContainer*>(pItem) )
     , m_fFirstLine(true)

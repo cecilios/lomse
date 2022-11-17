@@ -234,7 +234,8 @@ public:
         ImoPageInfo* pInfo = pImoDoc->get_page_info();
         pInfo->set_page_width(60000.0f);    //ensure enough for ony one system
 
-        m_pDocLayouter = LOMSE_NEW DocLayouter(m_pDoc, m_libraryScope);
+        ViewOptions opts(m_pDoc);
+        m_pDocLayouter = LOMSE_NEW DocLayouter(m_pDoc, m_libraryScope, &opts);
         m_pDocLayouter->layout_document();
         m_pGModel = m_pDocLayouter->get_graphic_model();
 

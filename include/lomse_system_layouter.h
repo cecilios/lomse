@@ -10,6 +10,10 @@
 #ifndef __LOMSE_SYSTEM_LAYOUTER_H__        //to avoid nested includes
 #define __LOMSE_SYSTEM_LAYOUTER_H__
 
+#include <list>
+#include <memory>
+#include <tuple>
+
 #include "lomse_basic.h"
 #include "lomse_time.h"
 #include "lomse_score_enums.h"
@@ -17,10 +21,6 @@
 #include "lomse_injectors.h"
 #include "lomse_spacing_algorithm.h"
 #include "lomse_aux_shapes_aligner.h"
-
-#include <list>
-#include <memory>
-#include <tuple>
 
 namespace lomse
 {
@@ -39,8 +39,10 @@ class ImoRelObj;
 class ImoAuxRelObj;
 class ImoInstrument;
 class ImoScore;
+class ImoScoreLayout;
 class ImoStaff;
 class ImoStaffObj;
+class ImoSystemLayout;
 class InstrumentEngraver;
 class PartsEngraver;
 class ScoreLayouter;
@@ -104,6 +106,7 @@ protected:
     ShapesCreator*  m_pShapesCreator;
     PartsEngraver*  m_pPartsEngraver;
     SpacingAlgorithm* m_pSpAlgorithm;
+    ImoScoreLayout* m_pScoreLayout;
 
     //variables used in SystemLayoutScope but owned by this SystemLayouter
     std::unique_ptr<VerticalProfile> m_pVProfile;
@@ -204,6 +207,7 @@ protected:
 
     //helpers
     inline bool is_first_column_in_system() { return m_fFirstColumnInSystem; }
+    ImoSystemLayout* get_layout();
 
     //debug
     void dbg_add_vertical_profile_shape();

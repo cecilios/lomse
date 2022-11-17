@@ -16,20 +16,115 @@
 #include "lomse_inlines_container_layouter.h"
 #include "lomse_table_layouter.h"
 #include "lomse_logger.h"
+#include "private/lomse_document_p.h"
 
 namespace lomse
 {
 
 //=======================================================================================
+// helper Visitor for initializing ViewOptions for scores with default values
+//=======================================================================================
+class ViewOptionsVisitor : public Visitor<ImoScore>
+{
+protected:
+    std::unordered_map<ImoId, ScoreLayoutOptions*>& m_map;
+
+public:
+    ViewOptionsVisitor(std::unordered_map<ImoId, ScoreLayoutOptions*>& optsMap)
+        : Visitor<ImoScore>(), m_map(optsMap) {}
+
+    void start_visit(ImoScore* pImo) override
+    {
+        ImoId id = pImo->get_id();
+        ScoreLayoutOptions* pOpts = LOMSE_NEW ScoreLayoutOptions(pImo);
+        m_map[id] = pOpts;
+    }
+};
+
+
+//=======================================================================================
+// ViewOptions implementation
+//=======================================================================================
+void ViewOptions::initialize(Document* pDoc)
+{
+    ImoDocument* pImoDoc = pDoc->get_im_root();
+    if (pImoDoc)
+    {
+        ViewOptionsVisitor v(m_scoreOptions);
+        pImoDoc->accept_visitor(v);
+    }
+}
+
+//---------------------------------------------------------------------------------------
+ScoreLayoutOptions* ViewOptions::get_score_options(ImoId scoreId)
+{
+	unordered_map<ImoId, ScoreLayoutOptions*>::iterator it = m_scoreOptions.find(scoreId);
+	if (it != m_scoreOptions.end())
+		return it->second;
+    else
+        return nullptr;
+}
+
+//---------------------------------------------------------------------------------------
+void ViewOptions::update_doc_model(DocModel* pModel)
+{
+    for (auto a : m_scoreOptions)
+        a.second->update_doc_model(pModel);
+}
+
+//---------------------------------------------------------------------------------------
+bool ViewOptions::select_layout(ImoScore* pScore, const std::string& layoutName)
+{
+    ScoreLayoutOptions* opts = get_score_options(pScore->get_id());
+    if (!opts)
+        return false;
+
+    ImoScoreLayout* pLayout = pScore->get_score_layout(layoutName);
+    if (!pLayout)
+        return false;
+
+    opts->select_score_layout(pLayout->get_id());
+    return true;    //success
+}
+
+//---------------------------------------------------------------------------------------
+bool ViewOptions::select_layout(ImoScore* pScore, ImoId idLayout)
+{
+    ScoreLayoutOptions* opts = get_score_options(pScore->get_id());
+    if (!opts)
+        return false;
+
+    opts->select_score_layout(idLayout);
+    return true;    //success
+}
+
+
+//=======================================================================================
+// ScoreLayoutOptions implementation
+//=======================================================================================
+ScoreLayoutOptions::ScoreLayoutOptions(ImoScore* pScore)
+{
+    m_idScoreLayout = pScore->get_score_layout()->get_id();
+    m_pModel = pScore->get_doc_model();
+}
+
+//---------------------------------------------------------------------------------------
+ImoScoreLayout* ScoreLayoutOptions::get_score_layout()
+{
+    return static_cast<ImoScoreLayout*>( m_pModel->get_pointer_to_imo(m_idScoreLayout) );
+}
+
+//=======================================================================================
 // Layouter implementation
 //=======================================================================================
 Layouter::Layouter(ImoContentObj* pItem, Layouter* pParent, GraphicModel* pGModel,
-                   LibraryScope& libraryScope, ImoStyles* pStyles,
+                   LibraryScope& libraryScope, ViewOptions* pOptions, ImoStyles* pStyles,
                    bool fAddShapesToModel)
     : m_result(k_layout_not_finished)
     , m_pGModel(pGModel)
     , m_pParentLayouter(pParent)
     , m_libraryScope(libraryScope)
+    , m_pOptions(pOptions)
     , m_pStyles(pStyles)
     , m_pItemMainBox(nullptr)
     , m_pCurLayouter(nullptr)
@@ -76,12 +171,13 @@ GmoBox* Layouter::start_new_page()
 }
 
 //---------------------------------------------------------------------------------------
-int Layouter::layout_item(ImoContentObj* pItem, GmoBox* pParentBox, int constrains)
+int Layouter::layout_item(ImoContentObj* pItem, GmoBox* pParentBox, int constrains,
+                          ViewOptions* pOptions)
 {
     LOMSE_LOG_DEBUG(Logger::k_layout,
         "Laying out id %d %s", pItem->get_id(), pItem->get_name().c_str());
 
-    m_pCurLayouter = create_layouter(pItem);
+    m_pCurLayouter = create_layouter(pItem, pOptions);
     m_pCurLayouter->set_constrains(constrains);
 
     m_pCurLayouter->prepare_to_start_layout();
@@ -158,9 +254,10 @@ void Layouter::add_end_margins()
 }
 
 //---------------------------------------------------------------------------------------
-Layouter* Layouter::create_layouter(ImoContentObj* pItem, int constrains)
+Layouter* Layouter::create_layouter(ImoContentObj* pItem, ViewOptions* pOptions,
+                                    int constrains)
 {
-    Layouter* pLayouter = LayouterFactory::create_layouter(pItem, this);
+    Layouter* pLayouter = LayouterFactory::create_layouter(pItem, this, pOptions);
     if (pItem->is_score())
     {
         save_score_layouter(pLayouter);
@@ -175,7 +272,8 @@ Layouter* Layouter::create_layouter(ImoContentObj* pItem, int constrains)
 //=======================================================================================
 // LayouterFactory implementation
 //=======================================================================================
-Layouter* LayouterFactory::create_layouter(ImoContentObj* pItem, Layouter* pParent)
+Layouter* LayouterFactory::create_layouter(ImoContentObj* pItem, Layouter* pParent,
+                                           ViewOptions* pOptions)
 {
     GraphicModel* pGModel = pParent->get_graphic_model();
     LibraryScope& libraryScope = pParent->get_library_scope();
@@ -189,37 +287,38 @@ Layouter* LayouterFactory::create_layouter(ImoContentObj* pItem, Layouter* pPare
         case k_imo_dynamic:
         case k_imo_content:
             return LOMSE_NEW ContentLayouter(pItem, pParent, pGModel, libraryScope,
-                                             pStyles, fAddShapesToModel);
+                                             pOptions, pStyles, fAddShapesToModel);
 
         case k_imo_multicolumn:
             return LOMSE_NEW MultiColumnLayouter(pItem, pParent, pGModel, libraryScope,
-                                                 pStyles, fAddShapesToModel);
+                                                 pOptions, pStyles, fAddShapesToModel);
 
         case k_imo_list:
             return LOMSE_NEW ListLayouter(pItem, pParent, pGModel, libraryScope,
-                                          pStyles, fAddShapesToModel);
+                                          pOptions, pStyles, fAddShapesToModel);
 
         case k_imo_listitem:
             return LOMSE_NEW ListItemLayouter(pItem, pParent, pGModel, libraryScope,
-                                              pStyles, fAddShapesToModel);
+                                              pOptions, pStyles, fAddShapesToModel);
 
         case k_imo_table_cell:
             return LOMSE_NEW TableCellLayouter(pItem, pParent, pGModel, libraryScope,
-                                               pStyles);    //never adds shapes, until row ready
+                                               pOptions, pStyles);    //never adds shapes, until row ready
 
         case k_imo_score:
-            return LOMSE_NEW ScoreLayouter(pItem, pParent, pGModel, libraryScope);
+            return LOMSE_NEW ScoreLayouter(pItem, pParent, pGModel, libraryScope,
+                                           pOptions);
 
         case k_imo_table:
             return LOMSE_NEW TableLayouter(pItem, pParent, pGModel, libraryScope,
-                                           pStyles, fAddShapesToModel);
+                                           pOptions, pStyles, fAddShapesToModel);
 
         // inlines container objects
         case k_imo_anonymous_block:
         case k_imo_para:
         case k_imo_heading:
             return LOMSE_NEW InlinesContainerLayouter(pItem, pParent, pGModel, libraryScope,
-                                                      pStyles, fAddShapesToModel);
+                                                      pOptions, pStyles, fAddShapesToModel);
 
         default:
             return LOMSE_NEW NullLayouter(pItem, pParent, pGModel, libraryScope);

@@ -88,6 +88,8 @@ Interactor::Interactor(LibraryScope& libraryScope, WpDocument wpDoc, View* pView
             pGView->use_cursor(m_pCursor);
             pGView->use_selection_set(m_pSelections);
         }
+
+        m_viewOptions.initialize(pDoc);
     }
     LOMSE_LOG_DEBUG(Logger::k_mvc, "Interactor created.");
     highlight_voice(2);
@@ -145,7 +147,7 @@ void Interactor::create_graphic_model()
             LOMSE_LOG_DEBUG(Logger::k_render, "[Interactor::create_graphic_model]");
             int constrains = pView->get_layout_constrains();
             LUnits width = pView->get_viewport_width();
-            DocLayouter layouter(pDoc, m_libScope, constrains, width);
+            DocLayouter layouter(pDoc, m_libScope, &m_viewOptions, constrains, width);
 
             if (pView->is_valid_for_this_view(pDoc))
                 layouter.layout_document();
@@ -1963,7 +1965,7 @@ void Interactor::timing_visual_effects_start()
 }
 
 //---------------------------------------------------------------------------------------
-void Interactor::timing_renderization_end()
+void Interactor::timing_rendition_end()
 {
     //draw end. visual_draw = now - visual_start; total_render = now - render_start;
     //repaint_start=now
@@ -2264,6 +2266,31 @@ MeasureHighlight* Interactor::add_measure_highlight(ImoId scoreId, const Measure
         }
     }
     return pMark;
+}
+
+//---------------------------------------------------------------------------------------
+void Interactor::select_default_layout(ImoScore* pScore)
+{
+    select_layout(pScore, k_default_score_layout);
+}
+
+//---------------------------------------------------------------------------------------
+bool Interactor::select_layout(ImoScore* pScore, const std::string& layoutName)
+{
+    return m_viewOptions.select_layout(pScore, layoutName);
+}
+
+//---------------------------------------------------------------------------------------
+bool Interactor::select_layout(ImoScore* pScore, ImoId idLayout)
+{
+    delete_graphic_model();
+    return m_viewOptions.select_layout(pScore, idLayout);
+}
+
+//---------------------------------------------------------------------------------------
+ScoreLayoutOptions* Interactor::get_layout_options(ImoScore* pScore)
+{
+    return m_viewOptions.get_score_options(pScore->get_id());
 }
 
 

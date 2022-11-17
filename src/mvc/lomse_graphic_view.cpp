@@ -694,7 +694,7 @@ void GraphicView::draw_all()
         m_pInteractor->timing_visual_effects_start();
         m_pOverlaysGenerator->on_new_background();
         draw_all_visual_effects();
-        m_pInteractor->timing_renderization_end();
+        m_pInteractor->timing_rendition_end();
     }
 }
 
@@ -711,7 +711,7 @@ void GraphicView::draw_caret()
         layout_time_grid();                 //depends on caret
         layout_selection_highlight();       //for hidding Handlers
         m_pOverlaysGenerator->update_visual_effect(m_pCaret, pDrawer);
-        m_pInteractor->timing_renderization_end();
+        m_pInteractor->timing_rendition_end();
     }
 }
 
@@ -726,7 +726,7 @@ void GraphicView::draw_time_grid()
         m_pInteractor->timing_start_measurements();
         layout_time_grid();
         m_pOverlaysGenerator->update_visual_effect(m_pTimeGrid, pDrawer);
-        m_pInteractor->timing_renderization_end();
+        m_pInteractor->timing_rendition_end();
     }
 }
 
@@ -906,7 +906,7 @@ void GraphicView::draw_selection_rectangle()
     {
         m_pInteractor->timing_start_measurements();
         m_pOverlaysGenerator->update_visual_effect(m_pSelRect, pDrawer);
-        m_pInteractor->timing_renderization_end();
+        m_pInteractor->timing_rendition_end();
     }
 }
 
@@ -923,7 +923,7 @@ void GraphicView::draw_visual_tracking()
             m_pOverlaysGenerator->update_visual_effect(m_pHighlighted, pDrawer);
         if (m_trackingEffect & k_tracking_tempo_line)
             m_pOverlaysGenerator->update_visual_effect(m_pTempoLine, pDrawer);
-        m_pInteractor->timing_renderization_end();
+        m_pInteractor->timing_rendition_end();
     }
 }
 
@@ -937,7 +937,7 @@ void GraphicView::draw_dragged_image()
     {
         m_pInteractor->timing_start_measurements();
         m_pOverlaysGenerator->update_visual_effect(m_pDragImg, pDrawer);
-        m_pInteractor->timing_renderization_end();
+        m_pInteractor->timing_rendition_end();
     }
 }
 
@@ -951,7 +951,7 @@ void GraphicView::draw_handler(Handler* pHandler)
     {
         m_pInteractor->timing_start_measurements();
         m_pOverlaysGenerator->update_visual_effect(pHandler, pDrawer);
-        m_pInteractor->timing_renderization_end();
+        m_pInteractor->timing_rendition_end();
     }
 }
 
@@ -966,7 +966,7 @@ void GraphicView::draw_selected_objects()
         m_pInteractor->timing_start_measurements();
         layout_selection_highlight();
         m_pOverlaysGenerator->update_visual_effect(m_pSelObjects, pDrawer);
-        m_pInteractor->timing_renderization_end();
+        m_pInteractor->timing_rendition_end();
     }
 }
 

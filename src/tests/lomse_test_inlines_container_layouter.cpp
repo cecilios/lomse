@@ -41,12 +41,13 @@ class MyInlinesContainerLayouter : public InlinesContainerLayouter
 {
 public:
     MyInlinesContainerLayouter(ImoContentObj* pImo, GraphicModel* pGModel,
-                        LibraryScope& libraryScope, ImoStyles* pStyles)
-        : InlinesContainerLayouter(pImo, nullptr, pGModel, libraryScope, pStyles)
+                        LibraryScope& libraryScope, ViewOptions* pOptions,
+                        ImoStyles* pStyles)
+        : InlinesContainerLayouter(pImo, nullptr, pGModel, libraryScope, pOptions, pStyles)
     {
     }
     MyInlinesContainerLayouter(LibraryScope& libraryScope, LineReferences& refs)
-        : InlinesContainerLayouter(nullptr, nullptr, nullptr, libraryScope, nullptr)
+        : InlinesContainerLayouter(nullptr, nullptr, nullptr, libraryScope, nullptr, nullptr)
     {
         m_lineRefs = refs;
     }
@@ -127,7 +128,8 @@ SUITE(InlinesContainerLayouterTest)
         GmoBoxDocPageContent box(nullptr);
         box.set_owner_box(&page);
 
-        MyInlinesContainerLayouter lyt(pPara, &model, m_libraryScope, pStyles);
+        ViewOptions opts(&doc);
+        MyInlinesContainerLayouter lyt(pPara, &model, m_libraryScope, &opts, pStyles);
         CHECK( lyt.my_is_first_line() == true );
         lyt.prepare_to_start_layout();
         lyt.create_main_box(&box, UPoint(0.0f, 0.0f), 10000.0f, 20000.0f);
@@ -157,7 +159,8 @@ SUITE(InlinesContainerLayouterTest)
         GmoBoxDocPageContent box(nullptr);
         box.set_owner_box(&page);
 
-        MyInlinesContainerLayouter lyt(pPara, &model, m_libraryScope, pStyles);
+        ViewOptions opts(&doc);
+        MyInlinesContainerLayouter lyt(pPara, &model, m_libraryScope, &opts, pStyles);
         CHECK( lyt.my_is_first_line() == true );
         lyt.prepare_to_start_layout();
         lyt.create_main_box(&box, UPoint(0.0f, 0.0f), 10000.0f, 20000.0f);
@@ -195,7 +198,8 @@ SUITE(InlinesContainerLayouterTest)
         GmoBoxDocPageContent box(nullptr);
         box.set_owner_box(&page);
 
-        MyInlinesContainerLayouter lyt(pPara, &model, m_libraryScope, pStyles);
+        ViewOptions opts(&doc);
+        MyInlinesContainerLayouter lyt(pPara, &model, m_libraryScope, &opts, pStyles);
         CHECK( lyt.my_is_first_line() == true );
         lyt.prepare_to_start_layout();
         lyt.create_main_box(&box, UPoint(0.0f, 0.0f), 10000.0f, 20000.0f);
@@ -242,7 +246,8 @@ SUITE(InlinesContainerLayouterTest)
         GmoBoxDocPageContent box(nullptr);
         box.set_owner_box(&page);
 
-        MyInlinesContainerLayouter lyt(pPara, &model, m_libraryScope, pStyles);
+        ViewOptions opts(&doc);
+        MyInlinesContainerLayouter lyt(pPara, &model, m_libraryScope, &opts, pStyles);
         lyt.prepare_to_start_layout();
         lyt.create_main_box(&box, UPoint(0.0f, 0.0f), 10000.0f, 20000.0f);
         lyt.layout_in_box();
@@ -288,7 +293,8 @@ SUITE(InlinesContainerLayouterTest)
         GmoBoxDocPageContent box(nullptr);
         box.set_owner_box(&page);
 
-        MyInlinesContainerLayouter lyt(pPara, &model, m_libraryScope, pStyles);
+        ViewOptions opts(&doc);
+        MyInlinesContainerLayouter lyt(pPara, &model, m_libraryScope, &opts, pStyles);
         lyt.prepare_to_start_layout();
         lyt.create_main_box(&box, UPoint(0.0f, 0.0f), 10000.0f, 20000.0f);
         lyt.layout_in_box();
@@ -335,7 +341,8 @@ SUITE(InlinesContainerLayouterTest)
         GmoBoxDocPageContent box(nullptr);
         box.set_owner_box(&page);
 
-        MyInlinesContainerLayouter lyt(pPara, &model, m_libraryScope, pStyles);
+        ViewOptions opts(&doc);
+        MyInlinesContainerLayouter lyt(pPara, &model, m_libraryScope, &opts, pStyles);
         lyt.prepare_to_start_layout();
         lyt.create_main_box(&box, UPoint(0.0f, 0.0f), 10000.0f, 20000.0f);
         lyt.layout_in_box();
@@ -381,7 +388,8 @@ SUITE(InlinesContainerLayouterTest)
         GmoBoxDocPageContent box(nullptr);
         box.set_owner_box(&page);
 
-        MyInlinesContainerLayouter lyt(pPara, &model, m_libraryScope, pStyles);
+        ViewOptions opts(&doc);
+        MyInlinesContainerLayouter lyt(pPara, &model, m_libraryScope, &opts, pStyles);
         lyt.my_set_first_line_indent(2000.0f);
         lyt.prepare_to_start_layout();
         lyt.create_main_box(&box, UPoint(0.0f, 0.0f), 10000.0f, 20000.0f);
@@ -428,7 +436,8 @@ SUITE(InlinesContainerLayouterTest)
         GmoBoxDocPageContent box(nullptr);
         box.set_owner_box(&page);
 
-        MyInlinesContainerLayouter lyt(pPara, &model, m_libraryScope, pStyles);
+        ViewOptions opts(&doc);
+        MyInlinesContainerLayouter lyt(pPara, &model, m_libraryScope, &opts, pStyles);
         lyt.prepare_to_start_layout();
         lyt.create_main_box(&box, UPoint(0.0f, 0.0f), 10000.0f, 1100.0f);
         lyt.layout_in_box();
@@ -457,7 +466,8 @@ SUITE(InlinesContainerLayouterTest)
         GmoBoxDocPageContent box(nullptr);
         box.set_owner_box(&page);
 
-        MyInlinesContainerLayouter lyt(pPara, &model, m_libraryScope, pStyles);
+        ViewOptions opts(&doc);
+        MyInlinesContainerLayouter lyt(pPara, &model, m_libraryScope, &opts, pStyles);
         lyt.prepare_to_start_layout();
         lyt.create_main_box(&box, UPoint(0.0f, 0.0f), 10000.0f, 20000.0f);
         lyt.layout_in_box();
@@ -597,7 +607,8 @@ SUITE(InlinesContainerLayouterTest)
         GmoBoxDocPageContent box(nullptr);
         box.set_owner_box(&page);
 
-        MyInlinesContainerLayouter lyt(pPara, &model, m_libraryScope, pStyles);
+        ViewOptions opts(&doc);
+        MyInlinesContainerLayouter lyt(pPara, &model, m_libraryScope, &opts, pStyles);
         lyt.prepare_to_start_layout();
         lyt.create_main_box(&box, UPoint(0.0f, 0.0f), 10000.0f, 20000.0f);
         lyt.layout_in_box();
@@ -660,7 +671,8 @@ SUITE(InlinesContainerLayouterTest)
         GmoBoxDocPageContent box(nullptr);
         box.set_owner_box(&page);
 
-        MyInlinesContainerLayouter lyt(pPara, &model, m_libraryScope, pStyles);
+        ViewOptions opts(&doc);
+        MyInlinesContainerLayouter lyt(pPara, &model, m_libraryScope, &opts, pStyles);
         CHECK( lyt.my_is_first_line() == true );
         lyt.prepare_to_start_layout();
         lyt.create_main_box(&box, UPoint(0.0f, 0.0f), 10000.0f, 20000.0f);

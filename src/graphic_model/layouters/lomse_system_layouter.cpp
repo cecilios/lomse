@@ -66,12 +66,12 @@ struct EngravingOrderInfo
     EAuxShapesAlignmentScope alignmentScope;
     Tenths maxAlignDistance;
 
-    EngravingOrderInfo(int type,
-                       EAuxShapesAlignmentScope alignmentScope = k_alignment_scope_none,
-                       Tenths maxAlignDistance = 0.0f)
-        : type(type)
-        , alignmentScope(alignmentScope)
-        , maxAlignDistance(maxAlignDistance)
+    EngravingOrderInfo(int t,
+                       EAuxShapesAlignmentScope aScope = k_alignment_scope_none,
+                       Tenths maxDistance = 0.0f)
+        : type(t)
+        , alignmentScope(aScope)
+        , maxAlignDistance(maxDistance)
     {
     }
 };
@@ -132,6 +132,15 @@ SystemLayouter::SystemLayouter(ScoreLayoutScope& scoreLayoutScope)
     , m_pPartsEngraver( scoreLayoutScope.get_parts_engraver() )
     , m_pSpAlgorithm( scoreLayoutScope.get_spacing_algorithm() )
 {
+    ScoreLayoutOptions* pOpts = m_pScoreLyt->get_score_layout_options();
+    m_pScoreLayout = pOpts->get_score_layout();
+}
+
+//---------------------------------------------------------------------------------------
+ImoSystemLayout* SystemLayouter::SystemLayouter::get_layout()
+{
+   //TODO return the applicable layout for this system, m_iSystem
+    return m_pScoreLayout->get_system_layout();
 }
 
 //---------------------------------------------------------------------------------------

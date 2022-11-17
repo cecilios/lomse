@@ -52,7 +52,7 @@ public:
     ImoTreeAlgoritmsTestFixture()     //SetUp fixture
         : m_libraryScope(cout)
         , m_scores_path(TESTLIB_SCORES_PATH)
-        , m_pDoc(NULL)
+        , m_pDoc(nullptr)
     {
     }
 

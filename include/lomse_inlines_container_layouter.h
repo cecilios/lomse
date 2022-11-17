@@ -54,8 +54,8 @@ protected:
 
 public:
     InlinesContainerLayouter(ImoContentObj* pImo, Layouter* pParent, GraphicModel* pGModel,
-                      LibraryScope& libraryScope, ImoStyles* pStyles,
-                      bool fAddShapesToModel=true);
+                      LibraryScope& libraryScope, ViewOptions* pOptions,
+                      ImoStyles* pStyles, bool fAddShapesToModel=true);
     virtual ~InlinesContainerLayouter();
 
     //mandatory overrides

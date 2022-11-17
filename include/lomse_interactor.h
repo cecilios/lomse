@@ -18,6 +18,7 @@
 #include "lomse_document_cursor.h"
 #include "lomse_pitch.h"
 #include "lomse_drawer.h"       //for declaration of struct SvgOptions
+#include "lomse_layouter.h"     //for declaration of class ViewOptions
 
 
 #include <iostream>
@@ -164,6 +165,7 @@ protected:
     DocCursor*      m_pCursor;
     SelectionSet*   m_pSelections;
     DocCommandExecuter* m_pExec;
+    ViewOptions     m_viewOptions;          //layout & rendition options for the view
     GmoRef          m_grefLastMouseOver;
     int             m_operatingMode;
     bool            m_fEditionEnabled;
@@ -420,6 +422,41 @@ public:
     inline void enable_forced_view_updates(bool value) { m_fViewUpdatesEnabled = value; }
 
         //@}    //interface to View
+
+
+
+    //layout options
+    /// @name Layout options
+    //@{
+
+    /** Select the default layout for an score. The default layout is always a full
+        score layout with all defined instruments, in the order they are defined.
+        @param pScore   Ptr. to the score to which the operation refers.
+    */
+    void select_default_layout(ImoScore* pScore);
+
+    /** Select the layout to use for an score (e.g. "full score", individual part,
+        two parts combined into a single staff, etc.). The layout must be one
+        of the layouts defined in the score. If the requested layout does not exist the
+        method will return @FALSE.
+        @param pScore     Ptr. to the score to which the operation refers.
+        @param layoutName  The name of the score layout to use. It must be the name of
+            a layout already defined in the score.
+    */
+    bool select_layout(ImoScore* pScore, const std::string& layoutName);
+
+    /** Select the layout to use for an score (e.g. "full score", individual part,
+        two parts combined into a single staff, etc.). The layout must be one
+        of the layouts defined in the score. If the requested layout does not exist the
+        method will return @FALSE.
+        @param pScore   Ptr. to the score to which the operation refers.
+        @param idLayout The ID of the layout to use. It must be the ID of
+            a layout already defined in the score.
+    */
+    bool select_layout(ImoScore* pScore, ImoId idLayout);
+
+        //@}    //layout options
+
 
 
 
@@ -1752,7 +1789,7 @@ public:
     void timing_graphic_model_build_end();
     void timing_graphic_model_render_end();
     void timing_visual_effects_start();
-    void timing_renderization_end();
+    void timing_rendition_end();
 
     //interface to SelectionSet
     virtual void select_object(GmoObj* pGmo, bool fClearSelection=true);
@@ -1784,6 +1821,9 @@ public:
 //    virtual void task_action_continue_move_drag(Pixels x, Pixels y, bool fLeftButton);
 //    virtual void task_action_end_move_drag(Pixels x, Pixels y, bool fLeftButton,
 //                                           Pixels xTotalShift, Pixels yTotalShift);
+
+    //view options
+    ScoreLayoutOptions* get_layout_options(ImoScore* pScore);
 
 	///@endcond
 

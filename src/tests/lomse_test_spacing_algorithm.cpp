@@ -35,8 +35,8 @@ class MyScoreLayouter3 : public ScoreLayouter
 {
 public:
     MyScoreLayouter3(ImoContentObj* pImo, GraphicModel* pGModel,
-                    LibraryScope& libraryScope)
-        : ScoreLayouter(pImo, nullptr, pGModel, libraryScope)
+                    LibraryScope& libraryScope, ViewOptions* pOptions)
+        : ScoreLayouter(pImo, nullptr, pGModel, libraryScope, pOptions)
     {
     }
     virtual ~MyScoreLayouter3() {}
@@ -161,7 +161,8 @@ SUITE(SpAlgGourlayTest)
             ")) )))" );
         GraphicModel gmodel( doc.get_im_root() );
         ImoScore* pImoScore = static_cast<ImoScore*>( doc.get_im_root()->get_content_item(0) );
-        MyScoreLayouter3 scoreLyt(pImoScore, &gmodel, m_libraryScope);
+        ViewOptions opts(&doc);
+        MyScoreLayouter3 scoreLyt(pImoScore, &gmodel, m_libraryScope, &opts);
 
         scoreLyt.prepare_to_start_layout();     //this creates columns and do spacing
         MySpAlgGourlay* pAlg = static_cast<MySpAlgGourlay*>(scoreLyt.get_spacing_algorithm());
@@ -215,7 +216,8 @@ SUITE(SpAlgGourlayTest)
             ")) )))" );
         GraphicModel gmodel( doc.get_im_root() );
         ImoScore* pImoScore = static_cast<ImoScore*>( doc.get_im_root()->get_content_item(0) );
-        MyScoreLayouter3 scoreLyt(pImoScore, &gmodel, m_libraryScope);
+        ViewOptions opts(&doc);
+        MyScoreLayouter3 scoreLyt(pImoScore, &gmodel, m_libraryScope, &opts);
 
         scoreLyt.prepare_to_start_layout();     //this creates columns and do spacing
         MySpAlgGourlay* pAlg = static_cast<MySpAlgGourlay*>(scoreLyt.get_spacing_algorithm());
@@ -277,7 +279,8 @@ SUITE(SpAlgGourlayTest)
             ")) )))" );
         GraphicModel gmodel( doc.get_im_root() );
         ImoScore* pImoScore = static_cast<ImoScore*>( doc.get_im_root()->get_content_item(0) );
-        MyScoreLayouter3 scoreLyt(pImoScore, &gmodel, m_libraryScope);
+        ViewOptions opts(&doc);
+        MyScoreLayouter3 scoreLyt(pImoScore, &gmodel, m_libraryScope, &opts);
 
         scoreLyt.prepare_to_start_layout();     //this creates columns and do spacing
         MySpAlgGourlay* pAlg = static_cast<MySpAlgGourlay*>(scoreLyt.get_spacing_algorithm());
@@ -353,7 +356,8 @@ SUITE(SpAlgGourlayTest)
             ")) )))" );
         GraphicModel gmodel( doc.get_im_root() );
         ImoScore* pImoScore = static_cast<ImoScore*>( doc.get_im_root()->get_content_item(0) );
-        MyScoreLayouter3 scoreLyt(pImoScore, &gmodel, m_libraryScope);
+        ViewOptions opts(&doc);
+        MyScoreLayouter3 scoreLyt(pImoScore, &gmodel, m_libraryScope, &opts);
 
         scoreLyt.prepare_to_start_layout();     //this creates columns and do spacing
         MySpAlgGourlay* pAlg = static_cast<MySpAlgGourlay*>(scoreLyt.get_spacing_algorithm());
@@ -399,7 +403,8 @@ SUITE(SpAlgGourlayTest)
             ")) )))" );
         GraphicModel gmodel( doc.get_im_root() );
         ImoScore* pImoScore = static_cast<ImoScore*>( doc.get_im_root()->get_content_item(0) );
-        MyScoreLayouter3 scoreLyt(pImoScore, &gmodel, m_libraryScope);
+        ViewOptions opts(&doc);
+        MyScoreLayouter3 scoreLyt(pImoScore, &gmodel, m_libraryScope, &opts);
 
         scoreLyt.prepare_to_start_layout();     //this creates columns and do spacing
         MySpAlgGourlay* pAlg = static_cast<MySpAlgGourlay*>(scoreLyt.get_spacing_algorithm());

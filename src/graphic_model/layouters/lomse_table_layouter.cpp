@@ -22,8 +22,9 @@ namespace lomse
 //=======================================================================================
 TableLayouter::TableLayouter(ImoContentObj* pItem, Layouter* pParent,
                              GraphicModel* pGModel, LibraryScope& libraryScope,
-                             ImoStyles* pStyles, bool fAddShapesToModel)
-    : Layouter(pItem, pParent, pGModel, libraryScope, pStyles, fAddShapesToModel)
+                             ViewOptions* pOptions, ImoStyles* pStyles,
+                             bool fAddShapesToModel)
+    : Layouter(pItem, pParent, pGModel, libraryScope, pOptions, pStyles, fAddShapesToModel)
     , m_libraryScope(libraryScope)
     , m_pTable( static_cast<ImoTable*>(pItem) )
     , m_headLayouter(nullptr)
@@ -262,7 +263,8 @@ TableSectionLayouter::TableSectionLayouter(ImoContentObj* pItem, Layouter* pPare
                                  vector<LUnits>& columnsWidth,
                                  bool fAddShapesToModel)
     : Layouter(pItem, pParent, pParent->get_graphic_model(),
-               pParent->get_library_scope(), pParent->get_styles(), fAddShapesToModel )
+               pParent->get_library_scope(), pParent->get_options(),
+               pParent->get_styles(), fAddShapesToModel )
     , m_pTable( static_cast<ImoTable*>(pItem) )
     , m_pSection(pSection)
     , m_columnsWidth(columnsWidth)
@@ -345,7 +347,7 @@ void TableSectionLayouter::create_cell_layouters()
             ImoTableCell* pCell = static_cast<ImoTableCell*>( *itCell );
             iLastCell = iCell;
             m_cellLayouters[iCell] = static_cast<TableCellLayouter*>(
-                                        LayouterFactory::create_layouter(pCell, this) );
+                            LayouterFactory::create_layouter(pCell, this, m_pOptions) );
             xPos += m_cellLayouters[iCell]->set_cell_width_and_position(iRow, iCol, xPos,
                                                                         m_columnsWidth);
 
@@ -375,8 +377,8 @@ void TableSectionLayouter::create_cell_layouters()
             }
             if (colSpan > 0)
             {
-                int iCol = iLastCell % m_numTableColumns;
-                m_cellLayouters[iLastCell]->increment_colspan(colSpan, iCell, iCol,
+                int iCol2 = iLastCell % m_numTableColumns;
+                m_cellLayouters[iLastCell]->increment_colspan(colSpan, iCell, iCol2,
                                                               m_columnsWidth);
             }
         }
@@ -435,8 +437,8 @@ void TableSectionLayouter::prepare_row()
 //=======================================================================================
 TableCellLayouter::TableCellLayouter(ImoContentObj* pItem, Layouter* pParent,
                                      GraphicModel* pGModel, LibraryScope& libraryScope,
-                                     ImoStyles* pStyles)
-    : BlocksContainerLayouter(pItem, pParent, pGModel, libraryScope, pStyles,
+                                     ViewOptions* pOptions, ImoStyles* pStyles)
+    : BlocksContainerLayouter(pItem, pParent, pGModel, libraryScope, pOptions, pStyles,
                               false /*do not add shapes to model*/)
     , m_libraryScope(libraryScope)
     , m_pCell( static_cast<ImoTableCell*>(pItem) )
@@ -497,7 +499,8 @@ TableRowLayouter::TableRowLayouter(ImoContentObj* pItem, Layouter* pParent,
                                    int iFirstRow, int numRows, int numColumns,
                                    bool fAddShapesToModel)
     : Layouter(pItem, pParent, pParent->get_graphic_model(),
-               pParent->get_library_scope(), pParent->get_styles(), fAddShapesToModel)
+               pParent->get_library_scope(), pParent->get_options(),
+               pParent->get_styles(), fAddShapesToModel)
     , m_pTable( static_cast<ImoTable*>(pItem) )
     , m_cellLayouters(cells)
     , m_columnsWidth(columnsWidth)

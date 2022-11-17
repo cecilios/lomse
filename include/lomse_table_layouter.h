@@ -62,7 +62,8 @@ protected:
 
 public:
     TableLayouter(ImoContentObj* pImo, Layouter* pParent, GraphicModel* pGModel,
-                  LibraryScope& libraryScope, ImoStyles* pStyles, bool fAddShapesToModel);
+                  LibraryScope& libraryScope, ViewOptions* pOptions, ImoStyles* pStyles,
+                  bool fAddShapesToModel);
     virtual ~TableLayouter();
 
     //mandatory overrides
@@ -168,7 +169,8 @@ protected:
 
 public:
     TableCellLayouter(ImoContentObj* pImo, Layouter* pParent, GraphicModel* pGModel,
-                      LibraryScope& libraryScope, ImoStyles* pStyles);
+                      LibraryScope& libraryScope, ViewOptions* pOptions,
+                      ImoStyles* pStyles);
     virtual ~TableCellLayouter() {}
 
     LUnits get_cell_width();

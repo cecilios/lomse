@@ -44,8 +44,8 @@ class MyScoreLayouter : public ScoreLayouter
 {
 public:
     MyScoreLayouter(ImoContentObj* pImo, GraphicModel* pGModel,
-                    LibraryScope& libraryScope)
-        : ScoreLayouter(pImo, nullptr, pGModel, libraryScope)
+                    LibraryScope& libraryScope, ViewOptions* pOptions)
+        : ScoreLayouter(pImo, nullptr, pGModel, libraryScope, pOptions)
     {
     }
     virtual ~MyScoreLayouter() {}
@@ -147,7 +147,8 @@ public:
         m_pDoc = LOMSE_NEW Document(m_libraryScope, cout);
         m_pDoc->from_file(filename);
 
-        m_pDocLayouter = LOMSE_NEW DocLayouter(m_pDoc, m_libraryScope);
+        ViewOptions opts(m_pDoc);
+        m_pDocLayouter = LOMSE_NEW DocLayouter(m_pDoc, m_libraryScope, &opts);
         m_pDocLayouter->layout_document();
         m_pGModel = m_pDocLayouter->get_graphic_model();
         CHECK( m_pGModel != nullptr );
@@ -273,7 +274,8 @@ SUITE(ScoreLayouterTest)
             "(instrument (musicData)))" );
         GraphicModel gmodel( doc.get_im_root() );
         ImoScore* pImoScore = static_cast<ImoScore*>( doc.get_im_root()->get_content_item(0) );
-        MyScoreLayouter scoreLyt(pImoScore, &gmodel, m_libraryScope);
+        ViewOptions opts(&doc);
+        MyScoreLayouter scoreLyt(pImoScore, &gmodel, m_libraryScope, &opts);
         scoreLyt.prepare_to_start_layout();
 
         CHECK( scoreLyt.get_num_columns() == 0 );
@@ -288,7 +290,8 @@ SUITE(ScoreLayouterTest)
             "(instrument (musicData (clef G)(n c4 q) )))" );
         GraphicModel gmodel( doc.get_im_root() );
         ImoScore* pImoScore = static_cast<ImoScore*>( doc.get_im_root()->get_content_item(0) );
-        MyScoreLayouter scoreLyt(pImoScore, &gmodel, m_libraryScope);
+        ViewOptions opts(&doc);
+        MyScoreLayouter scoreLyt(pImoScore, &gmodel, m_libraryScope, &opts);
         scoreLyt.prepare_to_start_layout();
 
         CHECK( scoreLyt.get_num_columns() == 1 );
@@ -306,7 +309,8 @@ SUITE(ScoreLayouterTest)
             "(n e4 q) )))" );
         GraphicModel gmodel( doc.get_im_root() );
         ImoScore* pImoScore = static_cast<ImoScore*>( doc.get_im_root()->get_content_item(0) );
-        MyScoreLayouter scoreLyt(pImoScore, &gmodel, m_libraryScope);
+        ViewOptions opts(&doc);
+        MyScoreLayouter scoreLyt(pImoScore, &gmodel, m_libraryScope, &opts);
         scoreLyt.prepare_to_start_layout();
 
 //        cout << test_name() << endl;
@@ -326,7 +330,8 @@ SUITE(ScoreLayouterTest)
             "(n e4 q) )))" );
         GraphicModel gmodel( doc.get_im_root() );
         ImoScore* pImoScore = static_cast<ImoScore*>( doc.get_im_root()->get_content_item(0) );
-        MyScoreLayouter scoreLyt(pImoScore, &gmodel, m_libraryScope);
+        ViewOptions opts(&doc);
+        MyScoreLayouter scoreLyt(pImoScore, &gmodel, m_libraryScope, &opts);
         scoreLyt.prepare_to_start_layout();
         GmoBoxScorePage pageBox(pImoScore);
         pageBox.set_origin(1500.0f, 2000.0f);
@@ -352,7 +357,8 @@ SUITE(ScoreLayouterTest)
             "(n e4 q) )))" );
         GraphicModel gmodel( doc.get_im_root() );
         ImoScore* pImoScore = static_cast<ImoScore*>( doc.get_im_root()->get_content_item(0) );
-        MyScoreLayouter scoreLyt(pImoScore, &gmodel, m_libraryScope);
+        ViewOptions opts(&doc);
+        MyScoreLayouter scoreLyt(pImoScore, &gmodel, m_libraryScope, &opts);
         scoreLyt.prepare_to_start_layout();
         GmoBoxScorePage pageBox(pImoScore);
         pageBox.set_origin(1500.0f, 2000.0f);
@@ -403,7 +409,8 @@ SUITE(ScoreLayouterTest)
             ")))" );
         GraphicModel gmodel( doc.get_im_root() );
         ImoScore* pImoScore = static_cast<ImoScore*>( doc.get_im_root()->get_content_item(0) );
-        MyScoreLayouter scoreLyt(pImoScore, &gmodel, m_libraryScope);
+        ViewOptions opts(&doc);
+        MyScoreLayouter scoreLyt(pImoScore, &gmodel, m_libraryScope, &opts);
         scoreLyt.prepare_to_start_layout();
         GmoBoxScorePage pageBox(pImoScore);
         pageBox.set_origin(1500.0f, 2000.0f);
@@ -434,7 +441,8 @@ SUITE(ScoreLayouterTest)
             "(instrument (musicData (clef G)(n c4 q) )))" );
         GraphicModel gmodel( doc.get_im_root() );
         ImoScore* pImoScore = static_cast<ImoScore*>( doc.get_im_root()->get_content_item(0) );
-        MyScoreLayouter scoreLyt(pImoScore, &gmodel, m_libraryScope);
+        ViewOptions opts(&doc);
+        MyScoreLayouter scoreLyt(pImoScore, &gmodel, m_libraryScope, &opts);
         scoreLyt.prepare_to_start_layout();
         GmoBoxScorePage pageBox(pImoScore);
         pageBox.set_origin(1500.0f, 2000.0f);
@@ -470,7 +478,8 @@ SUITE(ScoreLayouterTest)
             "(n e4 q) )))" );
         GraphicModel gmodel( doc.get_im_root() );
         ImoScore* pImoScore = static_cast<ImoScore*>( doc.get_im_root()->get_content_item(0) );
-        MyScoreLayouter scoreLyt(pImoScore, &gmodel, m_libraryScope);
+        ViewOptions opts(&doc);
+        MyScoreLayouter scoreLyt(pImoScore, &gmodel, m_libraryScope, &opts);
         scoreLyt.prepare_to_start_layout();
         GmoBoxScorePage pageBox(pImoScore);
         pageBox.set_origin(1500.0f, 2000.0f);
@@ -497,7 +506,8 @@ SUITE(ScoreLayouterTest)
             "(n e4 q) )))" );
         GraphicModel gmodel( doc.get_im_root() );
         ImoScore* pImoScore = static_cast<ImoScore*>( doc.get_im_root()->get_content_item(0) );
-        MyScoreLayouter scoreLyt(pImoScore, &gmodel, m_libraryScope);
+        ViewOptions opts(&doc);
+        MyScoreLayouter scoreLyt(pImoScore, &gmodel, m_libraryScope, &opts);
         scoreLyt.prepare_to_start_layout();
         GmoBoxScorePage pageBox(pImoScore);
         pageBox.set_origin(1500.0f, 2000.0f);
@@ -523,7 +533,8 @@ SUITE(ScoreLayouterTest)
             "(instrument (musicData (clef G)(n c4 q) )))" );
         GraphicModel gmodel( doc.get_im_root() );
         ImoScore* pImoScore = static_cast<ImoScore*>( doc.get_im_root()->get_content_item(0) );
-        MyScoreLayouter scoreLyt(pImoScore, &gmodel, m_libraryScope);
+        ViewOptions opts(&doc);
+        MyScoreLayouter scoreLyt(pImoScore, &gmodel, m_libraryScope, &opts);
         scoreLyt.prepare_to_start_layout();
         GmoBoxScorePage pageBox(pImoScore);
         pageBox.set_origin(1500.0f, 2000.0f);
@@ -549,7 +560,8 @@ SUITE(ScoreLayouterTest)
             "(instrument (musicData (clef G)(n c4 q) )))" );
         GraphicModel gmodel( doc.get_im_root() );
         ImoScore* pImoScore = static_cast<ImoScore*>( doc.get_im_root()->get_content_item(0) );
-        MyScoreLayouter scoreLyt(pImoScore, &gmodel, m_libraryScope);
+        ViewOptions opts(&doc);
+        MyScoreLayouter scoreLyt(pImoScore, &gmodel, m_libraryScope, &opts);
         scoreLyt.prepare_to_start_layout();
         GmoBoxScorePage pageBox(pImoScore);
         pageBox.set_origin(1500.0f, 2000.0f);
@@ -575,7 +587,8 @@ SUITE(ScoreLayouterTest)
             "(instrument (musicData (clef G)(n c4 q) )))" );
         GraphicModel gmodel( doc.get_im_root() );
         ImoScore* pImoScore = static_cast<ImoScore*>( doc.get_im_root()->get_content_item(0) );
-        MyScoreLayouter scoreLyt(pImoScore, &gmodel, m_libraryScope);
+        ViewOptions opts(&doc);
+        MyScoreLayouter scoreLyt(pImoScore, &gmodel, m_libraryScope, &opts);
         scoreLyt.prepare_to_start_layout();
         GmoBoxScorePage pageBox(pImoScore);
         pageBox.set_origin(1500.0f, 2000.0f);
@@ -627,7 +640,8 @@ SUITE(ScoreLayouterTest)
             "(instrument (musicData (clef G)(n c4 q) )))" );
         GraphicModel gmodel( doc.get_im_root() );
         ImoScore* pImoScore = static_cast<ImoScore*>( doc.get_im_root()->get_content_item(0) );
-        MyScoreLayouter scoreLyt(pImoScore, &gmodel, m_libraryScope);
+        ViewOptions opts(&doc);
+        MyScoreLayouter scoreLyt(pImoScore, &gmodel, m_libraryScope, &opts);
         scoreLyt.prepare_to_start_layout();
         GmoBoxScorePage pageBox(pImoScore);
         pageBox.set_origin(1500.0f, 2000.0f);
@@ -678,7 +692,8 @@ SUITE(ScoreLayouterTest)
             "(instrument (musicData (clef G)(n c4 q) )))" );
         GraphicModel gmodel( doc.get_im_root() );
         ImoScore* pImoScore = static_cast<ImoScore*>( doc.get_im_root()->get_content_item(0) );
-        MyScoreLayouter scoreLyt(pImoScore, &gmodel, m_libraryScope);
+        ViewOptions opts(&doc);
+        MyScoreLayouter scoreLyt(pImoScore, &gmodel, m_libraryScope, &opts);
         scoreLyt.prepare_to_start_layout();
         GmoBoxScorePage pageBox(pImoScore);
         pageBox.set_origin(1500.0f, 2000.0f);
@@ -719,7 +734,8 @@ SUITE(ScoreLayouterTest)
             ")))" );
         GraphicModel gmodel( doc.get_im_root() );
         ImoScore* pImoScore = static_cast<ImoScore*>( doc.get_im_root()->get_content_item(0) );
-        MyScoreLayouter scoreLyt(pImoScore, &gmodel, m_libraryScope);
+        ViewOptions opts(&doc);
+        MyScoreLayouter scoreLyt(pImoScore, &gmodel, m_libraryScope, &opts);
         scoreLyt.prepare_to_start_layout();
 
         CHECK( scoreLyt.get_num_columns() == 1 );
@@ -739,7 +755,8 @@ SUITE(ScoreLayouterTest)
             ")))" );
         GraphicModel gmodel( doc.get_im_root() );
         ImoScore* pImoScore = static_cast<ImoScore*>( doc.get_im_root()->get_content_item(0) );
-        MyScoreLayouter scoreLyt(pImoScore, &gmodel, m_libraryScope);
+        ViewOptions opts(&doc);
+        MyScoreLayouter scoreLyt(pImoScore, &gmodel, m_libraryScope, &opts);
         scoreLyt.prepare_to_start_layout();
 
         CHECK( scoreLyt.get_num_columns() == 2 );
@@ -762,7 +779,8 @@ SUITE(ScoreLayouterTest)
             ")))" );
         GraphicModel gmodel( doc.get_im_root() );
         ImoScore* pImoScore = static_cast<ImoScore*>( doc.get_im_root()->get_content_item(0) );
-        MyScoreLayouter scoreLyt(pImoScore, &gmodel, m_libraryScope);
+        ViewOptions opts(&doc);
+        MyScoreLayouter scoreLyt(pImoScore, &gmodel, m_libraryScope, &opts);
         scoreLyt.prepare_to_start_layout();
 
         CHECK( scoreLyt.get_num_columns() == 3 );
@@ -786,7 +804,8 @@ SUITE(ScoreLayouterTest)
             ")))" );
         GraphicModel gmodel( doc.get_im_root() );
         ImoScore* pImoScore = static_cast<ImoScore*>( doc.get_im_root()->get_content_item(0) );
-        MyScoreLayouter scoreLyt(pImoScore, &gmodel, m_libraryScope);
+        ViewOptions opts(&doc);
+        MyScoreLayouter scoreLyt(pImoScore, &gmodel, m_libraryScope, &opts);
         scoreLyt.prepare_to_start_layout();
 
         CHECK( scoreLyt.get_num_columns() == 2 );
@@ -815,7 +834,8 @@ SUITE(ScoreLayouterTest)
             ")))" );
         GraphicModel gmodel( doc.get_im_root() );
         ImoScore* pImoScore = static_cast<ImoScore*>( doc.get_im_root()->get_content_item(0) );
-        MyScoreLayouter scoreLyt(pImoScore, &gmodel, m_libraryScope);
+        ViewOptions opts(&doc);
+        MyScoreLayouter scoreLyt(pImoScore, &gmodel, m_libraryScope, &opts);
         scoreLyt.prepare_to_start_layout();
 
         CHECK( scoreLyt.get_num_columns() == 3 );
@@ -846,7 +866,8 @@ SUITE(ScoreLayouterTest)
         doc.from_string("(score (vers 2.0)(instrument (musicData)))" );
         GraphicModel gmodel( doc.get_im_root() );
         ImoScore* pImoScore = static_cast<ImoScore*>( doc.get_im_root()->get_content_item(0) );
-        MyScoreLayouter scoreLyt(pImoScore, &gmodel, m_libraryScope);
+        ViewOptions opts(&doc);
+        MyScoreLayouter scoreLyt(pImoScore, &gmodel, m_libraryScope, &opts);
         scoreLyt.prepare_to_start_layout();
 
         CHECK( scoreLyt.get_num_columns() == 0 );
@@ -861,7 +882,8 @@ SUITE(ScoreLayouterTest)
             "(instrument (musicData (clef G)(n c4 q) )))" );
         GraphicModel gmodel( doc.get_im_root() );
         ImoScore* pImoScore = static_cast<ImoScore*>( doc.get_im_root()->get_content_item(0) );
-        MyScoreLayouter scoreLyt(pImoScore, &gmodel, m_libraryScope);
+        ViewOptions opts(&doc);
+        MyScoreLayouter scoreLyt(pImoScore, &gmodel, m_libraryScope, &opts);
         scoreLyt.prepare_to_start_layout();
 
         CHECK( scoreLyt.get_num_columns() == 1 );

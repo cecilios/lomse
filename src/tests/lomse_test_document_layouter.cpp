@@ -37,8 +37,8 @@ using namespace lomse;
 class MyDocLayouter : public DocLayouter
 {
 public:
-    MyDocLayouter(Document* pDoc, LibraryScope& libraryScope)
-        : DocLayouter(pDoc, libraryScope) {}
+    MyDocLayouter(Document* pDoc, LibraryScope& libraryScope, ViewOptions* pOpts)
+        : DocLayouter(pDoc, libraryScope, pOpts) {}
     ~MyDocLayouter() {}
 
     void my_layout_content() { layout_content(); }
@@ -76,7 +76,8 @@ SUITE(DocLayouterTest)
         Document doc(m_libraryScope);
         doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) "
             "(instrument (musicData (clef G)(key e)(n c4 q)(r q)(barline simple))))))" );
-        DocLayouter dl(&doc, m_libraryScope);
+        ViewOptions opts(&doc);
+        DocLayouter dl(&doc, m_libraryScope, &opts);
         dl.layout_document();
         GraphicModel* pGModel = dl.get_graphic_model();
         //pGModel->dump_page(0, cout);
@@ -89,7 +90,8 @@ SUITE(DocLayouterTest)
         Document doc(m_libraryScope);
         doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) "
             "(instrument (musicData (clef G)(key e)(n c4 q)(r q)(barline simple))))))" );
-        DocLayouter dl(&doc, m_libraryScope);
+        ViewOptions opts(&doc);
+        DocLayouter dl(&doc, m_libraryScope, &opts);
         dl.layout_document();
         GraphicModel* pGModel = dl.get_graphic_model();
         CHECK( pGModel != nullptr );
@@ -104,7 +106,8 @@ SUITE(DocLayouterTest)
             "(pageLayout (pageSize 24000 35700)(pageMargins 1000 1500 3000 2500 4000) landscape) "
             "(content (score (vers 1.6) "
             "(instrument (musicData (clef G)(key e)(n c4 q)(r q)(barline simple))))))" );
-        DocLayouter dl(&doc, m_libraryScope);
+        ViewOptions opts(&doc);
+        DocLayouter dl(&doc, m_libraryScope, &opts);
         dl.layout_document();
         GraphicModel* pGModel = dl.get_graphic_model();
         GmoBoxDocPage* pPage = pGModel->get_page(0);
@@ -121,7 +124,8 @@ SUITE(DocLayouterTest)
             "(pageLayout (pageSize 24000 35700)(pageMargins 1000 1500 3000 2500 4000) landscape) "
             "(content (score (vers 1.6) "
             "(instrument (musicData (clef G)(key e)(n c4 q)(r q)(barline simple))))))" );
-        DocLayouter dl(&doc, m_libraryScope);
+        ViewOptions opts(&doc);
+        DocLayouter dl(&doc, m_libraryScope, &opts);
         dl.layout_document();
         GraphicModel* pGModel = dl.get_graphic_model();
         GmoBoxDocPage* pPage = pGModel->get_page(0);
@@ -141,7 +145,8 @@ SUITE(DocLayouterTest)
             "(pageLayout (pageSize 24000 35700)(pageMargins 1000 1500 3000 2500 4000) landscape) "
             "(content (score (vers 1.6) "
             "(instrument (musicData (clef G)(key e)(n c4 q)(r q)(barline simple))))))" );
-        DocLayouter dl(&doc, m_libraryScope);
+        ViewOptions opts(&doc);
+        DocLayouter dl(&doc, m_libraryScope, &opts);
         dl.layout_document();
         GraphicModel* pGModel = dl.get_graphic_model();
 //        pGModel->dump_page(0, cout);
@@ -165,7 +170,8 @@ SUITE(DocLayouterTest)
             "(pageLayout (pageSize 24000 35700)(pageMargins 1000 1500 3000 2500 4000) landscape) "
             "(content (score (vers 1.6) "
             "(instrument (musicData (clef G)(key e)(n c4 q)(r q)(barline simple))))))" );
-        DocLayouter dl(&doc, m_libraryScope);
+        ViewOptions opts(&doc);
+        DocLayouter dl(&doc, m_libraryScope, &opts);
         dl.layout_document();
         GraphicModel* pGModel = dl.get_graphic_model();
 //        pGModel->dump_page(0, cout);
@@ -189,7 +195,8 @@ SUITE(DocLayouterTest)
             "(pageLayout (pageSize 24000 35700)(pageMargins 1000 1500 3000 2500 4000) landscape) "
             "(content (score (vers 1.6) "
             "(instrument (musicData (clef G)(key e)(n c4 q)(r q)(barline simple))))))" );
-        DocLayouter dl(&doc, m_libraryScope);
+        ViewOptions opts(&doc);
+        DocLayouter dl(&doc, m_libraryScope, &opts);
         dl.layout_document();
         GraphicModel* pGModel = dl.get_graphic_model();
         GmoBoxDocPage* pPage = pGModel->get_page(0);
@@ -213,7 +220,8 @@ SUITE(DocLayouterTest)
             "(pageLayout (pageSize 24000 35700)(pageMargins 1000 1500 3000 2500 4000) landscape) "
             "(content (score (vers 1.6) "
             "(instrument (musicData (clef G)(key e)(n c4 q)(r q)(barline simple))))))" );
-        DocLayouter dl(&doc, m_libraryScope);
+        ViewOptions opts(&doc);
+        DocLayouter dl(&doc, m_libraryScope, &opts);
         dl.layout_document();
         GraphicModel* pGModel = dl.get_graphic_model();
         GmoBoxDocPage* pPage = pGModel->get_page(0);
@@ -238,7 +246,8 @@ SUITE(DocLayouterTest)
             "(pageLayout (pageSize 24000 35700)(pageMargins 1000 1500 3000 2500 4000) landscape) "
             "(content (score (vers 1.6) "
             "(instrument (musicData (clef G)(key e)(n c4 q)(r q)(barline simple))))))" );
-        DocLayouter dl(&doc, m_libraryScope);
+        ViewOptions opts(&doc);
+        DocLayouter dl(&doc, m_libraryScope, &opts);
         dl.layout_document();
         GraphicModel* pGModel = dl.get_graphic_model();
         GmoBoxDocPage* pPage = pGModel->get_page(0);
@@ -269,7 +278,8 @@ SUITE(DocLayouterTest)
             "(pageLayout (pageSize 24000 35700)(pageMargins 1000 1500 3000 2500 4000) landscape) "
             "(content (score (vers 1.6) "
             "(instrument (musicData (clef G)(key e)(n c4 q)(r q)(barline simple))))))" );
-        DocLayouter dl(&doc, m_libraryScope);
+        ViewOptions opts(&doc);
+        DocLayouter dl(&doc, m_libraryScope, &opts);
         dl.layout_document();
         GraphicModel* pGModel = dl.get_graphic_model();
         GmoBoxDocPage* pPage = pGModel->get_page(0);
@@ -294,7 +304,8 @@ SUITE(DocLayouterTest)
         doc.from_string("(lenmusdoc (vers 0.0) "
             "(content (score (vers 1.6) "
             "(instrument (musicData)))))" );
-        DocLayouter dl(&doc, m_libraryScope);
+        ViewOptions opts(&doc);
+        DocLayouter dl(&doc, m_libraryScope, &opts);
         dl.layout_document();
         GraphicModel* pGModel = dl.get_graphic_model();
         CHECK( pGModel && pGModel->get_num_pages() == 1 );
@@ -326,7 +337,8 @@ SUITE(DocLayouterTest)
         doc.from_string("(lenmusdoc (vers 0.0) "
             "(content (score (vers 1.6) "
             "(instrument (musicData (clef G) )) )))" );
-        DocLayouter dl(&doc, m_libraryScope);
+        ViewOptions opts(&doc);
+        DocLayouter dl(&doc, m_libraryScope, &opts);
         dl.layout_document();
         GraphicModel* pGModel = dl.get_graphic_model();
         CHECK( pGModel && pGModel->get_num_pages() == 1 );
@@ -370,7 +382,8 @@ SUITE(DocLayouterTest)
         doc.from_string("(lenmusdoc (vers 0.0) "
             "(content (score (vers 1.6) "
             "(instrument (musicData)) )))" );
-        DocLayouter dl(&doc, m_libraryScope);
+        ViewOptions opts(&doc);
+        DocLayouter dl(&doc, m_libraryScope, &opts);
         dl.layout_document();
         GraphicModel* pGModel = dl.get_graphic_model();
         CHECK( pGModel && pGModel->get_num_pages() == 1 );
@@ -402,7 +415,8 @@ SUITE(DocLayouterTest)
         doc.from_string("(lenmusdoc (vers 0.0) "
             "(content (score (vers 1.6) "
             "(instrument (staves 2)(musicData)))))" );
-        DocLayouter dl(&doc, m_libraryScope);
+        ViewOptions opts(&doc);
+        DocLayouter dl(&doc, m_libraryScope, &opts);
         dl.layout_document();
         GraphicModel* pGModel = dl.get_graphic_model();
         CHECK( pGModel && pGModel->get_num_pages() == 1 );
@@ -438,7 +452,8 @@ SUITE(DocLayouterTest)
         Document doc(m_libraryScope);
         doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) "
             "(instrument (musicData)) (instrument (musicData)) )))" );
-        DocLayouter dl(&doc, m_libraryScope);
+        ViewOptions opts(&doc);
+        DocLayouter dl(&doc, m_libraryScope, &opts);
         dl.layout_document();
         GraphicModel* pGModel = dl.get_graphic_model();
         CHECK( pGModel && pGModel->get_num_pages() == 1 );
@@ -475,7 +490,8 @@ SUITE(DocLayouterTest)
         doc.from_string("(lenmusdoc (vers 0.0) "
             "(content (score (vers 2.0) "
             "(instrument (musicData (clef G) )) )))" );
-        DocLayouter dl(&doc, m_libraryScope, k_infinite_width);
+        ViewOptions opts(&doc);
+        DocLayouter dl(&doc, m_libraryScope, &opts, k_infinite_width);
 
         dl.layout_document();
         GraphicModel* pGModel = dl.get_graphic_model();

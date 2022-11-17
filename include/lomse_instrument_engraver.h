@@ -27,6 +27,7 @@ class ImoInstrument;
 class ImoGroupLayout;
 class ImoGroupLayouts;
 class ImoScore;
+class ImoScoreLayout;
 class FontStorage;
 class GmoBox;
 class GmoBoxSystem;
@@ -46,6 +47,7 @@ protected:
     ImoScore* m_pScore;
     FontStorage* m_pFontStorage;
     ScoreLayouter* m_pScoreLyt;
+    ImoScoreLayout* m_pScoreLayout;
 
     std::vector<GroupEngraver*> m_groupEngravers;
     std::vector<InstrumentEngraver*> m_instrEngravers;
@@ -70,7 +72,7 @@ protected:
 
 public:
     PartsEngraver(LibraryScope& libraryScope, ScoreMeter* pScoreMeter,
-                  ImoGroupLayouts* pGroups, ImoScore* pScore, ScoreLayouter* pScoreLyt);
+                  ImoScore* pScore, ScoreLayouter* pScoreLyt);
     ~PartsEngraver();
 
     inline InstrumentEngraver* get_engraver_for(int iInstr)

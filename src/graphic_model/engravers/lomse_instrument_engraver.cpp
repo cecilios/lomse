@@ -29,10 +29,8 @@ namespace lomse
 //---------------------------------------------------------------------------------------
 
 PartsEngraver::PartsEngraver(LibraryScope& libraryScope, ScoreMeter* pScoreMeter,
-                             ImoGroupLayouts* pGroups, ImoScore* pScore,
-                             ScoreLayouter* pScoreLyt)
+                             ImoScore* pScore, ScoreLayouter* pScoreLyt)
     : Engraver(libraryScope, pScoreMeter)
-    , m_pGroups(pGroups)
     , m_pScore(pScore)
     , m_pFontStorage( libraryScope.font_storage() )
     , m_pScoreLyt(pScoreLyt)
@@ -41,6 +39,9 @@ PartsEngraver::PartsEngraver(LibraryScope& libraryScope, ScoreMeter* pScoreMeter
     , m_pRightAlignerFirst(nullptr)
     , m_pRightAlignerOther(nullptr)
 {
+    ScoreLayoutOptions* pOpts = pScoreLyt->get_score_layout_options();
+    m_pScoreLayout = pOpts->get_score_layout();
+    m_pGroups = m_pScoreLayout->get_group_layouts();
     create_group_engravers();
     create_instrument_engravers();
 }

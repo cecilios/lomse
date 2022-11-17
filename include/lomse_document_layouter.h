@@ -31,19 +31,24 @@ class GmoBoxDocPage;
 class ScoreLayouter;
 
 //---------------------------------------------------------------------------------------
-// DocLayouter: layouts a document
+/** %DocLayouter: algorithm for laying out a document. It takes care of creating pages,
+    adding footers and headers, controlling of margins, available space, page
+    numbering, etc. And delegates content layout to ContentLayouter object who, in turn,
+    delegates in specialized layouters.
+*/
 class DocLayouter : public Layouter
 {
 protected:
     ImoDocument* m_pDoc;
+    ViewOptions* m_pOptions;
     LUnits m_viewWidth;
 
     //for unit tests: need to access ScoreLayouter.
     Layouter* m_pScoreLayouter;
 
 public:
-    DocLayouter(Document* pDoc, LibraryScope& libraryScope, int constrains=0,
-                LUnits width=0.0f);
+    DocLayouter(Document* pDoc, LibraryScope& libraryScope, ViewOptions* pOptions,
+                int constrains=0, LUnits width=0.0f);
     virtual ~DocLayouter();
 
     void layout_document();

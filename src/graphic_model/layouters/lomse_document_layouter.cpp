@@ -21,24 +21,21 @@
 namespace lomse
 {
 
-//---------------------------------------------------------------------------------------
+//=======================================================================================
 // DocLayouter implementation
-//  Main object responsible for laying out a document. It takes care of creating pages,
-//  adding footers and headers, controlling of margins, available space, page
-//  numbering, etc. And delegates content layout to ContentLayouter object who, in turn,
-//  delegates in specialized layouters.
-//---------------------------------------------------------------------------------------
-
-DocLayouter::DocLayouter(Document* pDoc, LibraryScope& libraryScope, int constrains,
-                         LUnits width)
+//=======================================================================================
+DocLayouter::DocLayouter(Document* pDoc, LibraryScope& libraryScope,
+                         ViewOptions* pOptions, int constrains, LUnits width)
     : Layouter(libraryScope)
     , m_pDoc( pDoc->get_im_root() )
+    , m_pOptions(pOptions)
     , m_viewWidth(width)
     , m_pScoreLayouter(nullptr)
 {
     m_pStyles = m_pDoc->get_styles();
     m_pGModel = LOMSE_NEW GraphicModel(m_pDoc);
     m_constrains = constrains;
+    m_pOptions->update_doc_model( m_pDoc->get_doc_model() );
 }
 
 //---------------------------------------------------------------------------------------
@@ -240,7 +237,7 @@ void DocLayouter::fix_document_size()
 //---------------------------------------------------------------------------------------
 int DocLayouter::layout_content()
 {
-    return layout_item(m_pDoc->get_content(), m_pItemMainBox, m_constrains);
+    return layout_item(m_pDoc->get_content(), m_pItemMainBox, m_constrains, m_pOptions);
 }
 
 //---------------------------------------------------------------------------------------

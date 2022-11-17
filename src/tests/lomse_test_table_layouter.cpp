@@ -55,8 +55,8 @@ protected:
 
 public:
     MyTableLayouter(ImoContentObj* pImo, GraphicModel* pGModel,
-                    LibraryScope& libraryScope, ImoStyles* pStyles)
-        : TableLayouter(pImo, nullptr, pGModel, libraryScope, pStyles, true)
+                    LibraryScope& libraryScope, ViewOptions* pOptions, ImoStyles* pStyles)
+        : TableLayouter(pImo, nullptr, pGModel, libraryScope, pOptions, pStyles, true)
     {
     }
 //    MyTableLayouter(LibraryScope& libraryScope, LineReferences& refs)
@@ -321,7 +321,8 @@ SUITE(TableLayouterTest)
         GmoBoxDocPageContent box(nullptr);
         box.set_owner_box(&page);
 
-        MyTableLayouter lyt(pTable, &model, m_libraryScope, pStyles);
+        ViewOptions opts(spDoc.get());
+        MyTableLayouter lyt(pTable, &model, m_libraryScope, &opts, pStyles);
         lyt.prepare_to_start_layout();
         lyt.create_main_box(&box, UPoint(0.0f, 0.0f), 10000.0f, 20000.0f);
 
@@ -348,8 +349,8 @@ SUITE(TableLayouterTest)
         ImoTable* pTable = static_cast<ImoTable*>( pDoc->get_content_item(0) );
 
         GraphicModel model(pDoc);
-
-        MyTableLayouter lyt(pTable, &model, m_libraryScope, pStyles);
+        ViewOptions opts(spDoc.get());
+        MyTableLayouter lyt(pTable, &model, m_libraryScope, &opts, pStyles);
         lyt.prepare_to_start_layout();
 
         //cout << "head rows=" << lyt.my_get_num_head_rows() << endl;
@@ -383,8 +384,8 @@ SUITE(TableLayouterTest)
         ImoTable* pTable = static_cast<ImoTable*>( pDoc->get_content_item(0) );
 
         GraphicModel model(pDoc);
-
-        MyTableLayouter lyt(pTable, &model, m_libraryScope, pStyles);
+        ViewOptions opts(spDoc.get());
+        MyTableLayouter lyt(pTable, &model, m_libraryScope, &opts, pStyles);
         lyt.prepare_to_start_layout();
 
 //        cout << "head rows=" << lyt.my_get_num_head_rows() << endl;
@@ -417,7 +418,8 @@ SUITE(TableLayouterTest)
         ImoStyles* pStyles = pDoc->get_styles();
         ImoTable* pTable = static_cast<ImoTable*>( pDoc->get_content_item(0) );
         GraphicModel model(pDoc);
-        MyTableLayouter lyt(pTable, &model, m_libraryScope, pStyles);
+        ViewOptions opts(spDoc.get());
+        MyTableLayouter lyt(pTable, &model, m_libraryScope, &opts, pStyles);
         lyt.prepare_to_start_layout();
 
         CHECK( lyt.my_get_num_head_rows() == 0 );
@@ -456,7 +458,8 @@ SUITE(TableLayouterTest)
         ImoStyles* pStyles = pDoc->get_styles();
         ImoTable* pTable = static_cast<ImoTable*>( pDoc->get_content_item(0) );
         GraphicModel model(pDoc);
-        MyTableLayouter lyt(pTable, &model, m_libraryScope, pStyles);
+        ViewOptions opts(spDoc.get());
+        MyTableLayouter lyt(pTable, &model, m_libraryScope, &opts, pStyles);
         lyt.prepare_to_start_layout();
 
         CHECK( lyt.my_get_num_cols() == 3 );
@@ -479,7 +482,8 @@ SUITE(TableLayouterTest)
         ImoStyles* pStyles = pDoc->get_styles();
         ImoTable* pTable = static_cast<ImoTable*>( pDoc->get_content_item(0) );
         GraphicModel model(pDoc);
-        MyTableLayouter lyt(pTable, &model, m_libraryScope, pStyles);
+        ViewOptions opts(spDoc.get());
+        MyTableLayouter lyt(pTable, &model, m_libraryScope, &opts, pStyles);
         lyt.prepare_to_start_layout();
 
         CHECK( lyt.my_get_num_cols() == 4 );
@@ -521,7 +525,8 @@ SUITE(TableLayouterTest)
         ImoStyles* pStyles = pDoc->get_styles();
         ImoTable* pTable = static_cast<ImoTable*>( pDoc->get_content_item(0) );
         GraphicModel model(pDoc);
-        MyTableLayouter lyt(pTable, &model, m_libraryScope, pStyles);
+        ViewOptions opts(spDoc.get());
+        MyTableLayouter lyt(pTable, &model, m_libraryScope, &opts, pStyles);
         lyt.prepare_to_start_layout();
 
         CHECK( lyt.my_get_num_cols() == 2 );
@@ -543,7 +548,8 @@ SUITE(TableLayouterTest)
         ImoStyles* pStyles = pDoc->get_styles();
         ImoTable* pTable = static_cast<ImoTable*>( pDoc->get_content_item(0) );
         GraphicModel model(pDoc);
-        MyTableLayouter lyt(pTable, &model, m_libraryScope, pStyles);
+        ViewOptions opts(spDoc.get());
+        MyTableLayouter lyt(pTable, &model, m_libraryScope, &opts, pStyles);
         lyt.prepare_to_start_layout();
 
         CHECK( lyt.my_get_head_layouter() == nullptr );
@@ -564,7 +570,8 @@ SUITE(TableLayouterTest)
         ImoStyles* pStyles = pDoc->get_styles();
         ImoTable* pTable = static_cast<ImoTable*>( pDoc->get_content_item(0) );
         GraphicModel model(pDoc);
-        MyTableLayouter lyt(pTable, &model, m_libraryScope, pStyles);
+        ViewOptions opts(spDoc.get());
+        MyTableLayouter lyt(pTable, &model, m_libraryScope, &opts, pStyles);
         lyt.prepare_to_start_layout();
 
         CHECK( lyt.my_get_head_layouter() == nullptr );
@@ -597,7 +604,8 @@ SUITE(TableLayouterTest)
         ImoStyles* pStyles = pDoc->get_styles();
         ImoTable* pTable = static_cast<ImoTable*>( pDoc->get_content_item(0) );
         GraphicModel model(pDoc);
-        MyTableLayouter lyt(pTable, &model, m_libraryScope, pStyles);
+        ViewOptions opts(spDoc.get());
+        MyTableLayouter lyt(pTable, &model, m_libraryScope, &opts, pStyles);
         lyt.prepare_to_start_layout();
 
         CHECK( lyt.my_get_head_layouter() == nullptr );
@@ -637,7 +645,8 @@ SUITE(TableLayouterTest)
         ImoStyles* pStyles = pDoc->get_styles();
         ImoTable* pTable = static_cast<ImoTable*>( pDoc->get_content_item(0) );
         GraphicModel model(pDoc);
-        MyTableLayouter lyt(pTable, &model, m_libraryScope, pStyles);
+        ViewOptions opts(spDoc.get());
+        MyTableLayouter lyt(pTable, &model, m_libraryScope, &opts, pStyles);
         lyt.prepare_to_start_layout();
 
         TableSectionLayouter* pSH = lyt.my_get_head_layouter();
@@ -723,7 +732,8 @@ SUITE(TableLayouterTest)
         ImoStyles* pStyles = pDoc->get_styles();
         ImoTable* pTable = static_cast<ImoTable*>( pDoc->get_content_item(0) );
         GraphicModel model(pDoc);
-        MyTableLayouter lyt(pTable, &model, m_libraryScope, pStyles);
+        ViewOptions opts(spDoc.get());
+        MyTableLayouter lyt(pTable, &model, m_libraryScope, &opts, pStyles);
         lyt.prepare_to_start_layout();
 
         TableSectionLayouter* pSH = lyt.my_get_head_layouter();
@@ -791,7 +801,8 @@ SUITE(TableLayouterTest)
         ImoStyles* pStyles = pDoc->get_styles();
         ImoTable* pTable = static_cast<ImoTable*>( pDoc->get_content_item(0) );
         GraphicModel model(pDoc);
-        MyTableLayouter lyt(pTable, &model, m_libraryScope, pStyles);
+        ViewOptions opts(spDoc.get());
+        MyTableLayouter lyt(pTable, &model, m_libraryScope, &opts, pStyles);
         lyt.prepare_to_start_layout();
 
         TableSectionLayouter* pSH = lyt.my_get_head_layouter();
@@ -857,7 +868,8 @@ SUITE(TableLayouterTest)
         ImoStyles* pStyles = pDoc->get_styles();
         ImoTable* pTable = static_cast<ImoTable*>( pDoc->get_content_item(0) );
         GraphicModel model(pDoc);
-        MyTableLayouter lyt(pTable, &model, m_libraryScope, pStyles);
+        ViewOptions opts(spDoc.get());
+        MyTableLayouter lyt(pTable, &model, m_libraryScope, &opts, pStyles);
         lyt.prepare_to_start_layout();
 
         TableSectionLayouter* pSH = lyt.my_get_head_layouter();
@@ -921,7 +933,8 @@ SUITE(TableLayouterTest)
         ImoStyles* pStyles = pDoc->get_styles();
         ImoTable* pTable = static_cast<ImoTable*>( pDoc->get_content_item(0) );
         GraphicModel model(pDoc);
-        MyTableLayouter lyt(pTable, &model, m_libraryScope, pStyles);
+        ViewOptions opts(spDoc.get());
+        MyTableLayouter lyt(pTable, &model, m_libraryScope, &opts, pStyles);
         lyt.prepare_to_start_layout();
 
         TableSectionLayouter* pSH = lyt.my_get_head_layouter();
@@ -996,7 +1009,7 @@ protected:
 
 public:
     MockCellLayouter(LibraryScope& libraryScope, int rowspan, int colspan)
-        : TableCellLayouter(nullptr, nullptr, nullptr, libraryScope, nullptr)
+        : TableCellLayouter(nullptr, nullptr, nullptr, libraryScope, nullptr, nullptr)
         , m_rowspan(rowspan)
         , m_colspan(colspan)
     {

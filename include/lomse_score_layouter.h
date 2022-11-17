@@ -104,7 +104,7 @@ protected:
     EngraversMap*   m_pEngraversMap = nullptr;
     ShapesCreator*  m_pShapesCreator = nullptr;
     PartsEngraver*  m_pPartsEngraver = nullptr;
-//    ScoreLayoutOptions* m_pOptions = nullptr;
+    ScoreLayoutOptions* m_pOptions = nullptr;
 
 public:
     explicit ScoreLayoutScope(ScoreLayouter* pParent, LibraryScope& libraryScope,
@@ -121,12 +121,14 @@ public:
     inline EngraversMap& get_engravers_map() { return *m_pEngraversMap; }
     inline ShapesCreator* get_shapes_creator() { return m_pShapesCreator; }
     inline PartsEngraver* get_parts_engraver() { return m_pPartsEngraver; }
+    inline ScoreLayoutOptions* get_score_layout_options() { return m_pOptions; }
 
 
 protected:
     //instantiation
     friend class ScoreLayouter;
-    void initialice(ImoScore* pScore, EngraversMap* pEngraversMap);
+    void initialice(ImoScore* pScore, EngraversMap* pEngraversMap,
+                    ScoreLayoutOptions* pOptions);
 
 };
 
@@ -186,7 +188,7 @@ protected:
 
 public:
     ScoreLayouter(ImoContentObj* pImo, Layouter* pParent, GraphicModel* pGModel,
-                  LibraryScope& libraryScope);
+                  LibraryScope& libraryScope, ViewOptions* pOptions);
     virtual ~ScoreLayouter();
 
     void prepare_to_start_layout() override;
@@ -198,6 +200,13 @@ public:
     SystemLayouter* get_system_layouter(int iSys) { return m_sysLayouters[iSys]; }
     virtual TypeMeasureInfo* get_measure_info_for_column(int iCol);
     virtual GmoShapeBarline* get_start_barline_shape_for_column(int iCol);
+    ScoreLayoutOptions* get_score_layout_options() {
+        return m_scoreLayoutScope.get_score_layout_options();
+    }
+
+    //facade methods, accessing ScoreLayoutOptions
+    int get_num_instruments();
+
 
     //support for helper classes
     virtual LUnits get_target_size_for_system(int iSystem);
@@ -251,7 +260,7 @@ protected:
     void remove_unused_space();
     void center_score_if_requested();
     void delete_system_layouters();
-    void get_score_renderization_options();
+    void get_score_rendition_options();
     void auto_scale();
 
     bool m_fFirstSystemInPage;
@@ -278,7 +287,8 @@ protected:
 
     //---------------------------------------------------------------
     LUnits determine_system_top_margin();
-    LUnits determine_top_space(int nInstr, bool fFirstSystemInScore=false,
+    //iRelInstr (0..n-1) relative to instruments in current score layout
+    LUnits determine_top_space(int iRelInstr, bool fFirstSystemInScore=false,
                                bool fFirstSystemInPage=false);
 
     LUnits space_used_by_prolog(int iSystem);

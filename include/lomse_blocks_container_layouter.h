@@ -46,7 +46,8 @@ protected:
 public:
     ContentLayouter(ImoContentObj* pItem, Layouter* pParent,
                     GraphicModel* pGModel, LibraryScope& libraryScope,
-                    ImoStyles* pStyles, bool fAddShapesToModel=true);
+                    ViewOptions* pOptions, ImoStyles* pStyles,
+                    bool fAddShapesToModel=true);
     virtual ~ContentLayouter() {}
 
     //implementation of Layouter virtual methods
@@ -69,7 +70,8 @@ protected:
 public:
     MultiColumnLayouter(ImoContentObj* pItem, Layouter* pParent,
                         GraphicModel* pGModel, LibraryScope& libraryScope,
-                        ImoStyles* pStyles, bool fAddShapesToModel=true);
+                        ViewOptions* pOptions, ImoStyles* pStyles,
+                        bool fAddShapesToModel=true);
     virtual ~MultiColumnLayouter();
 
     //implementation of Layouter virtual methods
@@ -88,8 +90,8 @@ class BlocksContainerLayouter : public Layouter
 {
 public:
     BlocksContainerLayouter(ImoContentObj* pImo, Layouter* pParent, GraphicModel* pGModel,
-                            LibraryScope& libraryScope, ImoStyles* pStyles,
-                            bool fAddShapesToModel=true);
+                            LibraryScope& libraryScope, ViewOptions* pOptions,
+                            ImoStyles* pStyles, bool fAddShapesToModel=true);
     virtual ~BlocksContainerLayouter() {}
 
     //generic implementation of Layouter virtual methods
@@ -108,7 +110,7 @@ protected:
 
 public:
     ListLayouter(ImoContentObj* pItem, Layouter* pParent, GraphicModel* pGModel,
-                 LibraryScope& libraryScope, ImoStyles* pStyles,
+                 LibraryScope& libraryScope, ViewOptions* pOptions, ImoStyles* pStyles,
                  bool fAddShapesToModel=true);
     virtual ~ListLayouter() {}
 
@@ -123,8 +125,8 @@ class ListItemLayouter : public BlocksContainerLayouter
 {
 public:
     ListItemLayouter(ImoContentObj* pImo, Layouter* pParent, GraphicModel* pGModel,
-                     LibraryScope& libraryScope, ImoStyles* pStyles,
-                     bool fAddShapesToModel=true);
+                     LibraryScope& libraryScope, ViewOptions* pOptions,
+                     ImoStyles* pStyles, bool fAddShapesToModel=true);
     virtual ~ListItemLayouter() {}
 
     bool is_first_content_item(ImoContentObj* pImo);

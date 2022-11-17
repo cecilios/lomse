@@ -29,8 +29,8 @@ class MyListLayouter : public ListLayouter
 {
 public:
     MyListLayouter(ImoContentObj* pImo, GraphicModel* pGModel,
-                   LibraryScope& libraryScope, ImoStyles* pStyles)
-        : ListLayouter(pImo, nullptr, pGModel, libraryScope, pStyles)
+                   LibraryScope& libraryScope, ViewOptions* pOptions, ImoStyles* pStyles)
+        : ListLayouter(pImo, nullptr, pGModel, libraryScope, pOptions, pStyles)
     {
     }
     virtual ~MyListLayouter() {}
